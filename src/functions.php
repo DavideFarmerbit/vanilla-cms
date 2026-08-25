@@ -29,9 +29,25 @@ function router_dispatcher(string $pattern, callable $handler): RouterDispatcher
  */
 function default_router_dispatchers(string $pagesDir): array {
     return [
+        // Homepage
         router_dispatcher('', fn () => PageRenderer::page($pagesDir, 'home')),
+        // Pages
+        ...array_map(
+            fn ($page) => router_dispatcher(
+                $page['slug'],
+                fn () => PageRenderer::page($pagesDir, $page['slug'])
+            ),
+            TypeRegistry::pages()
+        ),
+        // Templates
+        ...array_map(
+            fn ($template) => router_dispatcher(
+                $template['slug'] . '/{item}',
+                fn (string $item) => PageRenderer::templateInstance($pagesDir, $template['slug'], $item)
+            ),
+            TypeRegistry::templates()
+        ),
+        // Admin pannel
         router_dispatcher('admin/*', fn (array $segments) => AdminController::dispatch($segments)),
-        router_dispatcher('{page}', fn (string $slug) => PageRenderer::page($pagesDir, $slug)),
-        router_dispatcher('{type}/{item}', fn (string $typeSlug, string $itemSlug) => PageRenderer::templateInstance($pagesDir, $typeSlug, $itemSlug)),
     ];
 }
