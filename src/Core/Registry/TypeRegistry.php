@@ -11,11 +11,13 @@ final class TypeRegistry
     
     public static function registerPage(string $slug, string $label, string $path): void
     {
+        $slug = self::sanitizeSlug($slug);
         self::$pages[$slug] = new Page($slug, $label, $path);
     }
 
     public static function registerTemplate(string $slug, string $label, string $path): void
     {
+        $slug = self::sanitizeSlug($slug);
         self::$templates[$slug] = new PageTemplate($slug, $label, $path);
     }
 
@@ -45,5 +47,24 @@ final class TypeRegistry
     public static function getTemplate(string $slug): ?PageTemplate
     {
         return self::$templates[$slug] ?? null;
+    }
+
+    public static function sanitizeSlug(string $string): string
+    {
+        // Lowercase
+        $slug = strtolower($string);
+
+        // Transliterate accented/unicode chars to ASCII, if intl ext is available
+        if (function_exists('transliterator_transliterate')) {
+            $slug = transliterator_transliterate('Any-Latin; Latin-ASCII', $slug);
+        }
+
+        // Replace anything that's not a-z, 0-9 with a dash
+        $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+
+        // Trim leading/trailing dashes
+        $slug = trim($slug, '-');
+
+        return $slug;
     }
 }
