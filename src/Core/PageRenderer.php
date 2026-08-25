@@ -2,11 +2,12 @@
 
 namespace VanillaCms\Core;
 
+use VanillaCms\Core\Registry\TypeRegistry;
 use VanillaCms\Core\Router\Router;
 
 final class PageRenderer
 {
-    public static function page(string $pagesDir, string $slug): void
+    public static function page(string $slug): void
     {
         $page = TypeRegistry::getPage($slug);
 
@@ -15,10 +16,10 @@ final class PageRenderer
             return;
         }
 
-        self::render($pagesDir, $slug, ['page' => $page]);
+        self::render($page->path(), ['page' => $page]);
     }
 
-    public static function templateInstance(string $pagesDir, string $typeSlug, string $instanceSlug): void
+    public static function templateInstance(string $typeSlug, string $instanceSlug): void
     {
         $template = TypeRegistry::getTemplate($typeSlug);
 
@@ -27,19 +28,17 @@ final class PageRenderer
             return;
         }
         
-        self::render($pagesDir, $typeSlug, ['template' => $template, 'instanceSlug' => $instanceSlug]);
+        self::render($template->path(), ['template' => $template, 'instanceSlug' => $instanceSlug]);
     }
 
-    private static function render(string $pagesDir, string $slug, array $data): void
+    private static function render(string $filePath, array $data): void
     {
-        $file = $pagesDir . '/' . $slug . '.php';
-
-        if (!file_exists($file)) {
+        if (!file_exists($filePath)) {
             Router::notFound();
             return;
         }
 
         extract($data);
-        require $file;
+        require $filePath;
     }
 }

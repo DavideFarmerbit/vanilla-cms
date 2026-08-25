@@ -5,7 +5,7 @@ namespace VanillaCms\Core\Router;
 final class Router
 {
     /**
-     * Uses Dispaatchers to handle the url request.
+     * Uses Dispatchers to handle the current url request.
      * @param RouterDispatcher[] $routes
      */
     public static function dispatch(array $routes): void
@@ -53,7 +53,7 @@ final class Router
      * @param string $pattern: A pattern like '/users/{id}/posts/{postId}/*' where '*' matches any number of segments, 
      *                         and {} defines a parameter (used by RouterDispatcher::handle()).
      * @param string[] $segments: The segments to match against.
-     * @return string[]|null: The url parameters or null if no match.
+     * @return array<string|string[]>|null: The url parameters or null if no match.
      */
     private static function match(string $pattern, array $segments): ?array
     {

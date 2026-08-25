@@ -2,14 +2,18 @@
 
 namespace VanillaCms\Admin;
 
-use VanillaCms\Core\TypeRegistry;
+use VanillaCms\Core\Registry\TypeRegistry;
+use VanillaCms\Core\Router\Router;
+use VanillaCms\Core\Router\RouterDispatcher;
 
 final class AdminController
 {
-    public static function dispatch(array $segments): void
+    public static function routerDispatcher(): RouterDispatcher {
+        return router_dispatcher('admin/{section}/*', fn (string $section, array $segments) => AdminController::dispatch($section, $segments));
+    }
+    
+    public static function dispatch(string $section, array $segments): void
     {
-        $section = $segments[0] ?? 'pages';
-
         self::renderShellOpen();
 
         switch ($section) {
@@ -17,11 +21,14 @@ final class AdminController
                 self::renderPages();
                 break;
             case 'templates':
-                self::renderTemplates($segments[1] ?? null);
+                if (sizeof($segments) === 1) {
+                    self::renderTemplates($segments[0] ?? null);
+                } else {
+                    Router::notFound();
+                }
                 break;
             default:
-                http_response_code(404);
-                echo '<p>Not found.</p>';
+                Router::notFound();
         }
 
         self::renderShellClose();
@@ -42,8 +49,8 @@ final class AdminController
                 <p><a href="/admin/pages">Pages</a></p>
                 <?php foreach (TypeRegistry::templates() as $template): ?>
                     <p>
-                        <a href="/admin/templates/<?= htmlspecialchars($template['slug']) ?>">
-                            <?= htmlspecialchars($template['label']) ?>
+                        <a href="/admin/templates/<?= htmlspecialchars($template->slug()) ?>">
+                            <?= htmlspecialchars($template->label()) ?>
                         </a>
                     </p>
                 <?php endforeach; ?>
@@ -68,22 +75,22 @@ final class AdminController
         <h1>Pages</h1>
         <ul>
             <?php foreach (TypeRegistry::pages() as $page): ?>
-                <li><?= htmlspecialchars($page['label']) ?> (<?= htmlspecialchars($page['slug']) ?>)</li>
+                <li><?= htmlspecialchars($page->label()) ?> (<?= htmlspecialchars($page->slug()) ?>)</li>
             <?php endforeach; ?>
         </ul>
         <?php
     }
 
-    private static function renderTemplates(?string $slug): void
+    private static function renderTemplates(?string $typeSlug): void
     {
-        if ($slug === null) {
+        if ($typeSlug === null) {
             ?>
             <h1>Templates</h1>
             <ul>
                 <?php foreach (TypeRegistry::templates() as $template): ?>
                     <li>
-                        <a href="/admin/templates/<?= htmlspecialchars($template['slug']) ?>">
-                            <?= htmlspecialchars($template['label']) ?>
+                        <a href="/admin/templates/<?= htmlspecialchars($template->slug()) ?>">
+                            <?= htmlspecialchars($template->label()) ?>
                         </a>
                     </li>
                 <?php endforeach; ?>
@@ -92,15 +99,14 @@ final class AdminController
             return;
         }
 
-        $template = TypeRegistry::getTemplate($slug);
+        $template = TypeRegistry::getTemplate($typeSlug);
 
         if (!$template) {
-            http_response_code(404);
-            echo '<p>Unknown template type.</p>';
+            Router::notFound();
             return;
         }
         ?>
-        <h1><?= htmlspecialchars($template['label']) ?> instances</h1>
+        <h1><?= htmlspecialchars($template->label()) ?> instances</h1>
         <p>No storage layer yet, so there is nothing to list here.</p>
         <?php
     }

@@ -4,7 +4,11 @@ namespace VanillaCms\Core\Router;
 
 use Closure;
 
-class RouterDispatcher
+/**
+ * Object consumed by the Router to handle urls properly. Associates a url pattern to an handler function, 
+ * which is responsible for rendering the right page.
+ */
+final class RouterDispatcher
 {
     private string $pattern;
     private Closure $handler;

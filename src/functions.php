@@ -2,17 +2,17 @@
 
 use VanillaCms\Admin\AdminController;
 use VanillaCms\Core\PageRenderer;
+use VanillaCms\Core\Registry\TypeRegistry;
 use VanillaCms\Core\Router\RouterDispatcher;
-use VanillaCms\Core\TypeRegistry;
 
-function DefinePage(string $slug, string $label): void
+function DefinePage(string $slug, string $label, string $filePath): void
 {
-    TypeRegistry::registerPage($slug, $label);
+    TypeRegistry::registerPage($slug, $label, $filePath);
 }
 
-function DefinePageTemplate(string $slug, string $label): void
+function DefinePageTemplate(string $slug, string $label, string $filePath): void
 {
-    TypeRegistry::registerTemplate($slug, $label);
+    TypeRegistry::registerTemplate($slug, $label, $filePath);
 }
 
 /** 
@@ -27,27 +27,27 @@ function router_dispatcher(string $pattern, callable $handler): RouterDispatcher
  * Returns a set of default router dispatchers.
  * @return RouterDispatcher[]
  */
-function default_router_dispatchers(string $pagesDir): array {
+function default_router_dispatchers(): array {
     return [
         // Homepage
-        router_dispatcher('', fn () => PageRenderer::page($pagesDir, 'home')),
+        router_dispatcher('', fn () => PageRenderer::page('home')),
         // Pages
         ...array_map(
             fn ($page) => router_dispatcher(
-                $page['slug'],
-                fn () => PageRenderer::page($pagesDir, $page['slug'])
+                $page->slug(),
+                fn () => PageRenderer::page($page->slug())
             ),
             TypeRegistry::pages()
         ),
         // Templates
         ...array_map(
             fn ($template) => router_dispatcher(
-                $template['slug'] . '/*',
-                fn (array $itemSegments) => PageRenderer::templateInstance($pagesDir, $template['slug'], implode('/', $itemSegments))
+                $template->slug() . '/{instance}',
+                fn (string $instance) => PageRenderer::templateInstance($template->slug(), $instance)
             ),
             TypeRegistry::templates()
         ),
         // Admin pannel
-        router_dispatcher('admin/*', fn (array $segments) => AdminController::dispatch($segments)),
+        AdminController::routerDispatcher(),
     ];
 }
