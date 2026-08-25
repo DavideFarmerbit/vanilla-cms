@@ -33,6 +33,8 @@ final class PageRenderer
 
     private static function render(string $filePath, array $data): void
     {
+        // TODO: data should be the actual data from storage and the page interprets it in fields objects, or do we want it to be some metadata + field objects directly
+        
         if (!file_exists($filePath)) {
             Router::notFound();
             return;

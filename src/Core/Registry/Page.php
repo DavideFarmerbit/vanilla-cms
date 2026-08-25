@@ -36,6 +36,7 @@ class Page
     
     public function url(array $data): string
     {
+        // TODO: as for PageRenderer::render, we need to define what data is.
         return ($this->urlBuilder)($data);
     }
 }
