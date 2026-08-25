@@ -32,6 +32,6 @@ function default_router_dispatchers(string $pagesDir): array {
         router_dispatcher('', fn () => PageRenderer::page($pagesDir, 'home')),
         router_dispatcher('admin/*', fn (array $segments) => AdminController::dispatch($segments)),
         router_dispatcher('{page}', fn (string $slug) => PageRenderer::page($pagesDir, $slug)),
-        router_dispatcher('{type}/{item}', fn (string $type, string $item) => PageRenderer::templateInstance($pagesDir, $type, $item)),
+        router_dispatcher('{type}/{item}', fn (string $typeSlug, string $itemSlug) => PageRenderer::templateInstance($pagesDir, $typeSlug, $itemSlug)),
     ];
 }

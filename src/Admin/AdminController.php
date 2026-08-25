@@ -81,7 +81,11 @@ final class AdminController
             <h1>Templates</h1>
             <ul>
                 <?php foreach (TypeRegistry::templates() as $template): ?>
-                    <li><?= htmlspecialchars($template['label']) ?></li>
+                    <li>
+                        <a href="/admin/templates/<?= htmlspecialchars($template['slug']) ?>">
+                            <?= htmlspecialchars($template['label']) ?>
+                        </a>
+                    </li>
                 <?php endforeach; ?>
             </ul>
             <?php
