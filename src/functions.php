@@ -42,8 +42,8 @@ function default_router_dispatchers(string $pagesDir): array {
         // Templates
         ...array_map(
             fn ($template) => router_dispatcher(
-                $template['slug'] . '/{item}',
-                fn (string $item) => PageRenderer::templateInstance($pagesDir, $template['slug'], $item)
+                $template['slug'] . '/*',
+                fn (array $itemSegments) => PageRenderer::templateInstance($pagesDir, $template['slug'], implode('/', $itemSegments))
             ),
             TypeRegistry::templates()
         ),
