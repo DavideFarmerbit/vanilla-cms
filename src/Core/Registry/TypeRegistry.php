@@ -9,16 +9,16 @@ final class TypeRegistry
     /** @var PageTemplate[] */
     private static array $templates = [];
     
-    public static function registerPage(string $slug, string $label, string $path): void
+    public static function registerPage(string $slug, string $label, string $path, ?callable $urlBuilder = null): void
     {
         $slug = self::sanitizeSlug($slug);
-        self::$pages[$slug] = new Page($slug, $label, $path);
+        self::$pages[$slug] = new Page($slug, $label, $path, $urlBuilder);
     }
 
-    public static function registerTemplate(string $slug, string $label, string $path): void
+    public static function registerTemplate(string $slug, string $label, string $path, ?callable $urlBuilder = null): void
     {
         $slug = self::sanitizeSlug($slug);
-        self::$templates[$slug] = new PageTemplate($slug, $label, $path);
+        self::$templates[$slug] = new PageTemplate($slug, $label, $path, $urlBuilder);
     }
 
     /** 

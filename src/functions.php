@@ -5,14 +5,14 @@ use VanillaCms\Core\PageRenderer;
 use VanillaCms\Core\Registry\TypeRegistry;
 use VanillaCms\Core\Router\RouterDispatcher;
 
-function DefinePage(string $slug, string $label, string $filePath): void
+function DefinePage(string $slug, string $label, string $filePath, ?callable $urlBuilder = null): void
 {
-    TypeRegistry::registerPage($slug, $label, $filePath);
+    TypeRegistry::registerPage($slug, $label, $filePath, $urlBuilder);
 }
 
-function DefinePageTemplate(string $slug, string $label, string $filePath): void
+function DefinePageTemplate(string $slug, string $label, string $filePath, ?callable $urlBuilder = null): void
 {
-    TypeRegistry::registerTemplate($slug, $label, $filePath);
+    TypeRegistry::registerTemplate($slug, $label, $filePath, $urlBuilder);
 }
 
 /** 
