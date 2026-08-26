@@ -9,14 +9,19 @@ class Page
     private string $slug;
     private string $label;
     private string $path;
+    private bool $isArchetype = false;
     private Closure $urlBuilder;
     
-    public function __construct(string $slug, string $label, string $path, ?callable $urlBuilder = null)
+    public function __construct(string $slug, string $label, string $path, bool $isArchetype, ?callable $urlBuilder = null)
     {
         $this->slug = $slug;
         $this->label = $label;
         $this->path = $path;
-        $this->urlBuilder = $urlBuilder ?? fn () => '/' . $slug;
+        $this->isArchetype = $isArchetype;
+        $this->urlBuilder = $urlBuilder ?? (!$isArchetype 
+            ? (fn () => '/' . $slug) 
+            : (fn (array $data) => '/' . $slug . '/' . $data['slug'])
+        );
     }
     
     public function slug(): string
@@ -38,5 +43,9 @@ class Page
     {
         // TODO: as for PageRenderer::render, we need to define what data is.
         return ($this->urlBuilder)($data);
+    }
+    
+    public function isArchetype(): bool {
+        return $this->isArchetype;
     }
 }

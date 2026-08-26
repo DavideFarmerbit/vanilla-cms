@@ -6,19 +6,11 @@ final class TypeRegistry
 {
     /** @var Page[] */
     private static array $pages = [];
-    /** @var PageTemplate[] */
-    private static array $templates = [];
     
-    public static function registerPage(string $slug, string $label, string $path, ?callable $urlBuilder = null): void
+    public static function registerPage(string $slug, string $label, string $path, bool $isArchetype, ?callable $urlBuilder = null): void
     {
         $slug = self::sanitizeSlug($slug);
-        self::$pages[$slug] = new Page($slug, $label, $path, $urlBuilder);
-    }
-
-    public static function registerTemplate(string $slug, string $label, string $path, ?callable $urlBuilder = null): void
-    {
-        $slug = self::sanitizeSlug($slug);
-        self::$templates[$slug] = new PageTemplate($slug, $label, $path, $urlBuilder);
+        self::$pages[$slug] = new Page($slug, $label, $path, $isArchetype, $urlBuilder);
     }
 
     /** 
@@ -31,12 +23,21 @@ final class TypeRegistry
     }
 
     /**
-     * Returns all registered templates.
-     * @return PageTemplate[]
+     * Returns all registered pages which are not archetypes.
+     * @return Page[]
      */
-    public static function templates(): array
+    public static function simplePages(): array
     {
-        return self::$templates;
+        return array_filter(self::$pages, fn (Page $page) => !$page->isArchetype());
+    }
+
+    /**
+     * Returns all registered pages which are archetypes.
+     * @return Page[]
+     */
+    public static function archetypePages(): array
+    {
+        return array_filter(self::$pages, fn (Page $page) => $page->isArchetype());
     }
 
     public static function getPage(string $slug): ?Page
@@ -44,12 +45,7 @@ final class TypeRegistry
         return self::$pages[$slug] ?? null;
     }
 
-    public static function getTemplate(string $slug): ?PageTemplate
-    {
-        return self::$templates[$slug] ?? null;
-    }
-
-    public static function sanitizeSlug(string $string): string
+    private static function sanitizeSlug(string $string): string
     {
         // Lowercase
         $slug = strtolower($string);

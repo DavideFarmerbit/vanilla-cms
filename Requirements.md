@@ -7,10 +7,10 @@ We need to be able to give pages a type id to mark them as belonging to a catego
 ```injectablephp
 DefinePage('home', 'Home');
 DefinePage('archive', 'Archivio');
-DefinePageTemplate('product', 'Prodotto');
+DefinePageArchetype('product', 'Prodotto');
 
 DefinePage('case-histroy', 'Case History');
-DefinePageTemplate('case-histroy-item', 'Case History Item');
+DefinePageArchetype('case-histroy-item', 'Case History Item');
 ```
 
 We need an admin backend. This backend needs to have a sidebar to show the various options we have.

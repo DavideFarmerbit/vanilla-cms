@@ -7,12 +7,12 @@ use VanillaCms\Core\Router\RouterDispatcher;
 
 function DefinePage(string $slug, string $label, string $filePath, ?callable $urlBuilder = null): void
 {
-    TypeRegistry::registerPage($slug, $label, $filePath, $urlBuilder);
+    TypeRegistry::registerPage($slug, $label, $filePath, false, $urlBuilder);
 }
 
-function DefinePageTemplate(string $slug, string $label, string $filePath, ?callable $urlBuilder = null): void
+function DefinePageArchetype(string $slug, string $label, string $filePath, ?callable $urlBuilder = null): void
 {
-    TypeRegistry::registerTemplate($slug, $label, $filePath, $urlBuilder);
+    TypeRegistry::registerPage($slug, $label, $filePath, true, $urlBuilder);
 }
 
 /** 
@@ -37,15 +37,15 @@ function default_router_dispatchers(): array {
                 $page->slug(),
                 fn () => PageRenderer::page($page->slug())
             ),
-            TypeRegistry::pages()
+            TypeRegistry::simplePages()
         ),
-        // Templates
+        // Archetypes
         ...array_map(
-            fn ($template) => router_dispatcher(
-                $template->slug() . '/{instance}',
-                fn (string $instance) => PageRenderer::templateInstance($template->slug(), $instance)
+            fn ($archetype) => router_dispatcher(
+                $archetype->slug() . '/{instance}',
+                fn (string $instance) => PageRenderer::page($archetype->slug(), $instance)
             ),
-            TypeRegistry::templates()
+            TypeRegistry::archetypePages()
         ),
         // Admin pannel
         AdminController::routerDispatcher(),

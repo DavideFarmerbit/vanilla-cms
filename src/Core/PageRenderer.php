@@ -7,28 +7,18 @@ use VanillaCms\Core\Router\Router;
 
 final class PageRenderer
 {
-    public static function page(string $slug): void
+    public static function page(string $typeSlug, ?string $instanceSlug = null): void
     {
-        $page = TypeRegistry::getPage($slug);
+        $page = TypeRegistry::getPage($typeSlug);
 
         if (!$page) {
             Router::notFound();
             return;
         }
-
-        self::render($page->path(), ['page' => $page]);
-    }
-
-    public static function templateInstance(string $typeSlug, string $instanceSlug): void
-    {
-        $template = TypeRegistry::getTemplate($typeSlug);
-
-        if (!$template) {
-            Router::notFound();
-            return;
-        }
         
-        self::render($template->path(), ['template' => $template, 'instanceSlug' => $instanceSlug]);
+        // TODO: if $instanceSlug is null, we render the first instance of the page. Usefull for non archetype pages.
+        
+        self::render($page->path(), ['page' => $page, 'instanceSlug' => $instanceSlug]);
     }
 
     private static function render(string $filePath, array $data): void

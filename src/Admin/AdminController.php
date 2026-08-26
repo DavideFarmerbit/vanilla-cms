@@ -20,9 +20,9 @@ final class AdminController
             case 'pages':
                 self::renderPages();
                 break;
-            case 'templates':
+            case 'archetypes':
                 if (sizeof($segments) === 1) {
-                    self::renderTemplates($segments[0] ?? null);
+                    self::renderArchetypes($segments[0] ?? null);
                 } else {
                     Router::notFound();
                 }
@@ -47,10 +47,10 @@ final class AdminController
         <div style="display:flex">
             <nav style="width:200px">
                 <p><a href="/admin/pages">Pages</a></p>
-                <?php foreach (TypeRegistry::templates() as $template): ?>
+                <?php foreach (TypeRegistry::archetypePages() as $archetype): ?>
                     <p>
-                        <a href="/admin/templates/<?= htmlspecialchars($template->slug()) ?>">
-                            <?= htmlspecialchars($template->label()) ?>
+                        <a href="/admin/archetypes/<?= htmlspecialchars($archetype->slug()) ?>">
+                            <?= htmlspecialchars($archetype->label()) ?>
                         </a>
                     </p>
                 <?php endforeach; ?>
@@ -81,16 +81,16 @@ final class AdminController
         <?php
     }
 
-    private static function renderTemplates(?string $typeSlug): void
+    private static function renderArchetypes(?string $typeSlug): void
     {
         if ($typeSlug === null) {
             ?>
-            <h1>Templates</h1>
+            <h1>Archetypes</h1>
             <ul>
-                <?php foreach (TypeRegistry::templates() as $template): ?>
+                <?php foreach (TypeRegistry::archetypePages() as $archetype): ?>
                     <li>
-                        <a href="/admin/templates/<?= htmlspecialchars($template->slug()) ?>">
-                            <?= htmlspecialchars($template->label()) ?>
+                        <a href="/admin/archetypes/<?= htmlspecialchars($archetype->slug()) ?>">
+                            <?= htmlspecialchars($archetype->label()) ?>
                         </a>
                     </li>
                 <?php endforeach; ?>
@@ -99,14 +99,14 @@ final class AdminController
             return;
         }
 
-        $template = TypeRegistry::getTemplate($typeSlug);
+        $archetype = TypeRegistry::getPage($typeSlug);
 
-        if (!$template) {
+        if (!$archetype || !$archetype->isArchetype()) {
             Router::notFound();
             return;
         }
         ?>
-        <h1><?= htmlspecialchars($template->label()) ?> instances</h1>
+        <h1><?= htmlspecialchars($archetype->label()) ?> instances</h1>
         <p>No storage layer yet, so there is nothing to list here.</p>
         <?php
     }
