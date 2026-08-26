@@ -2,6 +2,7 @@
 
 namespace VanillaCms\Admin;
 
+use Storage;
 use VanillaCms\Core\Registry\TypeRegistry;
 use VanillaCms\Core\Router\Router;
 use VanillaCms\Core\Router\RouterDispatcher;
@@ -71,12 +72,14 @@ final class AdminController
 
     private static function renderPages(): void
     {
-        // TODO: for each page we need to show the instance of the page, if any, or a place holder to instantiate it.
         ?>
         <h1>Pages</h1>
         <ul>
             <?php foreach (TypeRegistry::pages() as $page): ?>
-                <li><?= htmlspecialchars($page->label()) ?> (<?= htmlspecialchars($page->slug()) ?>)</li>
+                <?php $pageData = Storage::findFirst($page->slug()); ?>
+                <li>
+                    <?= htmlspecialchars($page->label()) ?> (<?= htmlspecialchars($page->slug()) ?> | <?= $pageData?->id ?? 'no instance' ?>)
+                </li>
             <?php endforeach; ?>
         </ul>
         <?php
