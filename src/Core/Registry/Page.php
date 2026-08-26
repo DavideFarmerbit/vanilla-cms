@@ -3,6 +3,7 @@
 namespace VanillaCms\Core\Registry;
 
 use Closure;
+use PageData;
 
 class Page
 {
@@ -20,7 +21,7 @@ class Page
         $this->isArchetype = $isArchetype;
         $this->urlBuilder = $urlBuilder ?? (!$isArchetype 
             ? (fn () => '/' . $slug) 
-            : (fn (array $data) => '/' . $slug . '/' . $data['slug'])
+            : (fn (PageData $data) => '/' . $slug . '/' . $data->slug)
         );
     }
     
@@ -39,9 +40,8 @@ class Page
         return $this->path;
     }
     
-    public function url(array $data): string
+    public function url(PageData $data): string
     {
-        // TODO: as for PageRenderer::render, we need to define what data is.
         return ($this->urlBuilder)($data);
     }
     

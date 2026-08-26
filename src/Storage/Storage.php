@@ -52,6 +52,17 @@ final class Storage
     }
 
     /**
+     * Get the first instance of a page.
+     * @param string $typeSlug slug of the registered page.
+     * @return PageData|null
+     * @throws Exception if storage driver is not set.
+     */
+    public static function findFirst(string $typeSlug): ?PageData
+    {
+        return self::driver()->findFirst($typeSlug);
+    }
+
+    /**
      * Save a new instance of a page or update an existing one.
      * @param string $typeSlug slug of the registered page.
      * @param string|null $id unique identifier of the instance.

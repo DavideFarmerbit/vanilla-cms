@@ -2,6 +2,8 @@
 
 namespace VanillaCms\Core;
 
+use PageData;
+use Storage;
 use VanillaCms\Core\Registry\TypeRegistry;
 use VanillaCms\Core\Router\Router;
 
@@ -16,21 +18,18 @@ final class PageRenderer
             return;
         }
         
-        // TODO: if $instanceSlug is null, we render the first instance of the page. Usefull for non archetype pages.
-        
-        self::render($page->path(), ['page' => $page, 'instanceSlug' => $instanceSlug]);
+        // Get the page data for the specified instance, or the first instance if none is specified.
+        $pageData = $instanceSlug !== null ? Storage::findBySlug($typeSlug, $instanceSlug) : Storage::findFirst($typeSlug);
+        self::render($page->path(), $pageData);
     }
 
-    private static function render(string $filePath, array $data): void
+    private static function render(string $filePath, ?PageData $data): void
     {
-        // TODO: data should be the actual data from storage and the page interprets it in fields objects, or do we want it to be some metadata + field objects directly
-        
         if (!file_exists($filePath)) {
             Router::notFound();
             return;
         }
-
-        extract($data);
+        
         require $filePath;
     }
 }
