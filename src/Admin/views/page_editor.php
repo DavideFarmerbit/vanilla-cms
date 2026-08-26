@@ -6,8 +6,12 @@ function render_page_editor(Page $type, ?PageData $instance, string $backUrl, st
 {
     ?>
     <h1><?= $instance ? 'Edit' : 'Create' ?> <?= htmlspecialchars($type->label()) ?></h1>
-    <?php $pageUrl = htmlspecialchars($type->url($instance)) ?>
-    <a href="<?= $pageUrl ?>"><?= $pageUrl ?></a>
+    <?php $pageUrl = isset($instance) ? htmlspecialchars($type->url($instance)) : null; ?>
+    <?php if ($deleteAction): ?>
+        <a class="preview-url" href="<?= $pageUrl ?>"><?= $pageUrl ?></a>
+    <?php else: ?>
+        <span class="preview-url">create the page to see the url</span>
+    <?php endif; ?>
     <form method="post" action="<?= htmlspecialchars($saveAction) ?>" class="admin-form">
         <label>
             Name

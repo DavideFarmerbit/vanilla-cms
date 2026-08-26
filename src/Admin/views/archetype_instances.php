@@ -25,6 +25,9 @@ function render_archetype_instances(Page $archetype, array $instances): void
                     <a href="/admin/archetypes/<?= htmlspecialchars($archetype->slug()) ?>/<?= htmlspecialchars($instance->id) ?>/edit">
                         Edit
                     </a>
+                    <form method="post" action="/admin/archetypes/<?= htmlspecialchars($archetype->slug()) ?>/<?= htmlspecialchars($instance->id) ?>/delete" data-confirm="Delete this entry? This cannot be undone.">
+                        <button type="submit" class="admin-danger">Delete</button>
+                    </form>
                 </li>
             <?php endforeach; ?>
         </ul>
