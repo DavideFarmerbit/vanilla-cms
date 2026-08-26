@@ -75,7 +75,7 @@ final class AdminController
         ?>
         <h1>Pages</h1>
         <ul>
-            <?php foreach (TypeRegistry::pages() as $page): ?>
+            <?php foreach (TypeRegistry::simplePages() as $page): ?>
                 <?php $pageData = Storage::findFirst($page->slug()); ?>
                 <li>
                     <?= htmlspecialchars($page->label()) ?> (<?= htmlspecialchars($page->slug()) ?> | <?= $pageData?->id ?? 'no instance' ?>)
@@ -112,11 +112,20 @@ final class AdminController
             return;
         }
         
-        // TODO: list all instances of the archetype, allow adding and removing instances.
-        
+        $archetypeInstances = Storage::all($archetype->slug());
         ?>
         <h1><?= htmlspecialchars($archetype->label()) ?> instances</h1>
-        <p>No storage layer yet, so there is nothing to list here.</p>
+        <?php if (empty($archetypeInstances)): ?>
+            <p>No instances yet.</p>
+        <?php else: ?>
+            <ul>
+                <?php foreach ($archetypeInstances as $pageInstance): ?>
+                    <li>
+                        <?= htmlspecialchars($pageInstance->name) ?> (<?= htmlspecialchars($pageInstance->slug) ?> | <?= $pageInstance?->id ?? 'no instance' ?>)
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
         <?php
     }
 }
