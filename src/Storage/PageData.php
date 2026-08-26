@@ -39,9 +39,7 @@ class PageData
     {
         $pageData = new self();
         
-        $pageData->type_slug = $page->slug();
-        $pageData->type_label = $page->label();
-        $pageData->is_archetype = $page->isArchetype();
+        $pageData->setPage($page);
 
         $pageData->id = '';
         $pageData->slug = $slug;
@@ -50,5 +48,12 @@ class PageData
         $pageData->data = [];
         
         return $pageData;
+    }
+    
+    public function setPage(Page $page): void
+    {
+        $this->type_slug = $page->slug();
+        $this->type_label = $page->label();
+        $this->is_archetype = $page->isArchetype();
     }
 }
