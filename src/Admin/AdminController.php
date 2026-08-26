@@ -10,7 +10,7 @@ use VanillaCms\Core\Router\Router;
 use VanillaCms\Core\Router\RouterDispatcher;
 
 require_once __DIR__ . '/views/layout.php';
-require_once __DIR__ . '/views/pages_list.php';
+require_once __DIR__ . '/views/pages_instances.php';
 require_once __DIR__ . '/views/archetypes_list.php';
 require_once __DIR__ . '/views/archetype_instances.php';
 require_once __DIR__ . '/views/page_editor.php';
@@ -37,7 +37,7 @@ final class AdminController
     private static function dispatchPages(array $segments): void
     {
         if (count($segments) === 0) {
-            render_pages_list(TypeRegistry::simplePages());
+            render_pages_instances(TypeRegistry::simplePages());
             return;
         }
 

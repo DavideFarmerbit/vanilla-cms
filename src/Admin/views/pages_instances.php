@@ -3,7 +3,7 @@
 use VanillaCms\Core\Registry\Page;
 
 /** @param Page[] $pages */
-function render_pages_list(array $pages): void
+function render_pages_instances(array $pages): void
 {
     ?>
     <h1>Pages</h1>
