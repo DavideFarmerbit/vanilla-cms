@@ -6,6 +6,8 @@ function render_page_editor(Page $type, ?PageData $instance, string $backUrl, st
 {
     ?>
     <h1><?= $instance ? 'Edit' : 'Create' ?> <?= htmlspecialchars($type->label()) ?></h1>
+    <?php $pageUrl = htmlspecialchars($type->url($instance)) ?>
+    <a href="<?= $pageUrl ?>"><?= $pageUrl ?></a>
     <form method="post" action="<?= htmlspecialchars($saveAction) ?>" class="admin-form">
         <label>
             Name
