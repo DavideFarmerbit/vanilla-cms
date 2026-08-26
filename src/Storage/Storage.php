@@ -66,11 +66,11 @@ final class Storage
      * Save a new instance of a page or update an existing one.
      * @param string $typeSlug slug of the registered page.
      * @param string|null $id unique identifier of the instance.
-     * @param array $data
+     * @param PageData $data
      * @return string unique identifier of the instance.
      * @throws Exception if storage driver is not set.
      */
-    public static function save(string $typeSlug, ?string $id, array $data): string
+    public static function save(string $typeSlug, ?string $id, PageData $data): string
     {
         return self::driver()->save($typeSlug, $id, $data);
     }
