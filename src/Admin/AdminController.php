@@ -71,6 +71,7 @@ final class AdminController
 
     private static function renderPages(): void
     {
+        // TODO: for each page we need to show the instance of the page, if any, or a place holder to instantiate it.
         ?>
         <h1>Pages</h1>
         <ul>
@@ -83,6 +84,7 @@ final class AdminController
 
     private static function renderArchetypes(?string $typeSlug): void
     {
+        // If no archetype slug is provided, list all archetypes.
         if ($typeSlug === null) {
             ?>
             <h1>Archetypes</h1>
@@ -99,12 +101,16 @@ final class AdminController
             return;
         }
 
+        // If we have an archetype slug, list all instances of that archetype.
         $archetype = TypeRegistry::getPage($typeSlug);
 
         if (!$archetype || !$archetype->isArchetype()) {
             Router::notFound();
             return;
         }
+        
+        // TODO: list all instances of the archetype, allow adding and removing instances.
+        
         ?>
         <h1><?= htmlspecialchars($archetype->label()) ?> instances</h1>
         <p>No storage layer yet, so there is nothing to list here.</p>
