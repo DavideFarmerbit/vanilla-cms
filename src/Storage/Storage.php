@@ -1,5 +1,9 @@
 <?php
 
+namespace VanillaCms\Storage;
+
+use Exception;
+
 final class Storage
 {
     private static ?StorageDriver $driver = null;

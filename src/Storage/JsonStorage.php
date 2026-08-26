@@ -1,5 +1,7 @@
 <?php
 
+namespace VanillaCms\Storage;
+
 class JsonStorage implements StorageDriver
 {
     private string $root;

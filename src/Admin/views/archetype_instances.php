@@ -1,6 +1,7 @@
 <?php
 
 use VanillaCms\Core\Registry\Page;
+use VanillaCms\Storage\PageData;
 
 /**
  * @param Page $archetype

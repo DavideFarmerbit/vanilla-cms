@@ -1,6 +1,7 @@
 <?php
 
 use VanillaCms\Core\Registry\Page;
+use VanillaCms\Storage\Storage;
 
 /** @param Page[] $pages */
 function render_pages_instances(array $pages): void

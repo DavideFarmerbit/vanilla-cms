@@ -2,9 +2,9 @@
 
 namespace VanillaCms\Core;
 
-use PageData;
-use Storage;
 use VanillaCms\Core\Registry\TypeRegistry;
+use VanillaCms\Storage\PageData;
+use VanillaCms\Storage\Storage;
 use VanillaCms\Core\Router\Router;
 
 final class PageRenderer

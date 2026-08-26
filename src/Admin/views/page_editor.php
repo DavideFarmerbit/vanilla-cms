@@ -1,6 +1,7 @@
 <?php
 
 use VanillaCms\Core\Registry\Page;
+use VanillaCms\Storage\PageData;
 
 function render_page_editor(Page $type, ?PageData $instance, string $backUrl, string $saveAction, ?string $deleteAction): void
 {

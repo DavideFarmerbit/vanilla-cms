@@ -1,5 +1,7 @@
 <?php
 
+namespace VanillaCms\Storage;
+
 use VanillaCms\Core\Registry\Page;
 
 class PageData

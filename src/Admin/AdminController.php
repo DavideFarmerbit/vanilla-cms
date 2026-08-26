@@ -2,12 +2,12 @@
 
 namespace VanillaCms\Admin;
 
-use PageData;
-use Storage;
 use VanillaCms\Core\Registry\Page;
 use VanillaCms\Core\Registry\TypeRegistry;
 use VanillaCms\Core\Router\Router;
 use VanillaCms\Core\Router\RouterDispatcher;
+use VanillaCms\Storage\PageData;
+use VanillaCms\Storage\Storage;
 
 require_once __DIR__ . '/views/layout.php';
 require_once __DIR__ . '/views/instance_row.php';

@@ -3,7 +3,7 @@
 namespace VanillaCms\Core\Registry;
 
 use Closure;
-use PageData;
+use VanillaCms\Storage\PageData;
 
 class Page
 {

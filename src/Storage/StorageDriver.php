@@ -1,5 +1,7 @@
 <?php
 
+namespace VanillaCms\Storage;
+
 interface StorageDriver
 {
     public function all(string $typeSlug): array;

@@ -1,6 +1,7 @@
 <?php
 
 use VanillaCms\Core\Registry\Page;
+use VanillaCms\Storage\PageData;
 
 function render_instance_row_header()
 {
