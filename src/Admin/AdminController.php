@@ -141,7 +141,7 @@ final class AdminController
         if (self::isPost()) {
             $data = $instance ?? PageData::empty();
             $data->setPage($type);
-            $data->slug = trim($_POST['slug'] ?? '');
+            $data->slug = TypeRegistry::sanitizeSlug($_POST['slug'] ?? '');
             $data->name = trim($_POST['name'] ?? '');
 
             Storage::save($type->slug(), $instance?->id, $data);

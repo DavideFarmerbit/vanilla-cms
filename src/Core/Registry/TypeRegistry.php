@@ -45,7 +45,7 @@ final class TypeRegistry
         return self::$pages[$slug] ?? null;
     }
 
-    private static function sanitizeSlug(string $string): string
+    public static function sanitizeSlug(string $string): string
     {
         // Lowercase
         $slug = strtolower($string);
