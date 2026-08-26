@@ -63,15 +63,18 @@ final class Storage
     }
 
     /**
-     * Save a new instance of a page or update an existing one.
+     * Save a new instance of a page or update an existing one (the id from the data object is ignored).
      * @param string $typeSlug slug of the registered page.
      * @param string|null $id unique identifier of the instance.
      * @param PageData $data
      * @return string unique identifier of the instance.
-     * @throws Exception if storage driver is not set.
+     * @throws Exception if storage driver is not set or if the given type slug does not match the one in the data object.
      */
     public static function save(string $typeSlug, ?string $id, PageData $data): string
     {
+        if ($typeSlug !== $data->type_slug) {
+            throw new Exception('JsonStorage::save >> given type slug does not match the one in the data object.');
+        }
         return self::driver()->save($typeSlug, $id, $data);
     }
 
