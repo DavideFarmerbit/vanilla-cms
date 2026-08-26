@@ -1,0 +1,23 @@
+{
+    "name": "xylo-is-coding/vanilla-cms",
+    "description": "Minimal, framework-free PHP layer for defining content types, storing their data, routing requests, and editing them through a small admin panel.",
+    "type": "library",
+    "authors": [
+        {
+            "name": "XyloIsCoding",
+            "email": "xylo.is.coding@gmail.com"
+        }
+    ],
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "VanillaCms\\": "src/"
+        },
+        "files": [
+            "src/functions.php"
+        ]
+    }
+}
