@@ -22,6 +22,7 @@ final class AdminController
         return router_dispatcher('admin/{section}/*', fn (string $section, array $segments) => AdminController::dispatch($section, $segments));
     }
 
+    /** ALWAYS CHECK FOR AUTHENTICATION BEFORE CALLING THIS METHOD!!! */
     public static function dispatch(string $section, array $segments): void
     {
         render_admin_shell_open();
