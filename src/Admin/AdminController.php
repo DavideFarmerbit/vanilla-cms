@@ -10,6 +10,7 @@ use VanillaCms\Core\Router\Router;
 use VanillaCms\Core\Router\RouterDispatcher;
 
 require_once __DIR__ . '/views/layout.php';
+require_once __DIR__ . '/views/instance_row.php';
 require_once __DIR__ . '/views/pages_instances.php';
 require_once __DIR__ . '/views/archetypes_list.php';
 require_once __DIR__ . '/views/archetype_instances.php';

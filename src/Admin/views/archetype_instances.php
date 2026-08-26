@@ -18,19 +18,21 @@ function render_archetype_instances(Page $archetype, array $instances): void
     <?php if (empty($instances)): ?>
         <p>No instances yet.</p>
     <?php else: ?>
-        <ul class="admin-list">
-            <?php foreach ($instances as $instance): ?>
-                <li>
-                    <span><?= htmlspecialchars($instance->name) ?> (<?= htmlspecialchars($instance->slug) ?>)</span>
-                    <a href="/admin/archetypes/<?= htmlspecialchars($archetype->slug()) ?>/<?= htmlspecialchars($instance->id) ?>/edit">
-                        Edit
-                    </a>
-                    <form method="post" action="/admin/archetypes/<?= htmlspecialchars($archetype->slug()) ?>/<?= htmlspecialchars($instance->id) ?>/delete" data-confirm="Delete this entry? This cannot be undone.">
-                        <button type="submit" class="admin-danger">Delete</button>
-                    </form>
-                </li>
-            <?php endforeach; ?>
-        </ul>
+        <table class="admin-table">
+            <thead>
+                <?php render_instance_row_header() ?>
+            </thead>
+            <tbody>
+                <?php foreach ($instances as $instance): ?>
+                    <?php render_instance_row(
+                        $archetype,
+                        $instance,
+                        "/admin/archetypes/{$archetype->slug()}/{$instance->id}/edit",
+                        "/admin/archetypes/{$archetype->slug()}/{$instance->id}/delete"
+                    ); ?>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
     <?php endif; ?>
     <?php
 }
