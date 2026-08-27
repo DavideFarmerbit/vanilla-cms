@@ -154,7 +154,6 @@ final class AdminController
 
     private static function isPost(): bool
     {
-        // TODO: implement CSRF protection!!!
         return ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST';
     }
 
