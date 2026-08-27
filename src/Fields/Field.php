@@ -4,9 +4,11 @@ namespace VanillaCms\Fields;
 
 abstract class Field
 {
-    public function __construct()
+    protected array $config;
+    
+    public function __construct(array $config)
     {
-        
+        $this->config = $config;
     }
     
     /** @return array<string, mixed> */
@@ -18,6 +20,7 @@ abstract class Field
     /** 
      * Render the field's form for Admin Panel.
      * Inputs names MUST be {$name}[$fieldSlug].
+     * @param string $name Name of the field.
      */
-    public abstract function render(string $name, array $config): void;
+    public abstract function render(string $name): void;
 }

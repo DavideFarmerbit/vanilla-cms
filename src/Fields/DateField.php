@@ -15,15 +15,15 @@ class DateField extends Field
 
     public function fromArray(array $data): void
     {
-        $this->value = $data['value'];
+        $this->value = $data['value'] ?? null;
     }
 
-    public function render(string $name, array $config): void
+    public function render(string $name): void
     {
         $dateStr = $this->value ? $this->value->format('Y-m-d') : '';
         ?>
         <label>
-            <?= $config['label'] ?? 'value' ?>
+            <?= $this->config['label'] ?? 'value' ?>
             <input type="date" role="switch" name="<?= "{$name}[value]" ?>" value="<?= htmlspecialchars($dateStr) ?>">
         </label>
         <?php

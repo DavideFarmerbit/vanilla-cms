@@ -89,21 +89,21 @@ final class AdminController
         $backUrl = self::getPagesUrl();
 
         if ($action === 'edit') {
-            $instance = Storage::findFirst($page->slug());
+            $pageData = Storage::findFirst($page->slug());
             self::handleEditor(
                 $page,
-                $instance,
+                $pageData,
                 $backUrl,
                 self::getPageEditUrl($slug, AdminPageAction::EDIT),
-                $instance ? self::getPageEditUrl($slug, AdminPageAction::DELETE) : null
+                $pageData ? self::getPageEditUrl($slug, AdminPageAction::DELETE) : null
             );
             return;
         }
 
         if ($action === 'delete' && self::isVerifiedPost()) {
-            $instance = Storage::findFirst($page->slug());
-            if ($instance) {
-                Storage::delete($page->slug(), $instance->id);
+            $pageData = Storage::findFirst($page->slug());
+            if ($pageData) {
+                Storage::delete($page->slug(), $pageData->id);
             }
             Router::redirect($backUrl);
             return;
@@ -143,9 +143,9 @@ final class AdminController
 
         $id = $action;
         $subAction = $segments[2] ?? null;
-        $instance = Storage::find($archetype->slug(), $id);
+        $pageData = Storage::find($archetype->slug(), $id);
 
-        if (!$instance) {
+        if (!$pageData) {
             Router::notFound();
             return;
         }
@@ -153,7 +153,7 @@ final class AdminController
         if ($subAction === 'edit') {
             self::handleEditor(
                 $archetype,
-                $instance,
+                $pageData,
                 $backUrl,
                 self::getArchetypeEditUrl($typeSlug, $id, AdminPageAction::EDIT),
                 self::getArchetypeEditUrl($typeSlug, $id, AdminPageAction::DELETE),
@@ -170,19 +170,17 @@ final class AdminController
         Router::notFound();
     }
 
-    private static function handleEditor(Page $type, ?PageData $instance, string $backUrl, string $saveAction, ?string $deleteAction): void
+    private static function handleEditor(Page $type, ?PageData $pageData, string $backUrl, string $saveAction, ?string $deleteAction): void
     {
         if (self::isVerifiedPost()) {
-            $data = $instance ?? PageData::empty();
-            $data->setPage($type);
-            $data->slug = TypeRegistry::sanitizeSlug($_POST['slug'] ?? '');
-            $data->name = trim($_POST['name'] ?? '');
+            $data = collect_page_editor_response($type);
 
-            Storage::save($type->slug(), $instance?->id, $data);
+            Storage::save($type->slug(), $pageData?->id, $data);
             Router::redirect($backUrl);
             return;
         }
 
+        $instance = $pageData ? $type->instantiate($pageData) : null;
         render_page_editor($type, $instance, $backUrl, $saveAction, $deleteAction);
     }
 

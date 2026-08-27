@@ -13,14 +13,14 @@ class BoolField extends Field
 
     public function fromArray(array $data): void
     {
-        $this->value = $data['value'];
+        $this->value = $data['value'] ?? false;
     }
 
-    public function render(string $name, array $config): void
+    public function render(string $name): void
     {
         ?>
         <label>
-            <?= $config['label'] ?? 'value' ?>
+            <?= $this->config['label'] ?? 'value' ?>
             <input type="checkbox" role="switch" name="<?= "{$name}[value]" ?>" value="1" <?= $this->value ? 'checked' : '' ?>>
         </label>
         <?php

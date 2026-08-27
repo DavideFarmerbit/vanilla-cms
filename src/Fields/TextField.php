@@ -13,16 +13,21 @@ class TextField extends Field
 
     public function fromArray(array $data): void
     {
-        $this->value = $data['value'];
+        $this->value = $data['value'] ?? '';
     }
 
-    public function render(string $name, array $config): void
+    public function render(string $name): void
     {
         ?>
         <label>
-            <?= $config['label'] ?? 'value' ?>
+            <?= $this->config['label'] ?? 'value' ?>
             <input type="text" name="<?= "{$name}[value]" ?>" value="<?= $this->value ?>">
         </label>
         <?php
+    }
+    
+    public function getText(): string
+    {
+        return $this->value;
     }
 }

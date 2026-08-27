@@ -128,7 +128,7 @@ class JsonStorage implements StorageDriver
         $record->is_archetype = $row['is_archetype'];
         $record->slug = $row['slug'];
         $record->name = $row['name'];
-        $record->data = $row['data'] ?? [];
+        $record->fields = $row['fields'] ?? [];
 
         return $record;
     }

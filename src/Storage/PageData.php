@@ -16,8 +16,8 @@ class PageData
     public string $slug;
     public string $name;
     
-    // Generic container for other data
-    public array $data;
+    /** array view of the fields of the page (Field::toArray) */
+    public array $fields = [];
 
 
     public static function empty(): self
@@ -32,22 +32,7 @@ class PageData
         $pageData->slug = '';
         $pageData->name = '';
 
-        $pageData->data = [];
-        
-        return $pageData;
-    }
-
-    public static function fromPage(Page $page, string $slug, string $name): self
-    {
-        $pageData = new self();
-        
-        $pageData->setPage($page);
-
-        $pageData->id = '';
-        $pageData->slug = $slug;
-        $pageData->name = $name;
-
-        $pageData->data = [];
+        $pageData->fields = [];
         
         return $pageData;
     }

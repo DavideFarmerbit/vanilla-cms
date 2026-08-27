@@ -16,11 +16,10 @@ abstract class CompositeField extends Field
         }
     }
     
-    public function render(string $name, array $config): void
+    public function render(string $name): void
     {
         foreach ($this->getFields() as $fieldName => $field) {
-            // TODO: what about configs for each field?
-            $field->render("{$name}[{$fieldName}]", []);
+            $field->render("{$name}[{$fieldName}]");
         }
     }
 

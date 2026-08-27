@@ -6,6 +6,9 @@ use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionException;
 
+/** 
+ * Stores the default constructed pages. 
+ */
 final class TypeRegistry
 {
     /** @var Page[] */
