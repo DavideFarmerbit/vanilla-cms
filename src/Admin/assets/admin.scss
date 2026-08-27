@@ -35,17 +35,6 @@ body {
     line-height: 1.5;
 }
 
-fieldset {
-    border: none;
-    margin: 0;
-    padding: 0;
-    min-width: 0;
-}
-
-legend {
-    padding: 0;
-}
-
 ::selection {
     background: var(--vcms-accent-soft);
     color: var(--vcms-text);
@@ -136,6 +125,13 @@ button {
             background: var(--vcms-accent-soft);
             color: var(--vcms-accent);
         }
+    }
+    
+    &__separator {
+        height: 1px;
+        margin: 0.5rem 0;
+        border: none;
+        background: var(--vcms-border);
     }
 }
 
@@ -242,6 +238,9 @@ button {
     }
 
     &--composite {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
         padding: 0.85rem;
         border: 1px solid var(--vcms-border);
         border-radius: var(--vcms-radius);
@@ -375,9 +374,7 @@ input[type="date"].vcms-field__input::-webkit-calendar-picker-indicator {
     }
 
     &__cell--actions {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
+        vertical-align: middle;
 
         form {
             display: inline;

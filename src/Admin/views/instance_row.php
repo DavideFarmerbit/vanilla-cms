@@ -12,6 +12,7 @@ function render_instance_row_header()
         <th class="vcms-table__cell">Type</th>
         <th class="vcms-table__cell">ID</th>
         <th class="vcms-table__cell"></th>
+        <th class="vcms-table__cell"></th>
     </tr>
     <?php
 }
@@ -28,6 +29,8 @@ function render_instance_row(Page $type, ?PageData $instance, string $editUrl, s
         <td class="vcms-table__cell"><?= htmlspecialchars($id) ?></td>
         <td class="vcms-table__cell vcms-table__cell--actions">
             <a class="vcms-btn vcms-btn--link" href="<?= htmlspecialchars($editUrl) ?>"><?= $instance ? 'Edit' : 'Create' ?></a>
+        </td>
+        <td class="vcms-table__cell vcms-table__cell--actions">
             <?php if ($instance): ?>
                 <form method="post" action="<?= htmlspecialchars($deleteUrl) ?>" data-confirm="Delete this entry? This cannot be undone.">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">

@@ -39,6 +39,7 @@ function render_admin_shell_open(): void
         <nav class="vcms-layout__sidebar">
             <ul class="vcms-nav">
                 <?php vcms_nav_link(AdminController::getHomeUrl(), 'Home'); ?>
+                <hr class="vcms-nav__separator">
                 <?php vcms_nav_link(AdminController::getPagesUrl(), 'Pages'); ?>
                 <?php foreach (TypeRegistry::archetypePages() as $archetype): ?>
                     <?php vcms_nav_link(AdminController::getArchetypeUrl($archetype->slug()), $archetype->label()); ?>
