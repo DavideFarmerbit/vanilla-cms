@@ -12,7 +12,7 @@ abstract class CompositeField extends Field
     public function fromArray(array $data): void
     {
         foreach ($this->getFields() as $name => $field) {
-            $field->fromArray($data[$name]);
+            $field->fromArray($data[$name] ?? []);
         }
     }
     
