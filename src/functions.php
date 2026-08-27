@@ -2,17 +2,26 @@
 
 use VanillaCms\Admin\AdminController;
 use VanillaCms\Core\PageRenderer;
+use VanillaCms\Core\Registry\Page;
 use VanillaCms\Core\Registry\TypeRegistry;
 use VanillaCms\Core\Router\RouterDispatcher;
 
-function DefinePage(string $slug, string $label, string $filePath, ?callable $urlBuilder = null): void
+/**
+ * Registers a new page type.
+ * @param class-string<Page> $pageClass
+ */
+function register_page(string $pageClass): void
 {
-    TypeRegistry::registerPage($slug, $label, $filePath, false, $urlBuilder);
+    TypeRegistry::registerPage($pageClass);
 }
 
-function DefinePageArchetype(string $slug, string $label, string $filePath, ?callable $urlBuilder = null): void
+/**
+ * Registers an array of page type.
+ * @param array<class-string<Page>> $pageClasses
+ */
+function register_pages(array $pageClasses): void
 {
-    TypeRegistry::registerPage($slug, $label, $filePath, true, $urlBuilder);
+    array_map(fn ($pageClass) => TypeRegistry::registerPage($pageClass), $pageClasses);
 }
 
 /** 

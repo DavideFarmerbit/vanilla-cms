@@ -12,7 +12,12 @@ use ReflectionUnionType;
 use VanillaCms\Fields\Field;
 use VanillaCms\Storage\PageData;
 
-class Page
+/** 
+ * Parent class for all Pages in the website.
+ * Override the render() method to render the page.
+ * Add Field members to the class to make them available to the page, and be able to edit them in the admin panel.
+ */
+abstract class Page
 {
     /** @var array<class-string, ReflectionProperty[]> */
     private static array $fieldPropertyCache = [];
@@ -20,17 +25,14 @@ class Page
     private string $slug;
     private string $label;
     private bool $isArchetype = false;
-
-    private string $path;
     private Closure $urlBuilder;
     
-    public function __construct(string $slug, string $label, string $path, bool $isArchetype, ?callable $urlBuilder = null)
+    public function __construct(string $slug, string $label, bool $isArchetype, ?callable $urlBuilder = null)
     {
         $this->slug = $slug;
         $this->label = $label;
         $this->isArchetype = $isArchetype;
-
-        $this->path = $path;
+        
         $this->urlBuilder = $urlBuilder ?? (!$isArchetype 
             ? (fn () => '/' . $slug) 
             : (fn (PageData $data) => '/' . $slug . '/' . $data->slug)
@@ -47,11 +49,6 @@ class Page
         return $this->label;
     }
     
-    public function path(): string
-    {
-        return $this->path;
-    }
-    
     public function url(PageData $data): string
     {
         return ($this->urlBuilder)($data);
@@ -60,6 +57,9 @@ class Page
     public function isArchetype(): bool {
         return $this->isArchetype;
     }
+    
+    /** Override to render the page. */
+    public abstract function render(PageData $data): void;
     
     /*================================================================================================================*/
     // Fields Reflection

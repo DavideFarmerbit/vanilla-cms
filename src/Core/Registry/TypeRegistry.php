@@ -2,15 +2,49 @@
 
 namespace VanillaCms\Core\Registry;
 
+use InvalidArgumentException;
+use ReflectionClass;
+use ReflectionException;
+
 final class TypeRegistry
 {
     /** @var Page[] */
     private static array $pages = [];
     
-    public static function registerPage(string $slug, string $label, string $path, bool $isArchetype, ?callable $urlBuilder = null): void
+    /**
+     * Registers a new page type.
+     * @param class-string<Page> $pageClass
+     */
+    public static function registerPage(string $pageClass): void
     {
-        $slug = self::sanitizeSlug($slug);
-        self::$pages[$slug] = new Page($slug, $label, $path, $isArchetype, $urlBuilder);
+        // Check class is a Page.
+        if (!is_subclass_of($pageClass, Page::class)) {
+            throw new InvalidArgumentException("$pageClass must extend Page");
+        }
+
+        // Get the constructor from reflection.
+        try {
+            $reflection = new ReflectionClass($pageClass);
+        } catch (ReflectionException $e) {
+            throw new InvalidArgumentException("$pageClass does not exist");
+        }
+        $constructor = $reflection->getConstructor();
+
+        // Check class has zero params constructor.
+        if ($constructor !== null && $constructor->getNumberOfParameters() > 0) {
+            throw new InvalidArgumentException(
+                "$pageClass must have a constructor with no parameters"
+            );
+        }
+
+        // Check class is instantiable.
+        if (!$reflection->isInstantiable()) {
+            throw new InvalidArgumentException("$pageClass must be instantiable (not abstract/interface)");
+        }
+        
+        // Instantiate the class and register it
+        $page = new $pageClass();
+        self::$pages[$page->slug()] = $page;
     }
 
     /** 
