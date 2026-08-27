@@ -5,6 +5,7 @@ use VanillaCms\Core\PageRenderer;
 use VanillaCms\Core\Registry\Page;
 use VanillaCms\Core\Registry\TypeRegistry;
 use VanillaCms\Core\Router\RouterDispatcher;
+use VanillaCms\Storage\Storage;
 
 /**
  * Registers a new page type.
@@ -59,4 +60,14 @@ function default_router_dispatchers(): array {
         // Admin pannel
         AdminController::routerDispatcher(),
     ];
+}
+
+/** 
+ * Returns all page instances of a given type.
+ * @return Page[]
+ */
+function get_page_instances_by_type(string $slug): array {
+    $type = Typeregistry::getPage($slug);
+    $pageDataArray = Storage::all($type->slug());
+    return array_map(fn($pageData) => $type->instantiate($pageData), $pageDataArray);
 }

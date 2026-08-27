@@ -30,13 +30,13 @@ abstract class Page
         
         $this->urlBuilder = $urlBuilder ?? (!$isArchetype 
             ? (fn () => '/' . $slug) 
-            : (fn () => '/' . $slug . '/' . $this->meta?->slug() ?? '')
+            : (fn ($instance) => '/' . $slug . '/' . $instance->meta?->slug() ?? '')
         );
     }
     
     public function instantiate(PageData $data): Page
     {
-        $instance = clone $this;
+        $instance = new $this();
 
         // Fill meta data
         $instance->meta = new PageInstanceMeta($data->id, $data->slug, $data->name);
@@ -85,7 +85,7 @@ abstract class Page
             throw new Exception("Cannot access url for a page prototype object");
         }
         
-        return ($this->urlBuilder)();
+        return ($this->urlBuilder)($this);
     }
     
     public function isArchetype(): bool {
