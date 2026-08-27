@@ -3,6 +3,7 @@
 namespace VanillaCms\Admin;
 
 use VanillaCms\Auth\Auth;
+use VanillaCms\Auth\Csrf;
 use VanillaCms\Core\Registry\Page;
 use VanillaCms\Core\Registry\TypeRegistry;
 use VanillaCms\Core\Router\Router;
@@ -72,7 +73,7 @@ final class AdminController
             return;
         }
 
-        if ($action === 'delete' && self::isPost()) {
+        if ($action === 'delete' && self::isVerifiedPost()) {
             $instance = Storage::findFirst($page->slug());
             if ($instance) {
                 Storage::delete($page->slug(), $instance->id);
@@ -133,7 +134,7 @@ final class AdminController
             return;
         }
 
-        if ($subAction === 'delete' && self::isPost()) {
+        if ($subAction === 'delete' && self::isVerifiedPost()) {
             Storage::delete($archetype->slug(), $id);
             Router::redirect($backUrl);
             return;
@@ -144,7 +145,7 @@ final class AdminController
 
     private static function handleEditor(Page $type, ?PageData $instance, string $backUrl, string $saveAction, ?string $deleteAction): void
     {
-        if (self::isPost()) {
+        if (self::isVerifiedPost()) {
             $data = $instance ?? PageData::empty();
             $data->setPage($type);
             $data->slug = TypeRegistry::sanitizeSlug($_POST['slug'] ?? '');
@@ -161,5 +162,10 @@ final class AdminController
     private static function isPost(): bool
     {
         return ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST';
+    }
+
+    private static function isVerifiedPost(): bool
+    {
+        return self::isPost() && Csrf::verify($_POST['csrf_token'] ?? null);
     }
 }

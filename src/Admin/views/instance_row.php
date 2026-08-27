@@ -1,5 +1,6 @@
 <?php
 
+use VanillaCms\Auth\Csrf;
 use VanillaCms\Core\Registry\Page;
 use VanillaCms\Storage\PageData;
 
@@ -29,6 +30,7 @@ function render_instance_row(Page $type, ?PageData $instance, string $editUrl, s
             <a href="<?= htmlspecialchars($editUrl) ?>"><?= $instance ? 'Edit' : 'Create' ?></a>
             <?php if ($instance): ?>
                 <form method="post" action="<?= htmlspecialchars($deleteUrl) ?>" data-confirm="Delete this entry? This cannot be undone.">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
                     <button type="submit" class="admin-danger">Delete</button>
                 </form>
             <?php else: ?>
