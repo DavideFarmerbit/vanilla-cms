@@ -1,5 +1,7 @@
 <?php
 
+use VanillaCms\Admin\AdminController;
+use VanillaCms\Admin\AdminPageAction;
 use VanillaCms\Core\Registry\Page;
 use VanillaCms\Storage\Storage;
 
@@ -18,8 +20,8 @@ function render_pages_instances(array $pages): void
                 <?php render_instance_row(
                     $page,
                     $instance,
-                    "/admin/pages/{$page->slug()}/edit",
-                    "/admin/pages/{$page->slug()}/delete"
+                    AdminController::getPageEditUrl($page->slug(), AdminPageAction::EDIT),
+                    AdminController::getPageEditUrl($page->slug(), AdminPageAction::DELETE),
                 ); ?>
             <?php endforeach; ?>
         </tbody>

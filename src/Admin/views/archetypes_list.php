@@ -1,5 +1,6 @@
 <?php
 
+use VanillaCms\Admin\AdminController;
 use VanillaCms\Core\Registry\Page;
 
 /** @param Page[] $archetypes */
@@ -10,7 +11,7 @@ function render_archetypes_list(array $archetypes): void
     <ul class="admin-list">
         <?php foreach ($archetypes as $archetype): ?>
             <li>
-                <a href="/admin/archetypes/<?= htmlspecialchars($archetype->slug()) ?>">
+                <a href="<?= AdminController::getArchetypeUrl($archetype->slug()) ?>">
                     <?= htmlspecialchars($archetype->label()) ?>
                 </a>
             </li>

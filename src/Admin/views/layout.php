@@ -1,6 +1,7 @@
 <?php
 
 use VanillaCms\Admin\AdminAssets;
+use VanillaCms\Admin\AdminController;
 use VanillaCms\Core\Registry\TypeRegistry;
 
 function render_admin_shell_open(): void
@@ -18,10 +19,10 @@ function render_admin_shell_open(): void
     <body>
     <div class="admin-layout">
         <nav class="admin-sidebar">
-            <p><a href="/admin/pages">Pages</a></p>
+            <p><a href="<?= AdminController::getPagesUrl() ?>">Pages</a></p>
             <?php foreach (TypeRegistry::archetypePages() as $archetype): ?>
                 <p>
-                    <a href="/admin/archetypes/<?= htmlspecialchars($archetype->slug()) ?>">
+                    <a href="<?= AdminController::getArchetypeUrl($archetype->slug()) ?>">
                         <?= htmlspecialchars($archetype->label()) ?>
                     </a>
                 </p>

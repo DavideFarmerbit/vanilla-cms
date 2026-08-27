@@ -1,5 +1,7 @@
 <?php
 
+use VanillaCms\Admin\AdminController;
+use VanillaCms\Admin\AdminPageAction;
 use VanillaCms\Core\Registry\Page;
 use VanillaCms\Storage\PageData;
 
@@ -12,7 +14,7 @@ function render_archetype_instances(Page $archetype, array $instances): void
     ?>
     <h1><?= htmlspecialchars($archetype->label()) ?> instances</h1>
     <p>
-        <a href="/admin/archetypes/<?= htmlspecialchars($archetype->slug()) ?>/new">
+        <a href="<?= AdminController::getArchetypeNewUrl($archetype->slug()) ?>">
             + New <?= htmlspecialchars($archetype->label()) ?>
         </a>
     </p>
@@ -28,8 +30,8 @@ function render_archetype_instances(Page $archetype, array $instances): void
                     <?php render_instance_row(
                         $archetype,
                         $instance,
-                        "/admin/archetypes/{$archetype->slug()}/{$instance->id}/edit",
-                        "/admin/archetypes/{$archetype->slug()}/{$instance->id}/delete"
+                        AdminController::getArchetypeEditUrl($archetype->slug(), $instance->id, AdminPageAction::EDIT),
+                        AdminController::getArchetypeEditUrl($archetype->slug(), $instance->id, AdminPageAction::DELETE)
                     ); ?>
                 <?php endforeach; ?>
             </tbody>

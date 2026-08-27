@@ -23,6 +23,33 @@ final class AdminController
     public static function routerDispatcher(): RouterDispatcher {
         return router_dispatcher('admin/{section}/*', fn (string $section, array $segments) => AdminController::dispatch($section, $segments));
     }
+    
+    public static function getPagesUrl(): string 
+    {
+        return '/admin/pages';
+    }
+    
+    public static function getArchetypesUrl(): string {
+        return '/admin/archetypes';
+    }
+
+    public static function getArchetypeUrl(string $slug): string {
+        return "/admin/archetypes/{$slug}";
+    }
+    
+    public static function getPageEditUrl(string $slug, AdminPageAction $action): string {
+        $actionString = strtolower($action->name);
+        return "/admin/pages/{$slug}/{$actionString}";
+    }
+    
+    public static function getArchetypeEditUrl(string $slug, string $id, AdminPageAction $action): string {
+        $actionString = strtolower($action->name);
+        return "/admin/archetypes/{$slug}/{$id}/{$actionString}";
+    }
+
+    public static function getArchetypeNewUrl(string $slug): string {
+        return "/admin/archetypes/{$slug}/new";
+    }
 
     public static function dispatch(string $section, array $segments): void
     {
@@ -59,7 +86,7 @@ final class AdminController
             return;
         }
 
-        $backUrl = '/admin/pages';
+        $backUrl = self::getPagesUrl();
 
         if ($action === 'edit') {
             $instance = Storage::findFirst($page->slug());
@@ -67,8 +94,8 @@ final class AdminController
                 $page,
                 $instance,
                 $backUrl,
-                "/admin/pages/{$slug}/edit",
-                $instance ? "/admin/pages/{$slug}/delete" : null
+                self::getPageEditUrl($slug, AdminPageAction::EDIT),
+                $instance ? self::getPageEditUrl($slug, AdminPageAction::DELETE) : null
             );
             return;
         }
@@ -100,7 +127,7 @@ final class AdminController
             return;
         }
 
-        $backUrl = "/admin/archetypes/{$typeSlug}";
+        $backUrl = self::getArchetypeUrl($typeSlug);
 
         if (count($segments) === 1) {
             render_archetype_instances($archetype, Storage::all($archetype->slug()));
@@ -110,7 +137,7 @@ final class AdminController
         $action = $segments[1];
 
         if ($action === 'new') {
-            self::handleEditor($archetype, null, $backUrl, "/admin/archetypes/{$typeSlug}/new", null);
+            self::handleEditor($archetype, null, $backUrl, self::getArchetypeNewUrl($typeSlug), null);
             return;
         }
 
@@ -128,8 +155,8 @@ final class AdminController
                 $archetype,
                 $instance,
                 $backUrl,
-                "/admin/archetypes/{$typeSlug}/{$id}/edit",
-                "/admin/archetypes/{$typeSlug}/{$id}/delete"
+                self::getArchetypeEditUrl($typeSlug, $id, AdminPageAction::EDIT),
+                self::getArchetypeEditUrl($typeSlug, $id, AdminPageAction::DELETE),
             );
             return;
         }
