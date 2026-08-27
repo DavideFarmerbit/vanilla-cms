@@ -18,9 +18,14 @@ abstract class CompositeField extends Field
     
     public function render(string $name): void
     {
+        ?>
+        <span class="field-name"><?= $this->config['label'] ?? 'value' ?></span>
+        <div class="field-group">
+        <?php
         foreach ($this->getFields() as $fieldName => $field) {
             $field->render("{$name}[{$fieldName}]");
         }
+        ?></div><?php
     }
 
     /**

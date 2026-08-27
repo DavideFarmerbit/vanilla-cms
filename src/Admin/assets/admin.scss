@@ -47,6 +47,14 @@
         flex-direction: column;
         gap: 0.25rem;
     }
+    
+    .field-group {
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
 }
 
 .admin-form-actions {
