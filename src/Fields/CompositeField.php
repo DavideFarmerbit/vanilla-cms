@@ -20,13 +20,16 @@ abstract class CompositeField extends Field
     {
         ?>
         <div class="vcms-field vcms-field--composite">
-            <div class="vcms-field__label"><?= htmlspecialchars($this->config['label'] ?? 'value') ?></div>
-            <div class="vcms-field__group">
-            <?php
-            foreach ($this->getFields() as $fieldName => $field) {
-                $field->render("{$name}[{$fieldName}]");
-            }
-            ?></div>
+            <div class="vcms-field__label">
+                <?= htmlspecialchars($this->config['label'] ?? 'value') ?>
+                <div class="vcms-field__group">
+                <?php
+                foreach ($this->getFields() as $fieldName => $field) {
+                    $field->render("{$name}[{$fieldName}]");
+                }
+                ?>
+                </div>
+            </div>
         </div>
         <?php
     }

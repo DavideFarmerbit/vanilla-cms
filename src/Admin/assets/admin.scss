@@ -236,22 +236,16 @@ button {
             box-shadow: 0 0 0 3px var(--vcms-accent-soft);
         }
     }
-
-    &--composite {
-        display: flex;
-        flex-direction: column;
-        gap: 0.6rem;
-        padding: 0.85rem;
-        border: 1px solid var(--vcms-border);
-        border-radius: var(--vcms-radius);
-        background: var(--vcms-surface);
-    }
 }
 
 .vcms-field__group {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
+    padding: 0.85rem;
+    border: 1px solid var(--vcms-border);
+    border-radius: var(--vcms-radius);
+    background: var(--vcms-surface);
 }
 
 .vcms-field--bool .vcms-field__input {
