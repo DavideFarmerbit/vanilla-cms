@@ -2,6 +2,7 @@
 
 namespace VanillaCms\Admin;
 
+use VanillaCms\Auth\Auth;
 use VanillaCms\Core\Registry\Page;
 use VanillaCms\Core\Registry\TypeRegistry;
 use VanillaCms\Core\Router\Router;
@@ -22,9 +23,14 @@ final class AdminController
         return router_dispatcher('admin/{section}/*', fn (string $section, array $segments) => AdminController::dispatch($section, $segments));
     }
 
-    /** ALWAYS CHECK FOR AUTHENTICATION BEFORE CALLING THIS METHOD!!! */
     public static function dispatch(string $section, array $segments): void
     {
+        if (!Auth::isAdmin()) {
+            // TODO: keep context of the current page we want to visit. We will want to redirect to that page after
+            //       login, or if refreshing the page after we logged in from another tab.
+            Router::redirect(Auth::unauthorizedUrl());
+        }
+        
         render_admin_shell_open();
 
         match ($section) {
@@ -71,7 +77,7 @@ final class AdminController
             if ($instance) {
                 Storage::delete($page->slug(), $instance->id);
             }
-            self::redirect($backUrl);
+            Router::redirect($backUrl);
             return;
         }
 
@@ -129,7 +135,7 @@ final class AdminController
 
         if ($subAction === 'delete' && self::isPost()) {
             Storage::delete($archetype->slug(), $id);
-            self::redirect($backUrl);
+            Router::redirect($backUrl);
             return;
         }
 
@@ -145,7 +151,7 @@ final class AdminController
             $data->name = trim($_POST['name'] ?? '');
 
             Storage::save($type->slug(), $instance?->id, $data);
-            self::redirect($backUrl);
+            Router::redirect($backUrl);
             return;
         }
 
@@ -155,10 +161,5 @@ final class AdminController
     private static function isPost(): bool
     {
         return ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST';
-    }
-
-    private static function redirect(string $url): void
-    {
-        header('Location: ' . $url);
     }
 }

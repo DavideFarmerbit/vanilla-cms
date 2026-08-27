@@ -36,6 +36,11 @@ final class Router
         echo '404 Not Found';
     }
 
+    public static function redirect(string $url): void
+    {
+        header('Location: ' . $url);
+    }
+
     /**
      * Parses the url into an array of segments.
      * @return string[]

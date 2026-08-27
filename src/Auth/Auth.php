@@ -7,15 +7,18 @@ use Exception;
 final class Auth
 {
     private static ?AuthDriver $driver = null;
+    private static string $unauthorizedUrl = '/';
 
     /**
      * Set the auth driver. Must be called before any other method.
-     * @param AuthDriver $driver
+     * @param AuthDriver $driver class implementing auth checks.
+     * @param string $unauthorizedUrl url to redirect to if the user is not authorized.
      * @return void
      */
-    public static function set(AuthDriver $driver): void
+    public static function set(AuthDriver $driver, string $unauthorizedUrl): void
     {
         self::$driver = $driver;
+        self::$unauthorizedUrl = $unauthorizedUrl;
     }
 
     /**
@@ -26,6 +29,15 @@ final class Auth
     public static function isAdmin(): bool
     {
         return self::driver()->isAdmin();
+    }
+    
+    /**  
+     * Get the url to redirect to if the user is not authorized.
+     * @return string
+     */
+    public static function unauthorizedUrl(): string
+    {
+        return self::$unauthorizedUrl;
     }
 
     /**
