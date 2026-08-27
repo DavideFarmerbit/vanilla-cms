@@ -8,10 +8,10 @@ function render_instance_row_header()
 {
     ?>
     <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>ID</th>
-        <th></th>
+        <th class="vcms-table__cell">Name</th>
+        <th class="vcms-table__cell">Type</th>
+        <th class="vcms-table__cell">ID</th>
+        <th class="vcms-table__cell"></th>
     </tr>
     <?php
 }
@@ -23,18 +23,18 @@ function render_instance_row(Page $type, ?PageData $instance, string $editUrl, s
     $id = $instance?->id ?: '-';
     ?>
     <tr>
-        <td><?= htmlspecialchars($name) ?></td>
-        <td><?= htmlspecialchars($typeLabel) ?></td>
-        <td><?= htmlspecialchars($id) ?></td>
-        <td class="admin-row-actions">
-            <a href="<?= htmlspecialchars($editUrl) ?>"><?= $instance ? 'Edit' : 'Create' ?></a>
+        <td class="vcms-table__cell"><?= htmlspecialchars($name) ?></td>
+        <td class="vcms-table__cell"><?= htmlspecialchars($typeLabel) ?></td>
+        <td class="vcms-table__cell"><?= htmlspecialchars($id) ?></td>
+        <td class="vcms-table__cell vcms-table__cell--actions">
+            <a class="vcms-btn vcms-btn--link" href="<?= htmlspecialchars($editUrl) ?>"><?= $instance ? 'Edit' : 'Create' ?></a>
             <?php if ($instance): ?>
                 <form method="post" action="<?= htmlspecialchars($deleteUrl) ?>" data-confirm="Delete this entry? This cannot be undone.">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
-                    <button type="submit" class="admin-danger">Delete</button>
+                    <button type="submit" class="vcms-btn vcms-btn--danger">Delete</button>
                 </form>
             <?php else: ?>
-                <span class="admin-disabled">Delete</span>
+                <span class="vcms-btn vcms-btn--link vcms-btn--disabled">Delete</span>
             <?php endif; ?>
         </td>
     </tr>

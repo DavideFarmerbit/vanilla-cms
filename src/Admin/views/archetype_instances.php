@@ -12,16 +12,16 @@ use VanillaCms\Storage\PageData;
 function render_archetype_instances(Page $archetype, array $instances): void
 {
     ?>
-    <h1><?= htmlspecialchars($archetype->label()) ?> instances</h1>
+    <h1 class="vcms-page-title"><?= htmlspecialchars($archetype->label()) ?> instances</h1>
     <p>
-        <a href="<?= AdminController::getArchetypeNewUrl($archetype->slug()) ?>">
+        <a class="vcms-btn vcms-btn--primary" href="<?= htmlspecialchars(AdminController::getArchetypeNewUrl($archetype->slug())) ?>">
             + New <?= htmlspecialchars($archetype->label()) ?>
         </a>
     </p>
     <?php if (empty($instances)): ?>
-        <p>No instances yet.</p>
+        <p class="vcms-empty-state">No instances yet.</p>
     <?php else: ?>
-        <table class="admin-table">
+        <table class="vcms-table">
             <thead>
                 <?php render_instance_row_header() ?>
             </thead>

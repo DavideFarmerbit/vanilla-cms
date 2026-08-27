@@ -19,10 +19,12 @@ class BoolField extends Field
     public function render(string $name): void
     {
         ?>
-        <label>
-            <?= $this->config['label'] ?? 'value' ?>
-            <input type="checkbox" role="switch" name="<?= "{$name}[value]" ?>" value="1" <?= $this->value ? 'checked' : '' ?>>
-        </label>
+        <div class="vcms-field vcms-field--bool">
+            <label class="vcms-field__label">
+                <?= htmlspecialchars($this->config['label'] ?? 'value') ?>
+                <input class="vcms-field__input" type="checkbox" role="switch" name="<?= "{$name}[value]" ?>" value="1" <?= $this->value ? 'checked' : '' ?>>
+            </label>
+        </div>
         <?php
     }
 }

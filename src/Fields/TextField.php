@@ -19,10 +19,12 @@ class TextField extends Field
     public function render(string $name): void
     {
         ?>
-        <label>
-            <?= $this->config['label'] ?? 'value' ?>
-            <input type="text" name="<?= "{$name}[value]" ?>" value="<?= $this->value ?>">
-        </label>
+        <div class="vcms-field vcms-field--text">
+            <label class="vcms-field__label">
+                <?= htmlspecialchars($this->config['label'] ?? 'value') ?>
+                <input class="vcms-field__input" type="text" name="<?= "{$name}[value]" ?>" value="<?= htmlspecialchars($this->value) ?>">
+            </label>
+        </div>
         <?php
     }
     

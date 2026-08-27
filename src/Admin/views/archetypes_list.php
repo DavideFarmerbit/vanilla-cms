@@ -7,11 +7,11 @@ use VanillaCms\Core\Registry\Page;
 function render_archetypes_list(array $archetypes): void
 {
     ?>
-    <h1>Archetypes</h1>
-    <ul class="admin-list">
+    <h1 class="vcms-page-title">Archetypes</h1>
+    <ul class="vcms-list">
         <?php foreach ($archetypes as $archetype): ?>
-            <li>
-                <a href="<?= AdminController::getArchetypeUrl($archetype->slug()) ?>">
+            <li class="vcms-list__item">
+                <a class="vcms-list__link" href="<?= htmlspecialchars(AdminController::getArchetypeUrl($archetype->slug())) ?>">
                     <?= htmlspecialchars($archetype->label()) ?>
                 </a>
             </li>

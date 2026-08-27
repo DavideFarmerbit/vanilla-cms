@@ -12,38 +12,42 @@ function render_page_editor(Page $type, ?Page $instance, string $backUrl, string
     $pageUrl = $instance ? htmlspecialchars($instance->url()) : null;
 
     ?>
-    <h1><?= $instance ? 'Edit' : 'Create' ?> <?= htmlspecialchars($type->label()) ?></h1>
-    
+    <h1 class="vcms-page-title"><?= $instance ? 'Edit' : 'Create' ?> <?= htmlspecialchars($type->label()) ?></h1>
+
     <?php if ($pageUrl): ?>
-        <a class="preview-url" href="<?= $pageUrl ?>"><?= $pageUrl ?></a>
+        <a class="vcms-link vcms-link--preview" href="<?= $pageUrl ?>"><?= $pageUrl ?></a>
     <?php else: ?>
-        <span class="preview-url">create the page to see the url</span>
+        <span class="vcms-link vcms-link--preview">create the page to see the url</span>
     <?php endif; ?>
-        
-    <form method="post" action="<?= htmlspecialchars($saveAction) ?>" class="admin-form">
+
+    <form method="post" action="<?= htmlspecialchars($saveAction) ?>" class="vcms-form">
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
-        <label>
-            Name
-            <input type="text" name="name" value="<?= htmlspecialchars($instance?->meta()->name() ?? '') ?>" required>
-        </label>
-        <label>
-            Slug
-            <input type="text" name="slug" value="<?= htmlspecialchars($instance?->meta()->slug() ?? '') ?>" required>
-        </label>
+        <div class="vcms-field vcms-field--text">
+            <label class="vcms-field__label">
+                Name
+                <input class="vcms-field__input" type="text" name="name" value="<?= htmlspecialchars($instance?->meta()->name() ?? '') ?>" required>
+            </label>
+        </div>
+        <div class="vcms-field vcms-field--text">
+            <label class="vcms-field__label">
+                Slug
+                <input class="vcms-field__input" type="text" name="slug" value="<?= htmlspecialchars($instance?->meta()->slug() ?? '') ?>" required>
+            </label>
+        </div>
         <?php foreach ($type->getFields() as $fieldName => $field) {
             $field->render("fields[{$fieldName}]", []);
         }
-            
+
         ?>
-        <div class="admin-form-actions">
-            <button type="submit">Save</button>
-            <a href="<?= htmlspecialchars($backUrl) ?>">Cancel</a>
+        <div class="vcms-form__actions">
+            <button type="submit" class="vcms-btn vcms-btn--primary">Save</button>
+            <a class="vcms-btn vcms-btn--link" href="<?= htmlspecialchars($backUrl) ?>">Cancel</a>
         </div>
     </form>
     <?php if ($deleteAction): ?>
-        <form method="post" action="<?= htmlspecialchars($deleteAction) ?>" class="admin-delete-form" data-confirm="Delete this entry? This cannot be undone.">
+        <form method="post" action="<?= htmlspecialchars($deleteAction) ?>" class="vcms-delete-form" data-confirm="Delete this entry? This cannot be undone.">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
-            <button type="submit" class="admin-danger">Delete</button>
+            <button type="submit" class="vcms-btn vcms-btn--danger">Delete</button>
         </form>
     <?php endif; ?>
     <?php

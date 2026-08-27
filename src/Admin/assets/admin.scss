@@ -1,28 +1,38 @@
-.admin-layout {
+.vcms-layout {
     display: flex;
     min-height: 100vh;
-}
 
-.admin-sidebar {
-    width: 200px;
-    flex-shrink: 0;
-    padding: 1rem;
+    &__sidebar {
+        width: 200px;
+        flex-shrink: 0;
+        padding: 1rem;
+    }
 
-    p {
-        margin: 0 0 0.5rem;
+    &__main {
+        flex: 1;
+        padding: 1rem;
     }
 }
 
-.admin-main {
-    flex: 1;
-    padding: 1rem;
+.vcms-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    &__item {
+        margin: 0 0 0.5rem;
+    }
+
+    &__link--active {
+        font-weight: bold;
+    }
 }
 
-.admin-list {
+.vcms-list {
     list-style: none;
     padding: 0;
 
-    li {
+    &__item {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -31,68 +41,78 @@
     }
 }
 
-.preview-url {
+.vcms-empty-state {
+    color: #676464;
+}
+
+.vcms-link--preview {
     display: block;
     margin-bottom: 1rem;
 }
 
-.admin-form {
+.vcms-form {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    max-width: 400px;
+    max-width: 600px;
 
-    label {
+    &__actions {
         display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-    }
-    
-    .field-group {
-        padding: 0.5rem;
-        border: 1px solid #ddd;
-        display: flex;
-        flex-wrap: wrap;
+        align-items: center;
         gap: 0.5rem;
     }
 }
 
-.admin-form-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.admin-delete-form {
+.vcms-delete-form {
     margin-top: 1rem;
 }
 
-.admin-danger {
-    color: #b00020;
-}
+.vcms-field {
+    &__label {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
 
-.admin-disabled {
-    color: #676464;
-}
-
-.admin-table {
-    width: 100%;
-    border-collapse: collapse;
-
-    th,
-    td {
-        text-align: left;
-        padding: 0.5rem 0;
-        border-bottom: 1px solid #ddd;
+    &--composite {
+        padding: 0.5rem;
+        border: 1px solid #ddd;
     }
 }
 
-.admin-row-actions {
+.vcms-field__group {
     display: flex;
-    align-items: center;
+    flex-wrap: wrap;
     gap: 0.5rem;
+}
 
-    form {
-        display: inline;
+.vcms-btn {
+    &--danger {
+        color: #b00020;
+    }
+
+    &--disabled {
+        color: #676464;
+    }
+}
+
+.vcms-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    &__cell {
+        text-align: left;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #ddd;
+
+        &--actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            form {
+                display: inline;
+            }
+        }
     }
 }

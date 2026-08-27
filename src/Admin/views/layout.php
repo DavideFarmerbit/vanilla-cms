@@ -4,6 +4,24 @@ use VanillaCms\Admin\AdminAssets;
 use VanillaCms\Admin\AdminController;
 use VanillaCms\Core\Registry\TypeRegistry;
 
+function vcms_is_active_nav_link(string $url): bool
+{
+    $current = rtrim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/', '/');
+    $target = rtrim($url, '/');
+
+    return $current === $target || str_starts_with($current, $target . '/');
+}
+
+function vcms_nav_link(string $url, string $label): void
+{
+    $activeClass = vcms_is_active_nav_link($url) ? ' vcms-nav__link--active' : '';
+    ?>
+    <li class="vcms-nav__item">
+        <a class="vcms-nav__link<?= $activeClass ?>" href="<?= htmlspecialchars($url) ?>"><?= htmlspecialchars($label) ?></a>
+    </li>
+    <?php
+}
+
 function render_admin_shell_open(): void
 {
     ?>
@@ -17,18 +35,16 @@ function render_admin_shell_open(): void
         <?php endif; ?>
     </head>
     <body>
-    <div class="admin-layout">
-        <nav class="admin-sidebar">
-            <p><a href="<?= AdminController::getPagesUrl() ?>">Pages</a></p>
-            <?php foreach (TypeRegistry::archetypePages() as $archetype): ?>
-                <p>
-                    <a href="<?= AdminController::getArchetypeUrl($archetype->slug()) ?>">
-                        <?= htmlspecialchars($archetype->label()) ?>
-                    </a>
-                </p>
-            <?php endforeach; ?>
+    <div class="vcms-layout">
+        <nav class="vcms-layout__sidebar">
+            <ul class="vcms-nav">
+                <?php vcms_nav_link(AdminController::getPagesUrl(), 'Pages'); ?>
+                <?php foreach (TypeRegistry::archetypePages() as $archetype): ?>
+                    <?php vcms_nav_link(AdminController::getArchetypeUrl($archetype->slug()), $archetype->label()); ?>
+                <?php endforeach; ?>
+            </ul>
         </nav>
-        <main class="admin-main">
+        <main class="vcms-layout__main">
     <?php
 }
 
