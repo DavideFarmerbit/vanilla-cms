@@ -21,7 +21,12 @@ require_once __DIR__ . '/views/page_editor.php';
 final class AdminController
 {
     public static function routerDispatcher(): RouterDispatcher {
-        return router_dispatcher('admin/{section}/*', fn (string $section, array $segments) => AdminController::dispatch($section, $segments));
+        return router_dispatcher('admin/*', fn (array $segments) => AdminController::dispatch($segments));
+    }
+    
+    public static function getHomeUrl(): string 
+    {
+        return '/admin/home';
     }
     
     public static function getPagesUrl(): string 
@@ -51,7 +56,7 @@ final class AdminController
         return "/admin/archetypes/{$slug}/new";
     }
 
-    public static function dispatch(string $section, array $segments): void
+    public static function dispatch(array $segments): void
     {
         if (!Auth::isAdmin()) {
             // TODO: keep context of the current page we want to visit. We will want to redirect to that page after
@@ -61,13 +66,22 @@ final class AdminController
         
         render_admin_shell_open();
 
+        $section = $segments[0] ?? '';
+        $trailingSegments = array_slice($segments, 1);
         match ($section) {
-            'pages' => self::dispatchPages($segments),
-            'archetypes' => self::dispatchArchetypes($segments),
+            '' => Router::redirect(self::getHomeUrl()),
+            'home' => self::dispatchHome(),
+            'pages' => self::dispatchPages($trailingSegments),
+            'archetypes' => self::dispatchArchetypes($trailingSegments),
             default => Router::notFound(),
         };
 
         render_admin_shell_close();
+    }
+    
+    private static function dispatchHome(): void
+    {
+        render_admin_home();
     }
 
     private static function dispatchPages(array $segments): void

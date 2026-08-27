@@ -38,6 +38,7 @@ function render_admin_shell_open(): void
     <div class="vcms-layout">
         <nav class="vcms-layout__sidebar">
             <ul class="vcms-nav">
+                <?php vcms_nav_link(AdminController::getHomeUrl(), 'Home'); ?>
                 <?php vcms_nav_link(AdminController::getPagesUrl(), 'Pages'); ?>
                 <?php foreach (TypeRegistry::archetypePages() as $archetype): ?>
                     <?php vcms_nav_link(AdminController::getArchetypeUrl($archetype->slug()), $archetype->label()); ?>
@@ -58,5 +59,12 @@ function render_admin_shell_close(): void
     <?php endif; ?>
     </body>
     </html>
+    <?php
+}
+
+function render_admin_home(): void {
+    ?>
+        <h1>Vanilla Cms</h1>
+        <p>Select a category from the side bar to get started.</p>
     <?php
 }
