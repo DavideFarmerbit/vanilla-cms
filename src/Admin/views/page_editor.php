@@ -34,7 +34,7 @@ function render_page_editor(Page $type, ?Page $instance, string $backUrl, string
                 <input class="vcms-field__input" type="text" name="slug" value="<?= htmlspecialchars($instance?->meta()->slug() ?? '') ?>" required>
             </label>
         </div>
-        <?php foreach ($type->getFields() as $fieldName => $field) {
+        <?php foreach ($instance->getFields() as $fieldName => $field) {
             $field->render("fields[{$fieldName}]", []);
         }
 
