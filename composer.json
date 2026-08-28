@@ -1,6 +1,6 @@
 {
     "name": "xylo-is-coding/vanilla-cms",
-    "description": "Minimal, framework-free PHP layer for defining content types, storing their data, routing requests, and editing them through a small admin panel.",
+    "description": "A minimal, framework-free, PHP library for defining content types, storing their data, routing requests to pages, and editing content through a small admin panel.",
     "type": "library",
     "authors": [
         {
