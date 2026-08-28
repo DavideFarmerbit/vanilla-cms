@@ -12,7 +12,12 @@ function render_page_editor(Page $instance, string $backUrl, string $saveAction,
     $pageUrl = htmlspecialchars($instance->url());
 
     ?>
-    <h1 class="vcms-page-title"><?= $isNew ? 'Create' : 'Edit' ?> <?= htmlspecialchars($instance->label()) ?></h1>
+    <div class="vcms-page-header">
+        <a class="vcms-icon-btn vcms-page-header__back" href="<?= htmlspecialchars($backUrl) ?>" title="Back" aria-label="Back">
+            <?php vcms_icon('back') ?>
+        </a>
+        <h1 class="vcms-page-title"><?= $isNew ? 'Create' : 'Edit' ?> <?= htmlspecialchars($instance->label()) ?></h1>
+    </div>
 
     <?php if ($pageUrl): ?>
         <a class="vcms-link vcms-link--preview" href="<?= $pageUrl ?>"><?= $pageUrl ?></a>
@@ -41,7 +46,6 @@ function render_page_editor(Page $instance, string $backUrl, string $saveAction,
         ?>
         <div class="vcms-form__actions">
             <button type="submit" class="vcms-btn vcms-btn--primary">Save</button>
-            <a class="vcms-btn vcms-btn--action" href="<?= htmlspecialchars($backUrl) ?>">Cancel</a>
         </div>
     </form>
     <?php if ($deleteAction): ?>
