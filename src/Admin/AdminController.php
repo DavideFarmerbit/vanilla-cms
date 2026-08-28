@@ -56,6 +56,14 @@ final class AdminController
         return "/admin/archetypes/{$slug}/new";
     }
 
+    public static function getSharedFieldsUrl(): string {
+        return "/admin/shared-fields";
+    }
+
+    public static function getSharedFieldUrl(string $slug): string {
+        return "/admin/shared-fields/{$slug}";
+    }
+
     public static function dispatch(array $segments): void
     {
         if (!Auth::isAdmin()) {
@@ -73,6 +81,7 @@ final class AdminController
             'home' => self::dispatchHome(),
             'pages' => self::dispatchPages($trailingSegments),
             'archetypes' => self::dispatchArchetypes($trailingSegments),
+            'shared-fields' => self::dispatchSharedFields($trailingSegments),
             default => Router::notFound(),
         };
 
@@ -181,6 +190,11 @@ final class AdminController
             return;
         }
 
+        Router::notFound();
+    }
+    
+    private static function dispatchSharedFields(array $segments): void
+    {
         Router::notFound();
     }
 

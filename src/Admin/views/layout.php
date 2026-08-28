@@ -44,6 +44,8 @@ function render_admin_shell_open(): void
                 <?php foreach (TypeRegistry::archetypePageTypes() as $archetype): ?>
                     <?php vcms_nav_link(AdminController::getArchetypeUrl($archetype->slug()), $archetype->label()); ?>
                 <?php endforeach; ?>
+                <hr class="vcms-nav__separator">
+                <?php vcms_nav_link(AdminController::getSharedFieldsUrl(), 'Shared Fields'); ?>
             </ul>
         </nav>
         <main class="vcms-layout__main">
@@ -65,7 +67,7 @@ function render_admin_shell_close(): void
 
 function render_admin_home(): void {
     ?>
-        <h1>Vanilla Cms</h1>
+        <h1 class="vcms-page-title">Vanilla Cms</h1>
         <p>Select a category from the side bar to get started.</p>
     <?php
 }
