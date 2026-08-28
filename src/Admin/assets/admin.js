@@ -6,6 +6,14 @@ document.querySelectorAll('form[data-confirm]').forEach((form) => {
     });
 });
 
+document.querySelectorAll('a[data-confirm]').forEach((link) => {
+    link.addEventListener('click', (event) => {
+        if (!window.confirm(link.dataset.confirm)) {
+            event.preventDefault();
+        }
+    });
+});
+
 document.querySelectorAll('[data-vcms-repeater]').forEach((repeater) => {
     const items = repeater.querySelector(':scope > [data-vcms-repeater-items]');
     const template = repeater.querySelector(':scope > template[data-vcms-repeater-template]');

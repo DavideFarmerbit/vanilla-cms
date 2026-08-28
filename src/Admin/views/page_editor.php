@@ -46,6 +46,7 @@ function render_page_editor(Page $instance, string $backUrl, string $saveAction,
         ?>
         <div class="vcms-form__actions">
             <button type="submit" class="vcms-btn vcms-btn--primary">Save</button>
+            <a class="vcms-btn vcms-btn--action" href="<?= htmlspecialchars($saveAction) ?>" data-confirm="Discard all unsaved changes?">Restore</a>
         </div>
     </form>
     <?php if ($deleteAction): ?>

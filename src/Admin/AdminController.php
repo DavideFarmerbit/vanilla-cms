@@ -2,6 +2,7 @@
 
 namespace VanillaCms\Admin;
 
+use Closure;
 use VanillaCms\Auth\Auth;
 use VanillaCms\Auth\Csrf;
 use VanillaCms\Core\Registry\Page;
@@ -118,7 +119,8 @@ final class AdminController
                 $pageData,
                 $backUrl,
                 self::getPageEditUrl($slug, AdminPageAction::EDIT),
-                $pageData ? self::getPageEditUrl($slug, AdminPageAction::DELETE) : null
+                $pageData ? self::getPageEditUrl($slug, AdminPageAction::DELETE) : null,
+                fn (string $id) => self::getPageEditUrl($slug, AdminPageAction::EDIT)
             );
             return;
         }
@@ -160,7 +162,14 @@ final class AdminController
         $action = $segments[1];
 
         if ($action === 'new') {
-            self::handleEditor($archetype, null, $backUrl, self::getArchetypeNewUrl($typeSlug), null);
+            self::handleEditor(
+                $archetype,
+                null,
+                $backUrl,
+                self::getArchetypeNewUrl($typeSlug),
+                null,
+                fn (string $id) => self::getArchetypeEditUrl($typeSlug, $id, AdminPageAction::EDIT)
+            );
             return;
         }
 
@@ -180,6 +189,7 @@ final class AdminController
                 $backUrl,
                 self::getArchetypeEditUrl($typeSlug, $id, AdminPageAction::EDIT),
                 self::getArchetypeEditUrl($typeSlug, $id, AdminPageAction::DELETE),
+                fn (string $newId) => self::getArchetypeEditUrl($typeSlug, $newId, AdminPageAction::EDIT)
             );
             return;
         }
@@ -198,13 +208,17 @@ final class AdminController
         Router::notFound();
     }
 
-    private static function handleEditor(Page $type, ?PageData $pageData, string $backUrl, string $saveAction, ?string $deleteAction): void
+    /**
+     * @param Closure(string $id): string $editUrlBuilder Builds the editor url to land on after a successful save,
+     *                                                     given the (possibly newly generated) instance id.
+     */
+    private static function handleEditor(Page $type, ?PageData $pageData, string $backUrl, string $saveAction, ?string $deleteAction, Closure $editUrlBuilder): void
     {
         if (self::isVerifiedPost()) {
             $data = collect_page_editor_response($type);
 
-            Storage::save($type->slug(), $pageData?->id, $data);
-            Router::redirect($backUrl);
+            $id = Storage::save($type->slug(), $pageData?->id, $data);
+            Router::redirect($editUrlBuilder($id));
             return;
         }
 
