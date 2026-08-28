@@ -99,10 +99,10 @@ class RepeaterField extends Field
                 <?php $item->render("{$name}[items][{$index}]"); ?>
             </div>
             <div class="vcms-repeater__item-actions">
-                <button type="button" class="vcms-icon-btn vcms-btn--repeater-insert" data-vcms-repeater-insert>
+                <button type="button" class="vcms-icon-btn vcms-btn--repeater-insert" data-vcms-repeater-insert title="Insert" aria-label="Insert">
                     <?php vcms_icon('add') ?>
                 </button>
-                <button type="button" class="vcms-icon-btn vcms-icon-btn--danger vcms-btn--repeater-delete" data-vcms-repeater-delete>
+                <button type="button" class="vcms-icon-btn vcms-icon-btn--danger vcms-btn--repeater-delete" data-vcms-repeater-delete title="Remove" aria-label="Remove">
                     <?php vcms_icon('trash') ?>
                 </button>
             </div>
