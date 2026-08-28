@@ -5,16 +5,21 @@ editing content through a small admin panel.
 
 ### What's included
 A `Router` class handles routing requests to pages. In your `index.php` file, you can use `Router::dispatch`, 
-passing in an array of `RouterDispatcher` to associate url patterns with a callback function.
+passing in an array of `RouterDispatcher` to associate url patterns with a callback function. The library comes with 
+a set of default dispatchers (`default_router_dispatchers()`), which handles routing to pages and archetypes, using 
+their slugs, and to the admin panel.
 
-Site pages are defined by `Page` objects: extend `Page`, implement the `render_internal` method, and provide the 
-parameters requested by the parent's constructor. Finally, register the page through `register_pages` which takes in an
+Site pages are defined by `Page` objects: extend `Page`, implement the `Page::render_internal` method, and provide the 
+parameters requested by the parent's constructor. Finally, register the page through `register_pages()` which takes in an
 array of `Page` classes.
 
 In `Page` classes you can define `Field` derived members, which must be initialized in the constructor. These fields will
-show up in the built-in admin panel to edit their values, and they can be freely accessed in the `render_internal` method.
+show up in the built-in admin panel to edit their values, and they can be freely accessed in the `Page::render_internal` method.
 
 The library has an Admin panel, which allows editing and creating pages from the types that were registered.
+Pages can be either 'simple' or 'archetypes'. All non-archetype pages appear in the admin panel under the same tab.
+The system expects them to exist, and only one instance of those can be created. There is a tab for each page archetype,
+from there you can manage its instances (e.g., adding or modifying new posts in a blog).
 
 To fully initialize the CMS, you must call `Auth::set` passing in a `AuthDriver` object, and a link to the login page.
 You must also call `Storage::set` passing in a `StorageDriver` object, to initialize the database connection. The library
