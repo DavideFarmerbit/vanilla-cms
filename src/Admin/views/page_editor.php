@@ -41,7 +41,7 @@ function render_page_editor(Page $instance, string $backUrl, string $saveAction,
         ?>
         <div class="vcms-form__actions">
             <button type="submit" class="vcms-btn vcms-btn--primary">Save</button>
-            <a class="vcms-btn vcms-btn--link" href="<?= htmlspecialchars($backUrl) ?>">Cancel</a>
+            <a class="vcms-btn vcms-btn--action" href="<?= htmlspecialchars($backUrl) ?>">Cancel</a>
         </div>
     </form>
     <?php if ($deleteAction): ?>

@@ -28,7 +28,7 @@ function render_instance_row(Page $type, ?PageData $instance, string $editUrl, s
         <td class="vcms-table__cell"><?= htmlspecialchars($typeLabel) ?></td>
         <td class="vcms-table__cell"><?= htmlspecialchars($id) ?></td>
         <td class="vcms-table__cell vcms-table__cell--actions">
-            <a class="vcms-btn vcms-btn--link" href="<?= htmlspecialchars($editUrl) ?>"><?= $instance ? 'Edit' : 'Create' ?></a>
+            <a class="vcms-btn vcms-btn--action" href="<?= htmlspecialchars($editUrl) ?>"><?= $instance ? 'Edit' : 'Create' ?></a>
         </td>
         <td class="vcms-table__cell vcms-table__cell--actions">
             <?php if ($instance): ?>
@@ -37,7 +37,7 @@ function render_instance_row(Page $type, ?PageData $instance, string $editUrl, s
                     <button type="submit" class="vcms-btn vcms-btn--danger">Delete</button>
                 </form>
             <?php else: ?>
-                <span class="vcms-btn vcms-btn--link vcms-btn--disabled">Delete</span>
+                <span class="vcms-btn vcms-btn--action vcms-btn--disabled">Delete</span>
             <?php endif; ?>
         </td>
     </tr>
