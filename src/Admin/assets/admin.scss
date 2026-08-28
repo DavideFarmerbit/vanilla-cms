@@ -19,6 +19,8 @@
     --vcms-accent-soft: rgba(53, 116, 240, 0.16);
     --vcms-danger: #e0555a;
     --vcms-danger-hover: #eb6d72;
+    --vcms-confirm: #328555;
+    --vcms-confirm-hover: #2D764C;
     --vcms-radius: 10px;
     --vcms-radius-sm: 6px;
     --vcms-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
@@ -417,9 +419,66 @@ template[data-vcms-repeater-template] {
 
     &__cell--actions {
         vertical-align: middle;
+        text-align: right;
+        width: 1%;
+        white-space: nowrap;
 
         form {
-            display: inline;
+            display: flex;
+            align-items: center;
+        }
+    }
+}
+
+.vcms-table__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.vcms-icon {
+    display: block;
+}
+
+.vcms-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border-radius: var(--vcms-radius-sm);
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--vcms-text-muted);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+    &:hover {
+        background: var(--vcms-surface-hover);
+        color: var(--vcms-text);
+        text-decoration: none;
+    }
+    
+    &--confirm:hover {
+        background: var(--vcms-confirm);
+        border-color: var(--vcms-confirm);
+        color: #fff;
+    }
+
+    &--danger:hover {
+        background: var(--vcms-danger);
+        border-color: var(--vcms-danger);
+        color: #fff;
+    }
+
+    &--disabled {
+        color: var(--vcms-text-faint);
+        cursor: not-allowed;
+
+        &:hover {
+            background: transparent;
+            color: var(--vcms-text-faint);
         }
     }
 }
