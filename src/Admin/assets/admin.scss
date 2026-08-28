@@ -195,7 +195,7 @@ button {
     display: flex;
     flex-direction: column;
     gap: 0.9rem;
-    max-width: 600px;
+    max-width: 900px;
 
     &__actions {
         display: flex;
@@ -246,6 +246,10 @@ button {
     border: 1px solid var(--vcms-border);
     border-radius: var(--vcms-radius);
     background: var(--vcms-surface);
+
+    > .vcms-field {
+        flex: 1 1 300px;
+    }
 }
 
 .vcms-field--bool .vcms-field__input {
