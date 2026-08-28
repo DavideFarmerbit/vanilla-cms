@@ -46,7 +46,7 @@ class JsonStorage implements StorageDriver
     public function save(string $typeSlug, ?string $id, PageData $data): string
     {
         $records = $this->readCollection($typeSlug);
-        $id ??= bin2hex(random_bytes(8));
+        $id ??= $this->newId();
         $data->id = $id;
 
         $replaced = false;
@@ -76,6 +76,11 @@ class JsonStorage implements StorageDriver
         ));
 
         $this->writeCollection($typeSlug, $records);
+    }
+    
+    public function newId(): string
+    {
+        return bin2hex(random_bytes(8));
     }
 
     private function collectionPath(string $typeSlug): string

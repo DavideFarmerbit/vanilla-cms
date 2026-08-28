@@ -15,4 +15,6 @@ interface StorageDriver
     public function save(string $typeSlug, ?string $id, PageData $data): string;
 
     public function delete(string $typeSlug, string $id): void;
+
+    public function newId(): string;
 }

@@ -96,6 +96,17 @@ final class Storage
 
 
     /**
+     * Generate a new unique identifier for a page instance.
+     * @return string
+     * @throws Exception if storage driver is not set.
+     */
+    public static function newId(): string 
+    {
+        return self::driver()->newId();
+    }
+    
+
+    /**
      * Get the storage driver throwing an exception if not set.
      * @return StorageDriver
      * @throws Exception if storage driver is not set.
