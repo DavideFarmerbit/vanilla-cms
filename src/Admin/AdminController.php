@@ -87,13 +87,13 @@ final class AdminController
     private static function dispatchPages(array $segments): void
     {
         if (count($segments) === 0) {
-            render_pages_instances(TypeRegistry::simplePages());
+            render_pages_instances(TypeRegistry::simplePageTypes());
             return;
         }
 
         $slug = $segments[0];
         $action = $segments[1] ?? null;
-        $page = TypeRegistry::getPage($slug);
+        $page = TypeRegistry::getPageType($slug);
 
         if (!$page || $page->isArchetype()) {
             Router::notFound();
@@ -129,12 +129,12 @@ final class AdminController
     private static function dispatchArchetypes(array $segments): void
     {
         if (count($segments) === 0) {
-            render_archetypes_list(TypeRegistry::archetypePages());
+            render_archetypes_list(TypeRegistry::archetypePageTypes());
             return;
         }
 
         $typeSlug = $segments[0];
-        $archetype = TypeRegistry::getPage($typeSlug);
+        $archetype = TypeRegistry::getPageType($typeSlug);
 
         if (!$archetype || !$archetype->isArchetype()) {
             Router::notFound();

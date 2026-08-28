@@ -11,7 +11,7 @@ final class PageRenderer
 {
     public static function page(string $typeSlug, ?string $instanceSlug = null): void
     {
-        $page = TypeRegistry::getPage($typeSlug);
+        $page = TypeRegistry::getPageType($typeSlug);
 
         if (!$page) {
             Router::notFound();

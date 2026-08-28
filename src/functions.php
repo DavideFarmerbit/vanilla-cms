@@ -13,7 +13,7 @@ use VanillaCms\Storage\Storage;
  */
 function register_page(string $pageClass): void
 {
-    TypeRegistry::registerPage($pageClass);
+    TypeRegistry::registerPageType($pageClass);
 }
 
 /**
@@ -22,7 +22,7 @@ function register_page(string $pageClass): void
  */
 function register_pages(array $pageClasses): void
 {
-    array_map(fn ($pageClass) => TypeRegistry::registerPage($pageClass), $pageClasses);
+    array_map(fn ($pageClass) => TypeRegistry::registerPageType($pageClass), $pageClasses);
 }
 
 /** 
@@ -47,7 +47,7 @@ function default_router_dispatchers(): array {
                 $page->slug(),
                 fn () => PageRenderer::page($page->slug())
             ),
-            TypeRegistry::simplePages()
+            TypeRegistry::simplePageTypes()
         ),
         // Archetypes
         ...array_map(
@@ -55,7 +55,7 @@ function default_router_dispatchers(): array {
                 $archetype->slug() . '/{instance}',
                 fn (string $instance) => PageRenderer::page($archetype->slug(), $instance)
             ),
-            TypeRegistry::archetypePages()
+            TypeRegistry::archetypePageTypes()
         ),
         // Admin pannel
         AdminController::routerDispatcher(),
@@ -67,7 +67,7 @@ function default_router_dispatchers(): array {
  * @return Page[]
  */
 function get_page_instances_by_type(string $slug): array {
-    $type = Typeregistry::getPage($slug);
+    $type = Typeregistry::getPageType($slug);
     $pageDataArray = Storage::all($type->slug());
     return array_map(fn($pageData) => $type->instantiate($pageData), $pageDataArray);
 }

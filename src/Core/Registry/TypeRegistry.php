@@ -18,7 +18,7 @@ final class TypeRegistry
      * Registers a new page type.
      * @param class-string<Page> $pageClass
      */
-    public static function registerPage(string $pageClass): void
+    public static function registerPageType(string $pageClass): void
     {
         // Check class is a Page.
         if (!is_subclass_of($pageClass, Page::class)) {
@@ -54,7 +54,7 @@ final class TypeRegistry
      * Returns all registered pages.
      * @return Page[]
      */
-    public static function pages(): array
+    public static function pageTypes(): array
     {
         return self::$pages;
     }
@@ -63,7 +63,7 @@ final class TypeRegistry
      * Returns all registered pages which are not archetypes.
      * @return Page[]
      */
-    public static function simplePages(): array
+    public static function simplePageTypes(): array
     {
         return array_filter(self::$pages, fn (Page $page) => !$page->isArchetype());
     }
@@ -72,12 +72,12 @@ final class TypeRegistry
      * Returns all registered pages which are archetypes.
      * @return Page[]
      */
-    public static function archetypePages(): array
+    public static function archetypePageTypes(): array
     {
         return array_filter(self::$pages, fn (Page $page) => $page->isArchetype());
     }
 
-    public static function getPage(string $slug): ?Page
+    public static function getPageType(string $slug): ?Page
     {
         return self::$pages[$slug] ?? null;
     }
