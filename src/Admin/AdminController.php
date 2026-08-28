@@ -68,9 +68,7 @@ final class AdminController
     public static function dispatch(array $segments): void
     {
         if (!Auth::isAdmin()) {
-            // TODO: keep context of the current page we want to visit. We will want to redirect to that page after
-            //       login, or if refreshing the page after we logged in from another tab.
-            Router::redirect(Auth::unauthorizedUrl());
+            Router::redirectWithReturn(Auth::unauthorizedUrl());
         }
         
         render_admin_shell_open();
