@@ -55,8 +55,8 @@ abstract class Page
         $pageData->setPage($this);
 
         $pageData->id = '';
-        $pageData->slug = $this?->meta?->slug();
-        $pageData->name = $this?->meta?->name();
+        $pageData->slug = $this?->meta?->slug() ?? '';
+        $pageData->name = $this?->meta?->name() ?? '';
 
         $pageData->fields = array_map(fn ($field) => $field->toArray(), $this->getFields());
 

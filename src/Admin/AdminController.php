@@ -194,8 +194,9 @@ final class AdminController
             return;
         }
 
-        $instance = $pageData ? $type->instantiate($pageData) : null;
-        render_page_editor($type, $instance, $backUrl, $saveAction, $deleteAction);
+        // Instantiate from existing data or default instance.
+        $instance = $type->instantiate($pageData ?? $type->toPageData());
+        render_page_editor($instance, $backUrl, $saveAction, $deleteAction, $pageData === null);
     }
 
     private static function isPost(): bool

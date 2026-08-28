@@ -7,12 +7,12 @@ use VanillaCms\Core\Router\Router;
 use VanillaCms\Storage\PageData;
 use VanillaCms\Storage\Storage;
 
-function render_page_editor(Page $type, ?Page $instance, string $backUrl, string $saveAction, ?string $deleteAction): void
+function render_page_editor(Page $instance, string $backUrl, string $saveAction, ?string $deleteAction, bool $isNew): void
 {
-    $pageUrl = $instance ? htmlspecialchars($instance->url()) : null;
+    $pageUrl = htmlspecialchars($instance->url());
 
     ?>
-    <h1 class="vcms-page-title"><?= $instance ? 'Edit' : 'Create' ?> <?= htmlspecialchars($type->label()) ?></h1>
+    <h1 class="vcms-page-title"><?= $isNew ? 'Create' : 'Edit' ?> <?= htmlspecialchars($instance->label()) ?></h1>
 
     <?php if ($pageUrl): ?>
         <a class="vcms-link vcms-link--preview" href="<?= $pageUrl ?>"><?= $pageUrl ?></a>
@@ -25,13 +25,13 @@ function render_page_editor(Page $type, ?Page $instance, string $backUrl, string
         <div class="vcms-field vcms-field--text">
             <label class="vcms-field__label">
                 Name
-                <input class="vcms-field__input" type="text" name="name" value="<?= htmlspecialchars($instance?->meta()->name() ?? '') ?>" required>
+                <input class="vcms-field__input" type="text" name="name" value="<?= htmlspecialchars($instance->meta()->name()) ?>" required>
             </label>
         </div>
         <div class="vcms-field vcms-field--text">
             <label class="vcms-field__label">
                 Slug
-                <input class="vcms-field__input" type="text" name="slug" value="<?= htmlspecialchars($instance?->meta()->slug() ?? '') ?>" required>
+                <input class="vcms-field__input" type="text" name="slug" value="<?= htmlspecialchars($instance->meta()->slug()) ?>" required>
             </label>
         </div>
         <?php foreach ($instance->getFields() as $fieldName => $field) {
