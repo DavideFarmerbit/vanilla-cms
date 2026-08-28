@@ -4,17 +4,21 @@ namespace VanillaCms\Fields;
 
 use Closure;
 
+/** @template T of Field */
 class RepeaterField extends Field
 {
+    /** @var class-string<T> */
     private string $fieldClass;
-    
+
+    /** @var Closure(): T */
     private Closure $factory;
-    
+
+    /** @var T[] */
     private array $items = [];
-    
+
     /**
-     * @param class-string<Field> $fieldClass
-     * @param callable():Field $factory
+     * @param class-string<T> $fieldClass
+     * @param callable():T $factory
      * @param array $config
      */
     public function __construct(string $fieldClass, callable $factory, array $config)
@@ -23,24 +27,31 @@ class RepeaterField extends Field
         $this->fieldClass = $fieldClass;
         $this->factory = $factory;
     }
+
+    /** @return T[] */
+    public function items(): array {
+        return $this->items;
+    }
     
-    private function addItem(): Field {
+    /*----------------------------------------------------------------------------------------------------------------*/
+
+    /** @return T */
+    public function addItem(): Field {
         return $this->items[] = ($this->factory)();
     }
 
-    private function insertItem(int $index): Field {
+    /** @return T */
+    public function insertItem(int $index): Field {
         $newField = ($this->factory)();
         array_splice($this->items, $index, 0, array($newField));
         return $newField;
     }
-    
-    private function removeItem(int $index): void {
+
+    public function removeItem(int $index): void {
         array_splice($this->items, $index, 1);
     }
-    
-    public function items(): array {
-        return $this->items;
-    }
+
+    /*----------------------------------------------------------------------------------------------------------------*/
     
     public function toArray(): array
     {
@@ -79,6 +90,7 @@ class RepeaterField extends Field
 
     private const INDEX_PLACEHOLDER = '__VCMS_REPEATER_INDEX__';
 
+    /** @param T $item */
     private function renderItem(Field $item, string $name, string $index): void
     {
         ?>
