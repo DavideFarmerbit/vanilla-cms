@@ -86,7 +86,6 @@ function render_admin_file_picker_templates(): void
     </template>
     <template data-vcms-file-picker-item-template>
         <button type="button" class="vcms-upload-grid__item" data-vcms-file-picker-item>
-            <span data-vcms-file-picker-item-thumb></span>
             <span class="vcms-upload-grid__name" data-vcms-file-picker-item-name></span>
         </button>
     </template>

@@ -93,11 +93,12 @@ function createFilePickerItem(item) {
     button.dataset.thumb = item.thumb;
     button.dataset.ext = item.ext;
 
+    const nameLabel = button.querySelector('[data-vcms-file-picker-item-name]');
     const thumbNode = buildThumbNode(item);
     if (thumbNode) {
-        button.querySelector('[data-vcms-file-picker-item-thumb]').appendChild(thumbNode);
+        button.insertBefore(thumbNode, nameLabel);
     }
-    button.querySelector('[data-vcms-file-picker-item-name]').textContent = item.name;
+    nameLabel.textContent = item.name;
 
     return button;
 }
