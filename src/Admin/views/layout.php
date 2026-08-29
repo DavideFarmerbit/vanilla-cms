@@ -107,25 +107,29 @@ function render_admin_shell_open(): void
     <body>
     <div class="vcms-layout">
         <nav class="vcms-layout__sidebar">
-            <ul class="vcms-nav">
-                <?php vcms_nav_link(AdminController::getHomeUrl(), 'Home'); ?>
-                <hr class="vcms-nav__separator">
-                <?php vcms_nav_link(AdminController::getPagesUrl(), 'Pages'); ?>
-                <?php foreach (PageTypeRegistry::archetypeTypes() as $archetype): ?>
-                    <?php vcms_nav_link(AdminController::getArchetypeUrl($archetype->slug()), $archetype->label()); ?>
-                <?php endforeach; ?>
-                <hr class="vcms-nav__separator">
-                <?php vcms_nav_link(AdminController::getUploadsUrl(), 'Uploads'); ?>
-                <?php vcms_nav_link(AdminController::getSharedFieldsUrl(), 'Shared Fields'); ?>
-            </ul>
+            <div class="vcms-layout__sidebar-inner">
+                <ul class="vcms-nav">
+                    <?php vcms_nav_link(AdminController::getHomeUrl(), 'Home'); ?>
+                    <hr class="vcms-nav__separator">
+                    <?php vcms_nav_link(AdminController::getPagesUrl(), 'Pages'); ?>
+                    <?php foreach (PageTypeRegistry::archetypeTypes() as $archetype): ?>
+                        <?php vcms_nav_link(AdminController::getArchetypeUrl($archetype->slug()), $archetype->label()); ?>
+                    <?php endforeach; ?>
+                    <hr class="vcms-nav__separator">
+                    <?php vcms_nav_link(AdminController::getUploadsUrl(), 'Uploads'); ?>
+                    <?php vcms_nav_link(AdminController::getSharedFieldsUrl(), 'Shared Fields'); ?>
+                </ul>
+            </div>
         </nav>
         <main class="vcms-layout__main">
+            <div class="vcms-layout__main-inner">
     <?php
 }
 
 function render_admin_shell_close(): void
 {
     ?>
+        </div>
         </main>
     </div>
     <?php if (AdminAssets::jsUrl() !== ''): ?>
