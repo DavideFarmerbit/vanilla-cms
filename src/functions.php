@@ -68,6 +68,6 @@ function default_router_dispatchers(): array {
  */
 function get_page_instances_by_type(string $slug): array {
     $type = Typeregistry::getPageType($slug);
-    $pageDataArray = Storage::all($type->slug());
+    $pageDataArray = Storage::allPageInstances($type->slug());
     return array_map(fn($pageData) => $type->instantiate($pageData), $pageDataArray);
 }

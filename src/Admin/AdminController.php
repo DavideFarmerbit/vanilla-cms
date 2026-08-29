@@ -111,7 +111,7 @@ final class AdminController
         $backUrl = self::getPagesUrl();
 
         if ($action === 'edit') {
-            $pageData = Storage::findFirst($page->slug());
+            $pageData = Storage::findFirstPageInstance($page->slug());
             self::handleEditor(
                 $page,
                 $pageData,
@@ -124,9 +124,9 @@ final class AdminController
         }
 
         if ($action === 'delete' && self::isVerifiedPost()) {
-            $pageData = Storage::findFirst($page->slug());
+            $pageData = Storage::findFirstPageInstance($page->slug());
             if ($pageData) {
-                Storage::delete($page->slug(), $pageData->id);
+                Storage::deletePageInstance($page->slug(), $pageData->id);
             }
             Router::redirect($backUrl);
             return;
@@ -153,7 +153,7 @@ final class AdminController
         $backUrl = self::getArchetypeUrl($typeSlug);
 
         if (count($segments) === 1) {
-            render_archetype_instances($archetype, Storage::all($archetype->slug()));
+            render_archetype_instances($archetype, Storage::allPageInstances($archetype->slug()));
             return;
         }
 
@@ -173,7 +173,7 @@ final class AdminController
 
         $id = $action;
         $subAction = $segments[2] ?? null;
-        $pageData = Storage::find($archetype->slug(), $id);
+        $pageData = Storage::findPageInstance($archetype->slug(), $id);
 
         if (!$pageData) {
             Router::notFound();
@@ -193,7 +193,7 @@ final class AdminController
         }
 
         if ($subAction === 'delete' && self::isVerifiedPost()) {
-            Storage::delete($archetype->slug(), $id);
+            Storage::deletePageInstance($archetype->slug(), $id);
             Router::redirect($backUrl);
             return;
         }
@@ -215,7 +215,7 @@ final class AdminController
         if (self::isVerifiedPost()) {
             $data = collect_page_editor_response($type);
 
-            $id = Storage::save($type->slug(), $pageData?->id, $data);
+            $id = Storage::savePageInstance($type->slug(), $pageData?->id, $data);
             Router::redirect($editUrlBuilder($id));
             return;
         }

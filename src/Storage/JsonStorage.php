@@ -11,12 +11,12 @@ class JsonStorage implements StorageDriver
         $this->root = rtrim($root, '/');
     }
 
-    public function all(string $typeSlug): array
+    public function allPageInstances(string $typeSlug): array
     {
         return $this->readCollection($typeSlug);
     }
 
-    public function find(string $typeSlug, string $id): ?PageData
+    public function findPageInstance(string $typeSlug, string $id): ?PageData
     {
         foreach ($this->readCollection($typeSlug) as $record) {
             if ($record->id === $id) {
@@ -27,7 +27,7 @@ class JsonStorage implements StorageDriver
         return null;
     }
 
-    public function findBySlug(string $typeSlug, string $instanceSlug): ?PageData
+    public function findPageInstanceBySlug(string $typeSlug, string $instanceSlug): ?PageData
     {
         foreach ($this->readCollection($typeSlug) as $record) {
             if ($record->slug === $instanceSlug) {
@@ -38,12 +38,12 @@ class JsonStorage implements StorageDriver
         return null;
     }
 
-    public function findFirst(string $typeSlug): ?PageData
+    public function findFirstPageInstance(string $typeSlug): ?PageData
     {
         return $this->readCollection($typeSlug)[0] ?? null;
     }
 
-    public function save(string $typeSlug, ?string $id, PageData $data): string
+    public function savePageInstance(string $typeSlug, ?string $id, PageData $data): string
     {
         $records = $this->readCollection($typeSlug);
         $id ??= $this->newId();
@@ -68,7 +68,7 @@ class JsonStorage implements StorageDriver
         return $id;
     }
 
-    public function delete(string $typeSlug, string $id): void
+    public function deletePageInstance(string $typeSlug, string $id): void
     {
         $records = array_values(array_filter(
             $this->readCollection($typeSlug),

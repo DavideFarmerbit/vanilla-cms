@@ -19,7 +19,7 @@ function render_pages_instances(array $pages): void
             </thead>
             <tbody>
                 <?php foreach ($pages as $page): ?>
-                    <?php $instance = Storage::findFirst($page->slug()); ?>
+                    <?php $instance = Storage::findFirstPageInstance($page->slug()); ?>
                     <?php render_instance_row(
                         $page,
                         $instance,

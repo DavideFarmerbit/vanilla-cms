@@ -25,9 +25,9 @@ final class Storage
      * @return PageData[]
      * @throws Exception if storage driver is not set.
      */
-    public static function all(string $typeSlug): array
+    public static function allPageInstances(string $typeSlug): array
     {
-        return self::driver()->all($typeSlug);
+        return self::driver()->allPageInstances($typeSlug);
     }
 
     /**
@@ -37,9 +37,9 @@ final class Storage
      * @return PageData|null
      * @throws Exception if storage driver is not set.
      */
-    public static function find(string $typeSlug, string $id): ?PageData
+    public static function findPageInstance(string $typeSlug, string $id): ?PageData
     {
-        return self::driver()->find($typeSlug, $id);
+        return self::driver()->findPageInstance($typeSlug, $id);
     }
 
 
@@ -50,9 +50,9 @@ final class Storage
      * @return PageData|null
      * @throws Exception if storage driver is not set.
      */
-    public static function findBySlug(string $typeSlug, string $instanceSlug): ?PageData
+    public static function findPageInstanceBySlug(string $typeSlug, string $instanceSlug): ?PageData
     {
-        return self::driver()->findBySlug($typeSlug, $instanceSlug);
+        return self::driver()->findPageInstanceBySlug($typeSlug, $instanceSlug);
     }
 
     /**
@@ -61,9 +61,9 @@ final class Storage
      * @return PageData|null
      * @throws Exception if storage driver is not set.
      */
-    public static function findFirst(string $typeSlug): ?PageData
+    public static function findFirstPageInstance(string $typeSlug): ?PageData
     {
-        return self::driver()->findFirst($typeSlug);
+        return self::driver()->findFirstPageInstance($typeSlug);
     }
 
     /**
@@ -74,12 +74,12 @@ final class Storage
      * @return string unique identifier of the instance.
      * @throws Exception if storage driver is not set or if the given type slug does not match the one in the data object.
      */
-    public static function save(string $typeSlug, ?string $id, PageData $data): string
+    public static function savePageInstance(string $typeSlug, ?string $id, PageData $data): string
     {
         if ($typeSlug !== $data->type_slug) {
             throw new Exception('JsonStorage::save >> given type slug does not match the one in the data object.');
         }
-        return self::driver()->save($typeSlug, $id, $data);
+        return self::driver()->savePageInstance($typeSlug, $id, $data);
     }
 
     /**
@@ -89,9 +89,9 @@ final class Storage
      * @return void
      * @throws Exception if storage driver is not set.
      */
-    public static function delete(string $typeSlug, string $id): void
+    public static function deletePageInstance(string $typeSlug, string $id): void
     {
-        self::driver()->delete($typeSlug, $id);
+        self::driver()->deletePageInstance($typeSlug, $id);
     }
 
 

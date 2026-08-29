@@ -4,17 +4,17 @@ namespace VanillaCms\Storage;
 
 interface StorageDriver
 {
-    public function all(string $typeSlug): array;
+    public function allPageInstances(string $typeSlug): array;
 
-    public function find(string $typeSlug, string $id): ?PageData;
+    public function findPageInstance(string $typeSlug, string $id): ?PageData;
 
-    public function findBySlug(string $typeSlug, string $instanceSlug): ?PageData;
+    public function findPageInstanceBySlug(string $typeSlug, string $instanceSlug): ?PageData;
 
-    public function findFirst(string $typeSlug): ?PageData;
+    public function findFirstPageInstance(string $typeSlug): ?PageData;
 
-    public function save(string $typeSlug, ?string $id, PageData $data): string;
+    public function savePageInstance(string $typeSlug, ?string $id, PageData $data): string;
 
-    public function delete(string $typeSlug, string $id): void;
+    public function deletePageInstance(string $typeSlug, string $id): void;
 
     public function newId(): string;
 }

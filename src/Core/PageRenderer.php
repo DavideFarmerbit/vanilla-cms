@@ -19,7 +19,7 @@ final class PageRenderer
         }
         
         // Get the page data for the specified instance, or the first instance if none is specified.
-        $pageData = $instanceSlug !== null ? Storage::findBySlug($typeSlug, $instanceSlug) : Storage::findFirst($typeSlug);
+        $pageData = $instanceSlug !== null ? Storage::findPageInstanceBySlug($typeSlug, $instanceSlug) : Storage::findFirstPageInstance($typeSlug);
         if (!$pageData) {
             Router::notFound();
             return;
