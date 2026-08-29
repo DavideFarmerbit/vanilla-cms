@@ -78,6 +78,7 @@ function buildFilePreview(container, { thumb, ext, name }) {
 function buildFilePickerDialog() {
     const dialog = document.createElement('dialog');
     dialog.className = 'vcms-file-picker-dialog';
+    dialog.tabIndex = -1;
 
     const filters = document.createElement('div');
     filters.className = 'vcms-file-picker-dialog__filters';
@@ -212,6 +213,7 @@ document.querySelectorAll('[data-vcms-file-field-open]').forEach((button) => {
         filePickerMonthSelect.value = '';
 
         filePickerDialog.showModal();
+        filePickerDialog.focus();
         resetAndLoadFilePicker();
     });
 });

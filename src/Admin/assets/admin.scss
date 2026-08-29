@@ -626,6 +626,10 @@ template[data-vcms-repeater-template] {
     color: var(--vcms-text);
     box-shadow: var(--vcms-shadow);
 
+    &:focus {
+        outline: none;
+    }
+
     &::backdrop {
         background: rgba(0, 0, 0, 0.6);
     }
