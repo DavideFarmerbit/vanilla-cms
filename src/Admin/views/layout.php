@@ -68,18 +68,22 @@ function render_admin_file_picker_templates(): void
                 <?php vcms_icon('close') ?>
             </button>
             <div class="vcms-file-picker-dialog__filters">
-                <select class="vcms-field__input" data-vcms-file-picker-year>
-                    <option value="">All years</option>
-                    <?php for ($year = $currentYear; $year >= $currentYear - 5; $year--): ?>
-                        <option value="<?= $year ?>"><?= $year ?></option>
-                    <?php endfor; ?>
-                </select>
-                <select class="vcms-field__input" data-vcms-file-picker-month>
-                    <option value="">All months</option>
-                    <?php foreach (vcms_months() as $value => $label): ?>
-                        <option value="<?= $value ?>"><?= $label ?></option>
-                    <?php endforeach; ?>
-                </select>
+                <span class="vcms-field__select-wrap">
+                    <select class="vcms-field__input" data-vcms-file-picker-year>
+                        <option value="">All years</option>
+                        <?php for ($year = $currentYear; $year >= $currentYear - 5; $year--): ?>
+                            <option value="<?= $year ?>"><?= $year ?></option>
+                        <?php endfor; ?>
+                    </select>
+                </span>
+                <span class="vcms-field__select-wrap">
+                    <select class="vcms-field__input" data-vcms-file-picker-month>
+                        <option value="">All months</option>
+                        <?php foreach (vcms_months() as $value => $label): ?>
+                            <option value="<?= $value ?>"><?= $label ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </span>
             </div>
             <div class="vcms-upload-grid vcms-file-picker-dialog__list" data-vcms-file-picker-list></div>
         </dialog>

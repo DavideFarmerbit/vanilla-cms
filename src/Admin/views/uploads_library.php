@@ -21,30 +21,36 @@ function render_uploads_library(array $uploads, array $allUploads, string $uploa
     <form method="get" class="vcms-upload-filters">
         <label class="vcms-field__label">
             Type
-            <select class="vcms-field__input" name="type" onchange="this.form.submit()">
-                <option value="">All types</option>
-                <?php foreach (UploadTypeRegistry::types() as $type): ?>
-                    <option value="<?= htmlspecialchars($type) ?>" <?= $type === $typeFilter ? 'selected' : '' ?>><?= htmlspecialchars(ucfirst($type)) ?></option>
-                <?php endforeach; ?>
-            </select>
+            <span class="vcms-field__select-wrap">
+                <select class="vcms-field__input" name="type" onchange="this.form.submit()">
+                    <option value="">All types</option>
+                    <?php foreach (UploadTypeRegistry::types() as $type): ?>
+                        <option value="<?= htmlspecialchars($type) ?>" <?= $type === $typeFilter ? 'selected' : '' ?>><?= htmlspecialchars(ucfirst($type)) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </span>
         </label>
         <label class="vcms-field__label">
             Year
-            <select class="vcms-field__input" name="year" onchange="this.form.submit()">
-                <option value="">All years</option>
-                <?php foreach ($years as $year): ?>
-                    <option value="<?= htmlspecialchars($year) ?>" <?= $year === $yearFilter ? 'selected' : '' ?>><?= htmlspecialchars($year) ?></option>
-                <?php endforeach; ?>
-            </select>
+            <span class="vcms-field__select-wrap">
+                <select class="vcms-field__input" name="year" onchange="this.form.submit()">
+                    <option value="">All years</option>
+                    <?php foreach ($years as $year): ?>
+                        <option value="<?= htmlspecialchars($year) ?>" <?= $year === $yearFilter ? 'selected' : '' ?>><?= htmlspecialchars($year) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </span>
         </label>
         <label class="vcms-field__label">
             Month
-            <select class="vcms-field__input" name="month" onchange="this.form.submit()">
-                <option value="">All months</option>
-                <?php foreach ($months as $value => $label): ?>
-                    <option value="<?= $value ?>" <?= $value === $monthFilter ? 'selected' : '' ?>><?= $label ?></option>
-                <?php endforeach; ?>
-            </select>
+            <span class="vcms-field__select-wrap">
+                <select class="vcms-field__input" name="month" onchange="this.form.submit()">
+                    <option value="">All months</option>
+                    <?php foreach ($months as $value => $label): ?>
+                        <option value="<?= $value ?>" <?= $value === $monthFilter ? 'selected' : '' ?>><?= $label ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </span>
         </label>
         <noscript><button type="submit" class="vcms-btn">Filter</button></noscript>
     </form>
