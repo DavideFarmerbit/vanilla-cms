@@ -40,7 +40,7 @@ function render_instance_row(Page $type, ?PageData $instance, string $editUrl, s
                         </button>
                     </form>
                 <?php else: ?>
-                    <span class="vcms-icon-btn vcms-icon-btn--disabled" title="Delete" aria-label="Delete">
+                    <span class="vcms-icon-btn vcms-icon-btn--danger vcms-icon-btn--disabled" title="Delete" aria-label="Delete">
                         <?php vcms_icon('trash') ?>
                     </span>
                 <?php endif; ?>

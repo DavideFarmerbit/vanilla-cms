@@ -48,6 +48,11 @@ let filePickerMonthSelect = null;
 let activeFileField = null;
 const filePickerState = { type: '', offset: 0, hasMore: true, loading: false };
 
+function setFileFieldClearEnabled(clearButton, enabled) {
+    clearButton.disabled = !enabled;
+    clearButton.classList.toggle('vcms-icon-btn--disabled', !enabled);
+}
+
 function buildFilePreview(container, { thumb, ext, name }) {
     container.innerHTML = '';
 
@@ -131,6 +136,7 @@ function buildFilePickerDialog() {
         if (activeFileField) {
             activeFileField.input.value = item.dataset.id;
             buildFilePreview(activeFileField.preview, item.dataset);
+            setFileFieldClearEnabled(activeFileField.clear, true);
         }
         dialog.close();
     });
@@ -197,6 +203,7 @@ document.querySelectorAll('[data-vcms-file-field-open]').forEach((button) => {
         activeFileField = {
             input: field.querySelector('[data-vcms-file-field-input]'),
             preview: field.querySelector('[data-vcms-file-field-preview]'),
+            clear: field.querySelector('[data-vcms-file-field-clear]'),
         };
         filePickerState.type = field.dataset.allowedType;
         filePickerYearSelect.value = '';
@@ -212,6 +219,7 @@ document.querySelectorAll('[data-vcms-file-field-clear]').forEach((button) => {
         const field = button.closest('[data-vcms-file-field]');
         field.querySelector('[data-vcms-file-field-input]').value = '';
         buildFilePreview(field.querySelector('[data-vcms-file-field-preview]'), {});
+        setFileFieldClearEnabled(button, false);
     });
 });
 

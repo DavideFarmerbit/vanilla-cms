@@ -62,6 +62,7 @@ abstract class FileField extends Field
     public function render(string $name): void
     {
         $upload = $this->upload();
+        $hasUpload = $upload !== null;
         ?>
         <div class="vcms-field vcms-file-field" data-vcms-file-field data-allowed-type="<?= htmlspecialchars($this->allowedType()) ?>">
             <div class="vcms-field__label"><?= htmlspecialchars($this->config['label'] ?? 'value') ?></div>
@@ -70,8 +71,12 @@ abstract class FileField extends Field
                 <?php $this->renderPreview($upload); ?>
             </div>
             <div class="vcms-file-field__actions">
-                <button type="button" class="vcms-btn vcms-btn--action" data-vcms-file-field-open>Choose</button>
-                <button type="button" class="vcms-btn vcms-btn--action" data-vcms-file-field-clear>Clear</button>
+                <button type="button" class="vcms-icon-btn" data-vcms-file-field-open title="Edit" aria-label="Edit">
+                    <?php vcms_icon('edit') ?>
+                </button>
+                <button type="button" class="vcms-icon-btn vcms-icon-btn--danger<?= $hasUpload ? '' : ' vcms-icon-btn--disabled' ?>" data-vcms-file-field-clear title="Delete" aria-label="Delete"<?= $hasUpload ? '' : ' disabled' ?>>
+                    <?php vcms_icon('trash') ?>
+                </button>
             </div>
         </div>
         <?php
