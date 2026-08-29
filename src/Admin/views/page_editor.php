@@ -1,8 +1,8 @@
 <?php
 
 use VanillaCms\Auth\Csrf;
-use VanillaCms\Core\Registry\Page;
-use VanillaCms\Core\Registry\PageTypeRegistry;
+use VanillaCms\Pages\Page;
+use VanillaCms\Pages\PageTypeRegistry;
 use VanillaCms\Core\Router\Router;
 use VanillaCms\Storage\PageData;
 use VanillaCms\Storage\Storage;

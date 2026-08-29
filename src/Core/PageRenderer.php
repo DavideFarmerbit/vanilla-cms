@@ -2,7 +2,7 @@
 
 namespace VanillaCms\Core;
 
-use VanillaCms\Core\Registry\PageTypeRegistry;
+use VanillaCms\Pages\PageTypeRegistry;
 use VanillaCms\Storage\PageData;
 use VanillaCms\Storage\Storage;
 use VanillaCms\Core\Router\Router;

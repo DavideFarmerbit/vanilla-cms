@@ -2,7 +2,7 @@
 
 namespace VanillaCms\Storage;
 
-use VanillaCms\Core\Registry\Page;
+use VanillaCms\Pages\Page;
 
 class PageData
 {

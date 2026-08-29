@@ -1,6 +1,6 @@
 <?php
 
-namespace VanillaCms\Core\Registry;
+namespace VanillaCms\Pages;
 
 use InvalidArgumentException;
 use ReflectionClass;

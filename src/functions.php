@@ -2,8 +2,8 @@
 
 use VanillaCms\Admin\AdminController;
 use VanillaCms\Core\PageRenderer;
-use VanillaCms\Core\Registry\Page;
-use VanillaCms\Core\Registry\PageTypeRegistry;
+use VanillaCms\Pages\Page;
+use VanillaCms\Pages\PageTypeRegistry;
 use VanillaCms\Core\Router\RouterDispatcher;
 use VanillaCms\Storage\Storage;
 use VanillaCms\Uploads\UploadMeta;

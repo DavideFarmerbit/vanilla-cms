@@ -2,7 +2,7 @@
 
 use VanillaCms\Admin\AdminAssets;
 use VanillaCms\Admin\AdminController;
-use VanillaCms\Core\Registry\PageTypeRegistry;
+use VanillaCms\Pages\PageTypeRegistry;
 
 function vcms_is_active_nav_link(string $url): bool
 {

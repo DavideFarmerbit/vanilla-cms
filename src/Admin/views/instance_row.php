@@ -1,7 +1,7 @@
 <?php
 
 use VanillaCms\Auth\Csrf;
-use VanillaCms\Core\Registry\Page;
+use VanillaCms\Pages\Page;
 use VanillaCms\Storage\PageData;
 
 function render_instance_row_header()

@@ -2,7 +2,7 @@
 
 use VanillaCms\Admin\AdminController;
 use VanillaCms\Admin\AdminPageAction;
-use VanillaCms\Core\Registry\Page;
+use VanillaCms\Pages\Page;
 use VanillaCms\Storage\Storage;
 
 /** @param Page[] $pages */

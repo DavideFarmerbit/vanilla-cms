@@ -1,7 +1,7 @@
 <?php
 
 use VanillaCms\Admin\AdminController;
-use VanillaCms\Core\Registry\Page;
+use VanillaCms\Pages\Page;
 
 /** @param Page[] $archetypes */
 function render_archetypes_list(array $archetypes): void

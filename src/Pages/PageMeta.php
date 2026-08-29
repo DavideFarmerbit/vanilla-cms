@@ -1,8 +1,8 @@
 <?php
 
-namespace VanillaCms\Core\Registry;
+namespace VanillaCms\Pages;
 
-class PageInstanceMeta
+class PageMeta
 {
     private string $id;
     private string $slug;

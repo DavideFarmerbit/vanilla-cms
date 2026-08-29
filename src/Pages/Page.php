@@ -1,6 +1,6 @@
 <?php
 
-namespace VanillaCms\Core\Registry;
+namespace VanillaCms\Pages;
 
 use Closure;
 use Exception;
@@ -20,7 +20,7 @@ abstract class Page
     private bool $isArchetype = false;
     private Closure $urlBuilder;
     
-    private ?PageInstanceMeta $meta = null;
+    private ?PageMeta $meta = null;
     
     public function __construct(string $slug, string $label, bool $isArchetype, ?callable $urlBuilder = null)
     {
@@ -39,7 +39,7 @@ abstract class Page
         $instance = new $this();
 
         // Fill meta data
-        $instance->meta = new PageInstanceMeta($data->id, $data->slug, $data->name);
+        $instance->meta = new PageMeta($data->id, $data->slug, $data->name);
         
         // Fill fields
         foreach ($instance->getFields() as $fieldName => $field) {
@@ -95,7 +95,7 @@ abstract class Page
     /**
      * @throws Exception if called on a prototype object.
      */
-    public function meta(): PageInstanceMeta {
+    public function meta(): PageMeta {
         if ($this->meta === null) {
             throw new Exception("Cannot access meta for a page prototype object");
         }

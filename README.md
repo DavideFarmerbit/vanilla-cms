@@ -58,7 +58,7 @@ Router::dispatch(default_router_dispatchers());
 ```injectablephp
 namespace App\Pages;
 
-use VanillaCms\Core\Registry\Page;
+use VanillaCms\Pages\Page;
 use VanillaCms\Fields\TextField;
 
 class ProductPage extends Page {
@@ -93,7 +93,7 @@ namespace App\Pages;
 
 use VanillaCms\Admin\AdminController;
 use VanillaCms\Auth\Auth;
-use VanillaCms\Core\Registry\Page;
+use VanillaCms\Pages\Page;
 use VanillaCms\Core\Router\Router;
 
 class LoginPage extends Page {
