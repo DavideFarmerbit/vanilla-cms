@@ -10,10 +10,12 @@ use VanillaCms\Uploads\UploadMeta;
  * (see VanillaCms\Uploads\UploadMeta). Only the upload's id is stored here; its metadata (name,
  * alt text, ...) lives on the upload record itself. Add a new file-related field by extending this
  * and implementing allowedType() with the UploadTypeRegistry type key it should be restricted to.
+ * @template T of UploadMeta
  */
 abstract class FileField extends Field
 {
     private ?string $uploadId = null;
+    /** @var T|null */
     private ?UploadMeta $resolvedUpload = null;
     private bool $uploadResolved = false;
 
@@ -37,6 +39,7 @@ abstract class FileField extends Field
 
     /**
      * Resolves the referenced upload, or null if none is set or it was since deleted.
+     * @return T|null
      */
     public function upload(): ?UploadMeta
     {
