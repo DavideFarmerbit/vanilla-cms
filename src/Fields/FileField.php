@@ -16,7 +16,7 @@ abstract class FileField extends Field
 {
     private ?string $uploadId = null;
     /** @var T|null */
-    private ?UploadMeta $resolvedUpload = null;
+    private ?UploadMeta $resolvedUploadMeta = null;
     private bool $uploadResolved = false;
 
     /**
@@ -33,28 +33,28 @@ abstract class FileField extends Field
     {
         $uploadId = $data['uploadId'] ?? '';
         $this->uploadId = $uploadId !== '' ? $uploadId : null;
-        $this->resolvedUpload = null;
+        $this->resolvedUploadMeta = null;
         $this->uploadResolved = false;
     }
 
     /**
-     * Resolves the referenced upload, or null if none is set or it was since deleted.
+     * Resolves the referenced upload's meta, or null if none is set or it was since deleted.
      * @return T|null
      */
-    public function upload(): ?UploadMeta
+    public function meta(): ?UploadMeta
     {
         if (!$this->uploadResolved) {
             $data = $this->uploadId !== null ? Storage::findUpload($this->uploadId) : null;
-            $this->resolvedUpload = $data !== null ? UploadMeta::instantiate($data) : null;
+            $this->resolvedUploadMeta = $data !== null ? UploadMeta::instantiate($data) : null;
             $this->uploadResolved = true;
         }
 
-        return $this->resolvedUpload;
+        return $this->resolvedUploadMeta;
     }
 
     public function url(): ?string
     {
-        return $this->upload()?->url();
+        return $this->meta()?->url();
     }
 
     public function id(): ?string
@@ -64,7 +64,7 @@ abstract class FileField extends Field
 
     public function render(string $name): void
     {
-        $upload = $this->upload();
+        $upload = $this->meta();
         $hasUpload = $upload !== null;
         ?>
         <div class="vcms-field vcms-file-field" data-vcms-file-field data-allowed-type="<?= htmlspecialchars($this->allowedType()) ?>">
