@@ -94,7 +94,13 @@ final class AdminController
         if (!Auth::isAdmin()) {
             Router::redirectWithReturn(Auth::unauthorizedUrl());
         }
-        
+
+        // The upload picker's JSON api must not be wrapped in the HTML admin shell.
+        if ($segments === ['uploads', 'api']) {
+            self::renderUploadsApi();
+            return;
+        }
+
         render_admin_shell_open();
 
         $section = $segments[0] ?? '';
@@ -268,7 +274,50 @@ final class AdminController
         $yearFilter = $_GET['year'] ?? '';
         $monthFilter = $_GET['month'] ?? '';
 
-        $filtered = array_values(array_filter($uploads, function (UploadMeta $upload) use ($typeFilter, $yearFilter, $monthFilter) {
+        $filtered = self::filterUploads($uploads, $typeFilter, $yearFilter, $monthFilter);
+        usort($filtered, fn (UploadMeta $a, UploadMeta $b) => $b->uploadedAt() <=> $a->uploadedAt());
+
+        render_uploads_library($filtered, $uploads, self::getUploadsUrl(), $typeFilter, $yearFilter, $monthFilter);
+    }
+
+    /**
+     * JSON endpoint backing the file field picker modal: filtered, paginated upload metadata.
+     * Bypasses the admin html shell entirely (see the early return in dispatch()).
+     */
+    private static function renderUploadsApi(): void
+    {
+        $uploads = array_map(fn (UploadData $data) => UploadMeta::instantiate($data), Storage::allUploads());
+
+        $typeFilter = $_GET['type'] ?? '';
+        $yearFilter = $_GET['year'] ?? '';
+        $monthFilter = $_GET['month'] ?? '';
+        $offset = max(0, (int) ($_GET['offset'] ?? 0));
+        $limit = 24;
+
+        $filtered = self::filterUploads($uploads, $typeFilter, $yearFilter, $monthFilter);
+        usort($filtered, fn (UploadMeta $a, UploadMeta $b) => $b->uploadedAt() <=> $a->uploadedAt());
+
+        $page = array_slice($filtered, $offset, $limit);
+
+        $items = array_map(fn (UploadMeta $upload) => [
+            'id' => $upload->id(),
+            'name' => $upload->name() ?: $upload->originalName(),
+            'thumb' => $upload->type() === 'image' ? $upload->url() : '',
+            'ext' => strtoupper($upload->extension()),
+            'uploadedAt' => $upload->uploadedAt(),
+        ], $page);
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'items' => $items,
+            'hasMore' => $offset + $limit < count($filtered),
+        ]);
+    }
+
+    /** @param UploadMeta[] $uploads @return UploadMeta[] */
+    private static function filterUploads(array $uploads, string $typeFilter, string $yearFilter, string $monthFilter): array
+    {
+        return array_values(array_filter($uploads, function (UploadMeta $upload) use ($typeFilter, $yearFilter, $monthFilter) {
             if ($typeFilter !== '' && $upload->type() !== $typeFilter) {
                 return false;
             }
@@ -280,10 +329,6 @@ final class AdminController
             }
             return true;
         }));
-
-        usort($filtered, fn (UploadMeta $a, UploadMeta $b) => $b->uploadedAt() <=> $a->uploadedAt());
-
-        render_uploads_library($filtered, $uploads, self::getUploadsUrl(), $typeFilter, $yearFilter, $monthFilter);
     }
 
     private static function handleUpload(): void
