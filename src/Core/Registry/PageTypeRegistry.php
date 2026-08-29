@@ -9,7 +9,7 @@ use ReflectionException;
 /** 
  * Stores the default constructed pages. 
  */
-final class TypeRegistry
+final class PageTypeRegistry
 {
     /** @var Page[] */
     private static array $pages = [];
@@ -18,7 +18,7 @@ final class TypeRegistry
      * Registers a new page type.
      * @param class-string<Page> $pageClass
      */
-    public static function registerPageType(string $pageClass): void
+    public static function registerType(string $pageClass): void
     {
         // Check class is a Page.
         if (!is_subclass_of($pageClass, Page::class)) {
@@ -54,7 +54,7 @@ final class TypeRegistry
      * Returns all registered pages.
      * @return Page[]
      */
-    public static function pageTypes(): array
+    public static function types(): array
     {
         return self::$pages;
     }
@@ -63,7 +63,7 @@ final class TypeRegistry
      * Returns all registered pages which are not archetypes.
      * @return Page[]
      */
-    public static function simplePageTypes(): array
+    public static function simpleTypes(): array
     {
         return array_filter(self::$pages, fn (Page $page) => !$page->isArchetype());
     }
@@ -72,7 +72,7 @@ final class TypeRegistry
      * Returns all registered pages which are archetypes.
      * @return Page[]
      */
-    public static function archetypePageTypes(): array
+    public static function archetypeTypes(): array
     {
         return array_filter(self::$pages, fn (Page $page) => $page->isArchetype());
     }

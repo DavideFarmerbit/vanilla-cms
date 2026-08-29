@@ -6,7 +6,7 @@ use Closure;
 use VanillaCms\Auth\Auth;
 use VanillaCms\Auth\Csrf;
 use VanillaCms\Core\Registry\Page;
-use VanillaCms\Core\Registry\TypeRegistry;
+use VanillaCms\Core\Registry\PageTypeRegistry;
 use VanillaCms\Core\Router\Router;
 use VanillaCms\Core\Router\RouterDispatcher;
 use VanillaCms\Storage\PageData;
@@ -120,13 +120,13 @@ final class AdminController
     private static function dispatchPages(array $segments): void
     {
         if (count($segments) === 0) {
-            render_pages_instances(TypeRegistry::simplePageTypes());
+            render_pages_instances(PageTypeRegistry::simpleTypes());
             return;
         }
 
         $slug = $segments[0];
         $action = $segments[1] ?? null;
-        $page = TypeRegistry::getPageType($slug);
+        $page = PageTypeRegistry::getPageType($slug);
 
         if (!$page || $page->isArchetype()) {
             Router::notFound();
@@ -163,12 +163,12 @@ final class AdminController
     private static function dispatchArchetypes(array $segments): void
     {
         if (count($segments) === 0) {
-            render_archetypes_list(TypeRegistry::archetypePageTypes());
+            render_archetypes_list(PageTypeRegistry::archetypeTypes());
             return;
         }
 
         $typeSlug = $segments[0];
-        $archetype = TypeRegistry::getPageType($typeSlug);
+        $archetype = PageTypeRegistry::getPageType($typeSlug);
 
         if (!$archetype || !$archetype->isArchetype()) {
             Router::notFound();

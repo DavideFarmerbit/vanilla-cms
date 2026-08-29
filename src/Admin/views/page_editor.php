@@ -2,7 +2,7 @@
 
 use VanillaCms\Auth\Csrf;
 use VanillaCms\Core\Registry\Page;
-use VanillaCms\Core\Registry\TypeRegistry;
+use VanillaCms\Core\Registry\PageTypeRegistry;
 use VanillaCms\Core\Router\Router;
 use VanillaCms\Storage\PageData;
 use VanillaCms\Storage\Storage;
@@ -63,7 +63,7 @@ function collect_page_editor_response(Page $type): PageData
     $data = PageData::empty();
     $data->setPage($type);
     
-    $data->slug = TypeRegistry::sanitizeSlug($_POST['slug'] ?? '');
+    $data->slug = PageTypeRegistry::sanitizeSlug($_POST['slug'] ?? '');
     $data->name = trim($_POST['name'] ?? '');
     
     $data->fields = $_POST['fields'] ?? [];

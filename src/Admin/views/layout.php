@@ -2,7 +2,7 @@
 
 use VanillaCms\Admin\AdminAssets;
 use VanillaCms\Admin\AdminController;
-use VanillaCms\Core\Registry\TypeRegistry;
+use VanillaCms\Core\Registry\PageTypeRegistry;
 
 function vcms_is_active_nav_link(string $url): bool
 {
@@ -58,7 +58,7 @@ function render_admin_shell_open(): void
                 <?php vcms_nav_link(AdminController::getHomeUrl(), 'Home'); ?>
                 <hr class="vcms-nav__separator">
                 <?php vcms_nav_link(AdminController::getPagesUrl(), 'Pages'); ?>
-                <?php foreach (TypeRegistry::archetypePageTypes() as $archetype): ?>
+                <?php foreach (PageTypeRegistry::archetypeTypes() as $archetype): ?>
                     <?php vcms_nav_link(AdminController::getArchetypeUrl($archetype->slug()), $archetype->label()); ?>
                 <?php endforeach; ?>
                 <hr class="vcms-nav__separator">

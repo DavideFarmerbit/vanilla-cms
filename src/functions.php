@@ -3,7 +3,7 @@
 use VanillaCms\Admin\AdminController;
 use VanillaCms\Core\PageRenderer;
 use VanillaCms\Core\Registry\Page;
-use VanillaCms\Core\Registry\TypeRegistry;
+use VanillaCms\Core\Registry\PageTypeRegistry;
 use VanillaCms\Core\Router\RouterDispatcher;
 use VanillaCms\Storage\Storage;
 use VanillaCms\Uploads\UploadMeta;
@@ -15,7 +15,7 @@ use VanillaCms\Uploads\UploadTypeRegistry;
  */
 function register_page(string $pageClass): void
 {
-    TypeRegistry::registerPageType($pageClass);
+    PageTypeRegistry::registerType($pageClass);
 }
 
 /**
@@ -24,7 +24,7 @@ function register_page(string $pageClass): void
  */
 function register_pages(array $pageClasses): void
 {
-    array_map(fn ($pageClass) => TypeRegistry::registerPageType($pageClass), $pageClasses);
+    array_map(fn ($pageClass) => PageTypeRegistry::registerType($pageClass), $pageClasses);
 }
 
 /**
@@ -60,7 +60,7 @@ function default_router_dispatchers(): array {
                 $page->slug(),
                 fn () => PageRenderer::page($page->slug())
             ),
-            TypeRegistry::simplePageTypes()
+            PageTypeRegistry::simpleTypes()
         ),
         // Archetypes
         ...array_map(
@@ -68,7 +68,7 @@ function default_router_dispatchers(): array {
                 $archetype->slug() . '/{instance}',
                 fn (string $instance) => PageRenderer::page($archetype->slug(), $instance)
             ),
-            TypeRegistry::archetypePageTypes()
+            PageTypeRegistry::archetypeTypes()
         ),
         // Admin pannel
         AdminController::routerDispatcher(),
@@ -80,7 +80,7 @@ function default_router_dispatchers(): array {
  * @return Page[]
  */
 function get_page_instances_by_type(string $slug): array {
-    $type = Typeregistry::getPageType($slug);
+    $type = PageTypeRegistry::getPageType($slug);
     $pageDataArray = Storage::allPageInstances($type->slug());
     return array_map(fn($pageData) => $type->instantiate($pageData), $pageDataArray);
 }
