@@ -40,6 +40,59 @@ function vcms_icon(string $name): void
     <?php
 }
 
+/**
+ * Month value => label pairs, shared by every year/month upload filter (the Uploads library and
+ * the file field picker).
+ * @return array<string, string>
+ */
+function vcms_months(): array
+{
+    return [
+        '01' => 'January', '02' => 'February', '03' => 'March', '04' => 'April',
+        '05' => 'May', '06' => 'June', '07' => 'July', '08' => 'August',
+        '09' => 'September', '10' => 'October', '11' => 'November', '12' => 'December',
+    ];
+}
+
+/**
+ * Renders the <template>s the file field picker (admin.js) clones: the picker dialog itself, and
+ * a single upload grid item. Rendered once per admin page, cloned on demand.
+ */
+function render_admin_file_picker_templates(): void
+{
+    $currentYear = (int) date('Y');
+    ?>
+    <template data-vcms-file-picker-template>
+        <dialog class="vcms-file-picker-dialog" tabindex="-1">
+            <button type="button" class="vcms-icon-btn vcms-file-picker-dialog__close" data-vcms-file-picker-close title="Close" aria-label="Close">
+                <?php vcms_icon('close') ?>
+            </button>
+            <div class="vcms-file-picker-dialog__filters">
+                <select class="vcms-field__input" data-vcms-file-picker-year>
+                    <option value="">All years</option>
+                    <?php for ($year = $currentYear; $year >= $currentYear - 5; $year--): ?>
+                        <option value="<?= $year ?>"><?= $year ?></option>
+                    <?php endfor; ?>
+                </select>
+                <select class="vcms-field__input" data-vcms-file-picker-month>
+                    <option value="">All months</option>
+                    <?php foreach (vcms_months() as $value => $label): ?>
+                        <option value="<?= $value ?>"><?= $label ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="vcms-upload-grid vcms-file-picker-dialog__list" data-vcms-file-picker-list></div>
+        </dialog>
+    </template>
+    <template data-vcms-file-picker-item-template>
+        <button type="button" class="vcms-upload-grid__item" data-vcms-file-picker-item>
+            <span data-vcms-file-picker-item-thumb></span>
+            <span class="vcms-upload-grid__name" data-vcms-file-picker-item-name></span>
+        </button>
+    </template>
+    <?php
+}
+
 function render_admin_shell_open(): void
 {
     ?>

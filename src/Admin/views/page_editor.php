@@ -56,6 +56,7 @@ function render_page_editor(Page $instance, string $backUrl, string $saveAction,
         </form>
     <?php endif; ?>
     <?php
+    render_admin_file_picker_templates();
 }
 
 function collect_page_editor_response(Page $type): PageData 

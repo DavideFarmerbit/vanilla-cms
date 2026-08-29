@@ -53,20 +53,29 @@ function setFileFieldClearEnabled(clearButton, enabled) {
     clearButton.classList.toggle('vcms-icon-btn--disabled', !enabled);
 }
 
-function buildFilePreview(container, { thumb, ext, name }) {
-    container.innerHTML = '';
-
+function buildThumbNode({ thumb, ext }) {
     if (thumb) {
         const img = document.createElement('img');
         img.className = 'vcms-upload-grid__thumb';
         img.src = thumb;
         img.alt = '';
-        container.appendChild(img);
-    } else if (ext) {
+        return img;
+    }
+    if (ext) {
         const extBadge = document.createElement('span');
         extBadge.className = 'vcms-upload-grid__ext';
         extBadge.textContent = ext;
-        container.appendChild(extBadge);
+        return extBadge;
+    }
+    return null;
+}
+
+function buildFilePreview(container, { thumb, ext, name }) {
+    container.innerHTML = '';
+
+    const thumbNode = buildThumbNode({ thumb, ext });
+    if (thumbNode) {
+        container.appendChild(thumbNode);
     }
 
     const nameLabel = document.createElement('span');
@@ -75,46 +84,35 @@ function buildFilePreview(container, { thumb, ext, name }) {
     container.appendChild(nameLabel);
 }
 
-function buildFilePickerDialog() {
-    const dialog = document.createElement('dialog');
-    dialog.className = 'vcms-file-picker-dialog';
-    dialog.tabIndex = -1;
+function createFilePickerItem(item) {
+    const template = document.querySelector('[data-vcms-file-picker-item-template]');
+    const button = template.content.firstElementChild.cloneNode(true);
 
-    const filters = document.createElement('div');
-    filters.className = 'vcms-file-picker-dialog__filters';
+    button.dataset.id = item.id;
+    button.dataset.name = item.name;
+    button.dataset.thumb = item.thumb;
+    button.dataset.ext = item.ext;
 
-    const yearSelect = document.createElement('select');
-    yearSelect.className = 'vcms-field__input';
-    const yearAllOption = new Option('All years', '');
-    yearSelect.appendChild(yearAllOption);
-    const currentYear = new Date().getFullYear();
-    for (let year = currentYear; year >= currentYear - 5; year--) {
-        yearSelect.appendChild(new Option(String(year), String(year)));
+    const thumbNode = buildThumbNode(item);
+    if (thumbNode) {
+        button.querySelector('[data-vcms-file-picker-item-thumb]').appendChild(thumbNode);
     }
+    button.querySelector('[data-vcms-file-picker-item-name]').textContent = item.name;
 
-    const monthSelect = document.createElement('select');
-    monthSelect.className = 'vcms-field__input';
-    monthSelect.appendChild(new Option('All months', ''));
-    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    monthNames.forEach((label, index) => {
-        monthSelect.appendChild(new Option(label, String(index + 1).padStart(2, '0')));
-    });
+    return button;
+}
 
-    filters.append(yearSelect, monthSelect);
-
-    const list = document.createElement('div');
-    list.className = 'vcms-upload-grid vcms-file-picker-dialog__list';
-
-    const closeButton = document.createElement('button');
-    closeButton.type = 'button';
-    closeButton.className = 'vcms-icon-btn vcms-file-picker-dialog__close';
-    closeButton.title = 'Close';
-    closeButton.setAttribute('aria-label', 'Close');
-    closeButton.innerHTML = '<svg class="vcms-icon" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>';
-    closeButton.addEventListener('click', () => dialog.close());
-
-    dialog.append(closeButton, filters, list);
+function buildFilePickerDialog() {
+    const template = document.querySelector('[data-vcms-file-picker-template]');
+    const dialog = template.content.firstElementChild.cloneNode(true);
     document.body.appendChild(dialog);
+
+    const closeButton = dialog.querySelector('[data-vcms-file-picker-close]');
+    const yearSelect = dialog.querySelector('[data-vcms-file-picker-year]');
+    const monthSelect = dialog.querySelector('[data-vcms-file-picker-month]');
+    const list = dialog.querySelector('[data-vcms-file-picker-list]');
+
+    closeButton.addEventListener('click', () => dialog.close());
 
     dialog.addEventListener('click', (event) => {
         if (event.target === dialog) {
@@ -174,16 +172,7 @@ function loadMoreFilePickerItems() {
         .then((response) => response.json())
         .then((data) => {
             data.items.forEach((item) => {
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.className = 'vcms-upload-grid__item';
-                button.setAttribute('data-vcms-file-picker-item', '');
-                button.dataset.id = item.id;
-                button.dataset.name = item.name;
-                button.dataset.thumb = item.thumb;
-                button.dataset.ext = item.ext;
-                buildFilePreview(button, item);
-                filePickerList.appendChild(button);
+                filePickerList.appendChild(createFilePickerItem(item));
             });
 
             filePickerState.offset += data.items.length;
