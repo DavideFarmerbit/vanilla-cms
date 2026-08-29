@@ -51,6 +51,10 @@ body {
     background: transparent;
 }
 
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
 ::-webkit-scrollbar-thumb {
     background: var(--vcms-border-strong);
     border-radius: 6px;
@@ -76,7 +80,7 @@ button {
 
 .vcms-layout {
     display: flex;
-    min-height: 100vh;
+    height: 100vh;
     gap: 12px;
     padding: 12px;
 
@@ -88,6 +92,7 @@ button {
         border: 1px solid var(--vcms-border);
         border-radius: var(--vcms-radius);
         box-shadow: var(--vcms-shadow);
+        overflow-y: auto;
     }
 
     &__main {
@@ -98,6 +103,7 @@ button {
         border: 1px solid var(--vcms-border);
         border-radius: var(--vcms-radius);
         box-shadow: var(--vcms-shadow);
+        overflow-y: auto;
     }
 }
 
