@@ -11,6 +11,9 @@ use VanillaCms\Core\Router\Router;
 use VanillaCms\Core\Router\RouterDispatcher;
 use VanillaCms\Storage\PageData;
 use VanillaCms\Storage\Storage;
+use VanillaCms\Storage\UploadData;
+use VanillaCms\Uploads\UploadMeta;
+use VanillaCms\Uploads\UploadTypeRegistry;
 
 require_once __DIR__ . '/views/layout.php';
 require_once __DIR__ . '/views/instance_row.php';
@@ -18,6 +21,8 @@ require_once __DIR__ . '/views/pages_instances.php';
 require_once __DIR__ . '/views/archetypes_list.php';
 require_once __DIR__ . '/views/archetype_instances.php';
 require_once __DIR__ . '/views/page_editor.php';
+require_once __DIR__ . '/views/uploads_library.php';
+require_once __DIR__ . '/views/upload_editor.php';
 
 final class AdminController
 {
@@ -57,6 +62,25 @@ final class AdminController
         return "/admin/archetypes/{$slug}/new";
     }
 
+    public static function getUploadsUrl(): string {
+        return "/admin/uploads";
+    }
+
+    /**
+     * @param string[] $batch ids of the uploads to move prev/next between; omitted when editing outside a batch.
+     */
+    public static function getUploadEditUrl(string $id, array $batch = []): string {
+        $url = "/admin/uploads/{$id}/edit";
+        if (!empty($batch)) {
+            $url .= '?' . http_build_query(['batch' => implode(',', $batch)]);
+        }
+        return $url;
+    }
+
+    public static function getUploadDeleteUrl(string $id): string {
+        return "/admin/uploads/{$id}/delete";
+    }
+
     public static function getSharedFieldsUrl(): string {
         return "/admin/shared-fields";
     }
@@ -80,6 +104,7 @@ final class AdminController
             'home' => self::dispatchHome(),
             'pages' => self::dispatchPages($trailingSegments),
             'archetypes' => self::dispatchArchetypes($trailingSegments),
+            'uploads' => self::dispatchUploads($trailingSegments),
             'shared-fields' => self::dispatchSharedFields($trailingSegments),
             default => Router::notFound(),
         };
@@ -199,6 +224,137 @@ final class AdminController
         }
 
         Router::notFound();
+    }
+    
+    private static function dispatchUploads(array $segments): void
+    {
+        if (count($segments) === 0) {
+            if (self::isVerifiedPost()) {
+                self::handleUpload();
+                return;
+            }
+            self::renderUploadsLibrary();
+            return;
+        }
+
+        $id = $segments[0];
+        $subAction = $segments[1] ?? null;
+        $uploadData = Storage::findUpload($id);
+
+        if (!$uploadData) {
+            Router::notFound();
+            return;
+        }
+
+        if ($subAction === 'edit') {
+            self::handleUploadEditor($uploadData);
+            return;
+        }
+
+        if ($subAction === 'delete' && self::isVerifiedPost()) {
+            Storage::deleteUpload($id);
+            Router::redirect(self::getUploadsUrl());
+            return;
+        }
+
+        Router::notFound();
+    }
+
+    private static function renderUploadsLibrary(): void
+    {
+        $uploads = array_map(fn (UploadData $data) => UploadMeta::instantiate($data), Storage::allUploads());
+
+        $typeFilter = $_GET['type'] ?? '';
+        $yearFilter = $_GET['year'] ?? '';
+        $monthFilter = $_GET['month'] ?? '';
+
+        $filtered = array_values(array_filter($uploads, function (UploadMeta $upload) use ($typeFilter, $yearFilter, $monthFilter) {
+            if ($typeFilter !== '' && $upload->type() !== $typeFilter) {
+                return false;
+            }
+            if ($yearFilter !== '' && date('Y', $upload->uploadedAt()) !== $yearFilter) {
+                return false;
+            }
+            if ($monthFilter !== '' && date('m', $upload->uploadedAt()) !== $monthFilter) {
+                return false;
+            }
+            return true;
+        }));
+
+        usort($filtered, fn (UploadMeta $a, UploadMeta $b) => $b->uploadedAt() <=> $a->uploadedAt());
+
+        render_uploads_library($filtered, $uploads, self::getUploadsUrl(), $typeFilter, $yearFilter, $monthFilter);
+    }
+
+    private static function handleUpload(): void
+    {
+        $ids = [];
+        $files = $_FILES['files'] ?? null;
+
+        for ($i = 0; $files && $i < count($files['name']); $i++) {
+            if ($files['error'][$i] !== UPLOAD_ERR_OK || $files['name'][$i] === '') {
+                continue;
+            }
+
+            $originalName = $files['name'][$i];
+            $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+
+            if (!UploadTypeRegistry::isExtensionAllowed($extension)) {
+                continue;
+            }
+
+            $mimeType = '';
+            if (function_exists('finfo_open')) {
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                $mimeType = finfo_file($finfo, $files['tmp_name'][$i]) ?: '';
+                finfo_close($finfo);
+            }
+
+            $id = Storage::newId();
+            $path = Storage::storeUploadedFile($files['tmp_name'][$i], $id, $extension);
+
+            $data = UploadData::empty();
+            $data->type = UploadTypeRegistry::typeForExtension($extension);
+            $data->name = pathinfo($originalName, PATHINFO_FILENAME);
+            $data->path = $path;
+            $data->originalName = $originalName;
+            $data->mimeType = $mimeType;
+            $data->size = $files['size'][$i];
+            $data->uploadedAt = time();
+
+            Storage::saveUpload($id, $data);
+            $ids[] = $id;
+        }
+
+        if (empty($ids)) {
+            Router::redirect(self::getUploadsUrl());
+            return;
+        }
+
+        Router::redirect(self::getUploadEditUrl($ids[0], $ids));
+    }
+
+    private static function handleUploadEditor(UploadData $uploadData): void
+    {
+        $batch = isset($_GET['batch']) ? array_values(array_filter(explode(',', $_GET['batch']))) : [];
+
+        if (self::isVerifiedPost()) {
+            $uploadData->name = trim($_POST['name'] ?? '');
+            $uploadData->fields = $_POST['fields'] ?? [];
+
+            Storage::saveUpload($uploadData->id, $uploadData);
+            Router::redirect(self::getUploadEditUrl($uploadData->id, $batch));
+            return;
+        }
+
+        $meta = UploadMeta::instantiate($uploadData);
+        render_upload_editor(
+            $meta,
+            self::getUploadsUrl(),
+            self::getUploadEditUrl($meta->id(), $batch),
+            self::getUploadDeleteUrl($meta->id()),
+            $batch
+        );
     }
     
     private static function dispatchSharedFields(array $segments): void

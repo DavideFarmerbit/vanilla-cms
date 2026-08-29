@@ -16,5 +16,14 @@ interface StorageDriver
 
     public function deletePageInstance(string $typeSlug, string $id): void;
 
+    /** @return UploadData[] */
+    public function allUploads(): array;
+
+    public function findUpload(string $id): ?UploadData;
+
+    public function saveUpload(?string $id, UploadData $data): string;
+
+    public function deleteUpload(string $id): void;
+
     public function newId(): string;
 }

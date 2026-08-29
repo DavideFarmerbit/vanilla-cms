@@ -14,6 +14,33 @@ document.querySelectorAll('a[data-confirm]').forEach((link) => {
     });
 });
 
+document.querySelectorAll('[data-vcms-dropzone]').forEach((dropzone) => {
+    const input = dropzone.querySelector('[data-vcms-dropzone-input]');
+
+    ['dragenter', 'dragover'].forEach((eventName) => {
+        dropzone.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            dropzone.classList.add('vcms-dropzone--active');
+        });
+    });
+
+    ['dragleave', 'drop'].forEach((eventName) => {
+        dropzone.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            dropzone.classList.remove('vcms-dropzone--active');
+        });
+    });
+
+    dropzone.addEventListener('drop', (event) => {
+        const files = event.dataTransfer?.files;
+        if (!files || files.length === 0) {
+            return;
+        }
+        input.files = files;
+        dropzone.requestSubmit();
+    });
+});
+
 document.querySelectorAll('[data-vcms-repeater]').forEach((repeater) => {
     const items = repeater.querySelector(':scope > [data-vcms-repeater-items]');
     const template = repeater.querySelector(':scope > template[data-vcms-repeater-template]');

@@ -62,6 +62,7 @@ function render_admin_shell_open(): void
                     <?php vcms_nav_link(AdminController::getArchetypeUrl($archetype->slug()), $archetype->label()); ?>
                 <?php endforeach; ?>
                 <hr class="vcms-nav__separator">
+                <?php vcms_nav_link(AdminController::getUploadsUrl(), 'Uploads'); ?>
                 <?php vcms_nav_link(AdminController::getSharedFieldsUrl(), 'Shared Fields'); ?>
             </ul>
         </nav>

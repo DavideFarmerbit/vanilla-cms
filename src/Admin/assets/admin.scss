@@ -441,6 +441,141 @@ template[data-vcms-repeater-template] {
     }
 }
 
+.vcms-upload-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+
+    .vcms-field__input {
+        min-width: 140px;
+    }
+}
+
+.vcms-dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    border: 1px dashed var(--vcms-border-strong);
+    border-radius: var(--vcms-radius);
+    background: var(--vcms-surface);
+    text-align: center;
+    transition: border-color 0.15s ease, background 0.15s ease;
+
+    &--active {
+        border-color: var(--vcms-accent);
+        background: var(--vcms-accent-soft);
+    }
+
+    &__hint {
+        margin: 0;
+        color: var(--vcms-text-muted);
+    }
+
+    &__input {
+        color: var(--vcms-text-muted);
+    }
+}
+
+.vcms-upload-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.85rem;
+
+    &__item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        border: 1px solid var(--vcms-border);
+        border-radius: var(--vcms-radius);
+        background: var(--vcms-surface);
+        color: var(--vcms-text);
+        text-align: center;
+        overflow: hidden;
+
+        &:hover {
+            border-color: var(--vcms-border-strong);
+            background: var(--vcms-surface-hover);
+            text-decoration: none;
+        }
+    }
+
+    &__thumb {
+        width: 100%;
+        height: 100px;
+        object-fit: cover;
+        border-radius: var(--vcms-radius-sm);
+    }
+
+    &__ext {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100px;
+        border-radius: var(--vcms-radius-sm);
+        background: var(--vcms-island);
+        color: var(--vcms-text-faint);
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+
+    &__name {
+        font-size: 0.8rem;
+        color: var(--vcms-text-muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+    }
+}
+
+.vcms-upload-editor {
+    &__nav {
+        display: flex;
+        gap: 0.5rem;
+        margin-left: auto;
+    }
+
+    &__preview {
+        max-width: 320px;
+        margin-bottom: 1rem;
+
+        img {
+            max-width: 100%;
+            border-radius: var(--vcms-radius);
+            border: 1px solid var(--vcms-border);
+        }
+
+        .vcms-upload-grid__ext {
+            width: 160px;
+            height: 120px;
+        }
+    }
+
+    &__info {
+        list-style: none;
+        margin: 0 0 1.5rem;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        color: var(--vcms-text-muted);
+        font-size: 0.85rem;
+
+        input {
+            margin-top: 0.3rem;
+            width: 100%;
+            max-width: 420px;
+        }
+    }
+}
+
 .vcms-table__actions {
     display: inline-flex;
     align-items: center;

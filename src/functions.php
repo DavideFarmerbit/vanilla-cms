@@ -6,6 +6,8 @@ use VanillaCms\Core\Registry\Page;
 use VanillaCms\Core\Registry\TypeRegistry;
 use VanillaCms\Core\Router\RouterDispatcher;
 use VanillaCms\Storage\Storage;
+use VanillaCms\Uploads\UploadMeta;
+use VanillaCms\Uploads\UploadTypeRegistry;
 
 /**
  * Registers a new page type.
@@ -23,6 +25,17 @@ function register_page(string $pageClass): void
 function register_pages(array $pageClasses): void
 {
     array_map(fn ($pageClass) => TypeRegistry::registerPageType($pageClass), $pageClasses);
+}
+
+/**
+ * Registers a new upload type, associating it to a set of file extensions.
+ * @param string $key unique key identifying the type (e.g. 'image').
+ * @param class-string<UploadMeta> $uploadMetaClass
+ * @param string[] $extensions file extensions (without the leading dot) handled by this type; also allow-listed.
+ */
+function register_upload_type(string $key, string $uploadMetaClass, array $extensions): void
+{
+    UploadTypeRegistry::registerType($key, $uploadMetaClass, $extensions);
 }
 
 /** 
