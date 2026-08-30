@@ -3,6 +3,7 @@
 namespace VanillaCms\Storage;
 
 use VanillaCms\Pages\Page;
+use VanillaCms\Pages\PageVisibility;
 
 class PageData
 {
@@ -15,10 +16,14 @@ class PageData
     public string $id;
     public string $slug;
     public string $name;
+    public PageVisibility $visibility;
     
     /** array view of the fields of the page (Field::toArray) */
     public array $fields = [];
-
+    
+    private function __construct()
+    {
+    }
 
     public static function empty(): self
     {
@@ -31,6 +36,7 @@ class PageData
         $pageData->id = '';
         $pageData->slug = '';
         $pageData->name = '';
+        $pageData->visibility = PageVisibility::HIDDEN;
 
         $pageData->fields = [];
         

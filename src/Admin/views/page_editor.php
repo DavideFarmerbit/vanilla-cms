@@ -4,6 +4,7 @@ use VanillaCms\Auth\Csrf;
 use VanillaCms\Pages\Page;
 use VanillaCms\Pages\PageTypeRegistry;
 use VanillaCms\Core\Router\Router;
+use VanillaCms\Pages\PageVisibility;
 use VanillaCms\Storage\PageData;
 use VanillaCms\Storage\Storage;
 
@@ -66,6 +67,7 @@ function collect_page_editor_response(Page $type): PageData
     
     $data->slug = PageTypeRegistry::sanitizeSlug($_POST['slug'] ?? '');
     $data->name = trim($_POST['name'] ?? '');
+    $data->visibility = $_POST['visibility'] ?? PageVisibility::HIDDEN;
     
     $data->fields = $_POST['fields'] ?? [];
     

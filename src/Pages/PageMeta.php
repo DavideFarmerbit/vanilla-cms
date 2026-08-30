@@ -7,12 +7,14 @@ class PageMeta
     private string $id;
     private string $slug;
     private string $name;
+    private Pagevisibility $visibility;
     
-    public function __construct(string $id, string $slug, string $name)
+    public function __construct(string $id, string $slug, string $name, Pagevisibility $visibility)
     {
         $this->id = $id;
         $this->slug = $slug;
         $this->name = $name;
+        $this->visibility = $visibility;
     }
 
     public function id(): string
@@ -28,5 +30,10 @@ class PageMeta
     public function name(): string
     {
         return $this->name;
+    }
+    
+    public function visibility(): Pagevisibility
+    {
+        return $this->visibility;
     }
 }

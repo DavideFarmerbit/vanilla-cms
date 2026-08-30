@@ -39,7 +39,7 @@ abstract class Page
         $instance = new $this();
 
         // Fill meta data
-        $instance->meta = new PageMeta($data->id, $data->slug, $data->name);
+        $instance->meta = new PageMeta($data->id, $data->slug, $data->name, $data->visibility);
         
         // Fill fields
         foreach ($instance->getFields() as $fieldName => $field) {
@@ -57,6 +57,7 @@ abstract class Page
         $pageData->id = '';
         $pageData->slug = $this?->meta?->slug() ?? '';
         $pageData->name = $this?->meta?->name() ?? '';
+        $pageData->visibility = $this?->meta?->visibility() ?? PageVisibility::HIDDEN;
 
         $pageData->fields = array_map(fn ($field) => $field->toArray(), $this->getFields());
 

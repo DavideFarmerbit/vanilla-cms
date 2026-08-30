@@ -2,6 +2,8 @@
 
 namespace VanillaCms\Storage;
 
+use VanillaCms\Pages\PageVisibility;
+
 class JsonStorage implements StorageDriver
 {
     private string $root;
@@ -229,13 +231,14 @@ class JsonStorage implements StorageDriver
 
     private static function hydrate(array $row): PageData
     {
-        $record = new PageData();
+        $record = PageData::empty();
         $record->id = $row['id'];
         $record->type_slug = $row['type_slug'];
         $record->type_label = $row['type_label'];
         $record->is_archetype = $row['is_archetype'];
         $record->slug = $row['slug'];
         $record->name = $row['name'];
+        $record->visibility = PageVisibility::tryFrom($row['visibility'] ?? '') ?? PageVisibility::HIDDEN;
         $record->fields = $row['fields'] ?? [];
 
         return $record;
