@@ -97,8 +97,6 @@ button {
     }
 
     &__sidebar-inner {
-        display: flex;
-        flex-direction: column;
         width: max-content;
         min-width: 100%;
         padding-right: 0.75rem;
@@ -117,8 +115,6 @@ button {
     }
     
     &__main-inner {
-        display: flex;
-        flex-direction: column;
         width: max-content;
         min-width: 100%;  
         padding-right: 2rem;
