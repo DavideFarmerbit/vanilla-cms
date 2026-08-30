@@ -2,7 +2,9 @@
 
 namespace VanillaCms\Core;
 
+use VanillaCms\Auth\Auth;
 use VanillaCms\Pages\PageTypeRegistry;
+use VanillaCms\Pages\PageVisibility;
 use VanillaCms\Storage\PageData;
 use VanillaCms\Storage\Storage;
 use VanillaCms\Core\Router\Router;
@@ -25,6 +27,12 @@ final class PageRenderer
             return;
         }
         
-        $page->instantiate($pageData)->render();
+        $pageInstance = $page->instantiate($pageData);
+        if ($pageInstance->visibility() === PageVisibility::HIDDEN || $pageInstance->visibility() === PageVisibility::RESTRICTED && !Auth::isAdmin()) {
+            Router::notFound();
+            return;
+        }
+        
+        $pageInstance->render();
     }
 }

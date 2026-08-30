@@ -103,6 +103,10 @@ abstract class Page
         
         return $this->meta;
     }
+    
+    public function visibility(): PageVisibility {
+        return $this->meta()->visibility();
+    }
 
     // ~DataInterface
     /*================================================================================================================*/
