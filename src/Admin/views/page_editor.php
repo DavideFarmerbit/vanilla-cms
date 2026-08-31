@@ -21,7 +21,7 @@ function render_page_editor(Page $instance, string $backUrl, string $saveAction,
     </div>
 
     <?php if ($pageUrl): ?>
-        <a class="vcms-link vcms-link--preview" href="<?= $pageUrl ?>"><?= $pageUrl ?></a>
+        <a class="vcms-link vcms-link--preview" href="<?= $pageUrl ?>" target="_blank"><?= $pageUrl ?></a>
     <?php else: ?>
         <span class="vcms-link vcms-link--preview">create the page to see the url</span>
     <?php endif; ?>
