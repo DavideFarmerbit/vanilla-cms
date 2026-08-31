@@ -11,6 +11,9 @@ use VanillaCms\Core\Router\Router;
 
 final class PageRenderer
 {
+    /** Query param that must accompany an admin session to preview a HIDDEN page. */
+    public const PREVIEW_PARAM = 'vcms_preview';
+
     public static function page(string $typeSlug, ?string $instanceSlug = null): void
     {
         $page = PageTypeRegistry::getPageType($typeSlug);
@@ -28,7 +31,16 @@ final class PageRenderer
         }
         
         $pageInstance = $page->instantiate($pageData);
-        if ($pageInstance->visibility() === PageVisibility::HIDDEN || $pageInstance->visibility() === PageVisibility::RESTRICTED && !Auth::isAdmin()) {
+        $visibility = $pageInstance->visibility();
+
+        // Hidden pages only render for an admin who followed an explicit preview link never from public
+        // navigation or a bare direct URL.
+        $isAdminPreview = Auth::isAdmin() && ($_GET[self::PREVIEW_PARAM] ?? null) === '1';
+        if ($visibility === PageVisibility::HIDDEN && !$isAdminPreview) {
+            Router::notFound();
+            return;
+        }
+        if ($visibility === PageVisibility::RESTRICTED && !Auth::isAdmin()) {
             Router::notFound();
             return;
         }

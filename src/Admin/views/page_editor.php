@@ -1,16 +1,16 @@
 <?php
 
 use VanillaCms\Auth\Csrf;
+use VanillaCms\Core\PageRenderer;
 use VanillaCms\Pages\Page;
 use VanillaCms\Pages\PageTypeRegistry;
-use VanillaCms\Core\Router\Router;
 use VanillaCms\Pages\PageVisibility;
 use VanillaCms\Storage\PageData;
-use VanillaCms\Storage\Storage;
 
 function render_page_editor(Page $instance, string $backUrl, string $saveAction, ?string $deleteAction, bool $isNew): void
 {
     $pageUrl = htmlspecialchars($instance->url());
+    $previewUrl = htmlspecialchars($instance->url() . '?' . PageRenderer::PREVIEW_PARAM . '=1');
 
     ?>
     <div class="vcms-page-header">
@@ -21,7 +21,7 @@ function render_page_editor(Page $instance, string $backUrl, string $saveAction,
     </div>
 
     <?php if ($pageUrl): ?>
-        <a class="vcms-link vcms-link--preview" href="<?= $pageUrl ?>" target="_blank"><?= $pageUrl ?></a>
+        <a class="vcms-link vcms-link--preview" href="<?= $previewUrl ?>" target="_blank"><?= $pageUrl ?></a>
     <?php else: ?>
         <span class="vcms-link vcms-link--preview">create the page to see the url</span>
     <?php endif; ?>
