@@ -3,16 +3,16 @@
 namespace VanillaCms\Fields;
 
 use BackedEnum;
-use UnitEnum;
+use InvalidArgumentException;
 
-/** @template T of UnitEnum */
+/** @template T of BackedEnum */
 class EnumField extends Field
 {
     /** @var class-string<T> */
     private string $enumClass;
 
     /** @var T|null */
-    private ?UnitEnum $value = null;
+    private ?BackedEnum $value = null;
 
     /**
      * @param class-string<T> $enumClass
@@ -20,12 +20,16 @@ class EnumField extends Field
      */
     public function __construct(string $enumClass, array $config)
     {
+        if (!is_subclass_of($enumClass, BackedEnum::class)) {
+            throw new InvalidArgumentException("EnumField expects a backed enum, {$enumClass} given.");
+        }
+
         parent::__construct($config);
         $this->enumClass = $enumClass;
     }
 
     /** @return T|null */
-    public function value(): ?UnitEnum
+    public function value(): ?BackedEnum
     {
         return $this->value;
     }
@@ -34,12 +38,13 @@ class EnumField extends Field
 
     public function toArray(): array
     {
-        return ['value' => $this->value instanceof BackedEnum ? $this->value->value : $this->value?->name];
+        return ['value' => $this->value?->value];
     }
 
     public function fromArray(array $data): void
     {
-        $this->value = $this->resolveCase($data['value'] ?? null);
+        $raw = $data['value'] ?? null;
+        $this->value = $raw === null || $raw === '' ? null : $this->enumClass::tryFrom($raw);
     }
 
     public function render(string $name): void
@@ -52,7 +57,7 @@ class EnumField extends Field
                 <span class="vcms-field__select-wrap vcms-field__select-wrap--block">
                     <select class="vcms-field__input" name="<?= "{$name}[value]" ?>">
                         <?php foreach ($enumClass::cases() as $case): ?>
-                            <option value="<?= htmlspecialchars($this->caseValue($case)) ?>" <?= $case === $this->value ? 'selected' : '' ?>><?= htmlspecialchars($this->caseLabel($case)) ?></option>
+                            <option value="<?= htmlspecialchars((string) $case->value) ?>" <?= $case === $this->value ? 'selected' : '' ?>><?= htmlspecialchars($this->caseLabel($case)) ?></option>
                         <?php endforeach; ?>
                     </select>
                 </span>
@@ -63,41 +68,14 @@ class EnumField extends Field
 
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    /** @return T|null */
-    private function resolveCase(mixed $raw): ?UnitEnum
-    {
-        if ($raw === null || $raw === '') {
-            return null;
-        }
-
-        $enumClass = $this->enumClass;
-        if (is_subclass_of($enumClass, BackedEnum::class)) {
-            return $enumClass::tryFrom($raw);
-        }
-
-        foreach ($enumClass::cases() as $case) {
-            if ($case->name === $raw) {
-                return $case;
-            }
-        }
-        return null;
-    }
-
     /** @param T $case */
-    private function caseValue(UnitEnum $case): string
-    {
-        return (string) ($case instanceof BackedEnum ? $case->value : $case->name);
-    }
-
-    /** @param T $case */
-    private function caseLabel(UnitEnum $case): string
+    private function caseLabel(BackedEnum $case): string
     {
         $labels = $this->config['labels'] ?? [];
         if (isset($labels[$case->name])) {
             return $labels[$case->name];
         }
 
-        $base = $case instanceof BackedEnum ? (string) $case->value : $case->name;
-        return ucfirst(str_replace('_', ' ', strtolower($base)));
+        return ucfirst(str_replace('_', ' ', strtolower((string) $case->value)));
     }
 }
