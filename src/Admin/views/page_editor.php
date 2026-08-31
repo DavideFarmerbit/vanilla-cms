@@ -26,8 +26,20 @@ function render_page_editor(Page $instance, string $backUrl, string $saveAction,
         <span class="vcms-link vcms-link--preview">create the page to see the url</span>
     <?php endif; ?>
 
-    <form method="post" action="<?= htmlspecialchars($saveAction) ?>" class="vcms-form">
+    <form method="post" action="<?= htmlspecialchars($saveAction) ?>" class="vcms-form vcms-form--page-editor">
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
+        <div class="vcms-field vcms-field--select">
+            <label class="vcms-field__label">
+                Visibility
+                <span class="vcms-field__select-wrap vcms-field__select-wrap--block">
+                    <select class="vcms-field__input" name="visibility">
+                        <?php foreach (PageVisibility::cases() as $visibilityOption): ?> ?>
+                            <option value="<?= htmlspecialchars($visibilityOption->value) ?>" <?= $visibilityOption === $instance->visibility() ? 'selected' : '' ?>><?= htmlspecialchars(ucfirst($visibilityOption->value)) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </span>
+            </label>
+        </div>
         <div class="vcms-field vcms-field--text">
             <label class="vcms-field__label">
                 Name
@@ -67,7 +79,7 @@ function collect_page_editor_response(Page $type): PageData
     
     $data->slug = PageTypeRegistry::sanitizeSlug($_POST['slug'] ?? '');
     $data->name = trim($_POST['name'] ?? '');
-    $data->visibility = $_POST['visibility'] ?? PageVisibility::HIDDEN;
+    $data->visibility =  PageVisibility::tryFrom($_POST['visibility'] ?? '') ?? PageVisibility::HIDDEN;
     
     $data->fields = $_POST['fields'] ?? [];
     

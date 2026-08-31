@@ -299,6 +299,15 @@ button {
             background-repeat: no-repeat;
             background-size: 12px;
         }
+
+        &--block {
+            display: block;
+            width: 100%;
+
+            select {
+                width: 100%;
+            }
+        }
     }
 }
 
