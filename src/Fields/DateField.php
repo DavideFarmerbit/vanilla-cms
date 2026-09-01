@@ -19,7 +19,7 @@ class DateField extends Field
         $this->value = DateTimeImmutable::createFromFormat('Y-m-d', $data['value'] ?? '') ?? null;
     }
     
-    public function getDate(): ?DateTimeImmutable
+    public function date(): ?DateTimeImmutable
     {
         return $this->value;
     }
