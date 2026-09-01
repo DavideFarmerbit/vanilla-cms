@@ -15,6 +15,10 @@ class BoolField extends Field
     {
         $this->value = $data['value'] ?? false;
     }
+    
+    public function getValue(): bool {
+        return $this->value;
+    }
 
     public function render(string $name): void
     {

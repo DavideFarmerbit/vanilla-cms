@@ -18,6 +18,11 @@ class DateField extends Field
     {
         $this->value = DateTimeImmutable::createFromFormat('Y-m-d', $data['value'] ?? '') ?? null;
     }
+    
+    public function getDate(): ?DateTimeImmutable
+    {
+        return $this->value;
+    }
 
     public function render(string $name): void
     {
