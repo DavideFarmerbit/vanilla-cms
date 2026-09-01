@@ -75,6 +75,16 @@ function default_router_dispatchers(): array {
     ];
 }
 
+/**
+ * Returns the first instance of a given page type.
+ * @return Page
+ */
+function get_first_page_instance_by_type(string $slug): Page {
+    $type = PageTypeRegistry::getPageType($slug);
+    $pageDataArray = Storage::findFirstPageInstance($type->slug());
+    return $type->instantiate($pageDataArray);
+}
+
 /** 
  * Returns all page instances of a given type.
  * @return Page[]
