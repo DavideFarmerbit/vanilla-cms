@@ -118,6 +118,7 @@ final class Router
      */
     private static function match(string $pattern, array $segments): ?array
     {
+        $pattern = trim($pattern, '/');
         $patternSegments = $pattern === '' ? [] : explode('/', $pattern);
         $params = [];
 
