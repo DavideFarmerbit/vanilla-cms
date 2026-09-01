@@ -10,12 +10,13 @@ class DateField extends Field
 
     public function toArray(): array
     {
-        return ['value' => $this->value];
+        $dateStr = $this->value ? $this->value->format('Y-m-d') : '';
+        return ['value' => $dateStr];
     }
 
     public function fromArray(array $data): void
     {
-        $this->value = $data['value'] ?? null;
+        $this->value = DateTimeImmutable::createFromFormat('Y-m-d', $data['value'] ?? '') ?? null;
     }
 
     public function render(string $name): void
