@@ -1,6 +1,12 @@
 <?php
 
 use VanillaCms\Admin\AdminController;
+use VanillaCms\Admin\AdminTagGroup;
+use VanillaCms\Admin\Tabs\ArchetypeTab;
+use VanillaCms\Admin\Tabs\HomeTab;
+use VanillaCms\Admin\Tabs\PagesTab;
+use VanillaCms\Admin\Tabs\SharedFieldsTab;
+use VanillaCms\Admin\Tabs\UploadsTab;
 use VanillaCms\Core\PageRenderer;
 use VanillaCms\Pages\Page;
 use VanillaCms\Pages\PageTypeRegistry;
@@ -73,6 +79,20 @@ function default_router_dispatchers(): array {
         // Admin pannel
         AdminController::routerDispatcher(),
     ];
+}
+
+function vcms_register_default_admin_tabs(): void
+{
+    AdminController::registerGroup(new AdminTagGroup('vanilla-cms', 'Vanilla CMS'));
+    AdminController::registerGroup(new AdminTagGroup('pages', 'Pages'));
+    AdminController::registerGroup(new AdminTagGroup('content', 'Content'));
+    AdminController::registerTab('vanilla-cms', new HomeTab());
+    AdminController::registerTab('pages', new PagesTab());
+    foreach (PageTypeRegistry::archetypeTypes() as $type) {
+        AdminController::registerTab('pages', new ArchetypeTab($type->slug(), $type->label()));
+    }
+    AdminController::registerTab('content', new UploadsTab());
+    AdminController::registerTab('content', new SharedFieldsTab());
 }
 
 /**
