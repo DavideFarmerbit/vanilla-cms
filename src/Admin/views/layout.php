@@ -22,6 +22,21 @@ function vcms_nav_link(string $url, string $label): void
     <?php
 }
 
+function vcms_render_tabs_links()
+{
+    ?>
+    <?php vcms_nav_link(AdminController::getHomeUrl(), 'Home'); ?>
+    <hr class="vcms-nav__separator">
+    <?php vcms_nav_link(AdminController::getPagesUrl(), 'Pages'); ?>
+    <?php foreach (PageTypeRegistry::archetypeTypes() as $archetype): ?>
+        <?php vcms_nav_link(AdminController::getArchetypeUrl($archetype->slug()), $archetype->label()); ?>
+    <?php endforeach; ?>
+    <hr class="vcms-nav__separator">
+    <?php vcms_nav_link(AdminController::getUploadsUrl(), 'Uploads'); ?>
+    <?php vcms_nav_link(AdminController::getSharedFieldsUrl(), 'Shared Fields'); ?>
+    <?php
+}
+
 /**
  * Renders one of the shared inline icons (used by .vcms-icon-btn buttons).
  * Add new icons here as new row/toolbar actions are introduced.
@@ -113,15 +128,7 @@ function render_admin_shell_open(): void
         <nav class="vcms-layout__sidebar">
             <div class="vcms-layout__sidebar-inner">
                 <ul class="vcms-nav">
-                    <?php vcms_nav_link(AdminController::getHomeUrl(), 'Home'); ?>
-                    <hr class="vcms-nav__separator">
-                    <?php vcms_nav_link(AdminController::getPagesUrl(), 'Pages'); ?>
-                    <?php foreach (PageTypeRegistry::archetypeTypes() as $archetype): ?>
-                        <?php vcms_nav_link(AdminController::getArchetypeUrl($archetype->slug()), $archetype->label()); ?>
-                    <?php endforeach; ?>
-                    <hr class="vcms-nav__separator">
-                    <?php vcms_nav_link(AdminController::getUploadsUrl(), 'Uploads'); ?>
-                    <?php vcms_nav_link(AdminController::getSharedFieldsUrl(), 'Shared Fields'); ?>
+                    <?php vcms_render_tabs_links() ?>
                 </ul>
             </div>
         </nav>
@@ -141,12 +148,5 @@ function render_admin_shell_close(): void
     <?php endif; ?>
     </body>
     </html>
-    <?php
-}
-
-function render_admin_home(): void {
-    ?>
-        <h1 class="vcms-page-title">Vanilla Cms</h1>
-        <p>Select a category from the side bar to get started.</p>
     <?php
 }
