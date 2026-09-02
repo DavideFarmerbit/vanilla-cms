@@ -3,6 +3,7 @@
 namespace VanillaCms\Admin;
 
 use Closure;
+use InvalidArgumentException;
 use VanillaCms\Auth\Auth;
 use VanillaCms\Auth\Csrf;
 use VanillaCms\Pages\Page;
@@ -17,17 +18,12 @@ use VanillaCms\Uploads\UploadTypeRegistry;
 
 require_once __DIR__ . '/views/layout.php';
 require_once __DIR__ . '/views/instance_row.php';
-require_once __DIR__ . '/views/pages_instances.php';
-require_once __DIR__ . '/views/archetypes_list.php';
-require_once __DIR__ . '/views/archetype_instances.php';
 require_once __DIR__ . '/views/page_editor.php';
-require_once __DIR__ . '/views/uploads_library.php';
-require_once __DIR__ . '/views/upload_editor.php';
 
 final class AdminController
 {
-    /** @var array<string, AdminTab[]> category slug => tab instance array */
-    private static array $tabsRegistry;
+    /** @var AdminTagGroup[] */
+    private static array $tabsRegistry = [];
     
     public static function routerDispatcher(): RouterDispatcher {
         return router_dispatcher('admin/*', fn (array $segments) => AdminController::dispatch($segments));
@@ -40,7 +36,13 @@ final class AdminController
         }
         
         // Handle API requests first, so that the admin shell is not rendered.
-        $requestHandled = self::foreachTab(fn(string $categorySlug, AdminTab $tab) => $tab->handleApiRequest($segments));
+        $requestHandled = self::foreachTab(function (string $categorySlug, AdminTab $tab) use ($segments) {
+            $tabSegments = Router::consumeSegments($tab->fullSlug(), $segments);
+            if ($tabSegments === null) {
+                return false;
+            }
+            return $tab->handleApiRequest($tabSegments);
+        });
         if ($requestHandled) {
             return;
         }
@@ -48,14 +50,12 @@ final class AdminController
         // If it wasn't an API request, render the admin shell.
         render_admin_shell_open();
 
-        $section = $segments[0] ?? '';
-        $trailingSegments = array_slice($segments, 1);
-        $tabDispatched = self::foreachTab(function (string $categorySlug, AdminTab $tab) use ($section, $trailingSegments) {
-            if ($tab->slug() !== $section) {
+        $tabDispatched = self::foreachTab(function (string $categorySlug, AdminTab $tab) use ($segments) {
+            $tabSegments = Router::consumeSegments($tab->fullSlug(), $segments);
+            if ($tabSegments === null) {
                 return false;
             }
-            
-            $tab->dispatch($trailingSegments);
+            $tab->dispatch($tabSegments);
             return true;
         });
         if (!$tabDispatched) {
@@ -65,15 +65,44 @@ final class AdminController
         render_admin_shell_close();
     }
     
+    public static function registerGroup(AdminTagGroup $group): void {
+        if (array_any(self::$tabsRegistry, fn($g) => $g->slug() === $group->slug())) {
+            throw new InvalidArgumentException("A group with slug {$group->slug()} already exists.");
+        }
+        self::$tabsRegistry[] = $group;
+    }
+
+    public static function registerTab(string $groupSlug, AdminTab $tab): void {
+        $group = array_find(self::$tabsRegistry, fn($g) => $g->slug() === $groupSlug);
+        if (!$group) {
+            throw new InvalidArgumentException("Group with slug {$groupSlug} is not registered.");
+        }
+        $group->registerTab($tab);
+    }
+    
+    /** @return AdminTab[] */
+    public static function tabs(): array {
+        $tabs = [];
+        foreach (self::$tabsRegistry as $group) {
+            $tabs = array_merge($tabs, $group->tabs());
+        }
+        return $tabs;
+    }
+    
+    /** @return AdminTagGroup[] */
+    public static function tabGroups(): array {
+        return self::$tabsRegistry;
+    }
+    
     /** 
      * Calls the callback for each tab in the registry. Returning true in the callback will stop the iteration.
      * @param Closure(string $categorySlug, AdminTab $tab): bool $callback
      * @return true if the iteration was stopped early, false otherwise.
      */
     protected static function foreachTab(Closure $callback): bool {
-        foreach (self::$tabsRegistry as $categorySlug => $tabs) {
-            foreach ($tabs as $tab) {
-                if ($callback($categorySlug, $tab)) {
+        foreach (self::$tabsRegistry as $group) {
+            foreach ($group->tabs() as $tab) {
+                if ($callback($group->slug(), $tab)) {
                     return true;
                 }
             }

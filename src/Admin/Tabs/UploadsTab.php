@@ -4,6 +4,7 @@ namespace VanillaCms\Admin\Tabs;
 
 use VanillaCms\Admin\AdminController;
 use VanillaCms\Admin\AdminTab;
+use VanillaCms\Auth\Csrf;
 use VanillaCms\Core\Router\Router;
 use VanillaCms\Storage\Storage;
 use VanillaCms\Storage\UploadData;
@@ -89,7 +90,7 @@ class UploadsTab extends AdminTab
         $filtered = $this->filterUploads($uploads, $typeFilter, $yearFilter, $monthFilter);
         usort($filtered, fn (UploadMeta $a, UploadMeta $b) => $b->uploadedAt() <=> $a->uploadedAt());
 
-        render_uploads_library($filtered, $uploads, self::getUploadsUrl(), $typeFilter, $yearFilter, $monthFilter);
+        $this->renderUploadsLibraryMarkdown($filtered, $uploads, self::getUploadsUrl(), $typeFilter, $yearFilter, $monthFilter);
     }
 
     /**
@@ -185,7 +186,7 @@ class UploadsTab extends AdminTab
         }
 
         $meta = UploadMeta::instantiate($uploadData);
-        render_upload_editor(
+        $this->renderUploadEditorMarkdown(
             $meta,
             self::getUploadsUrl(),
             self::getUploadEditUrl($meta->id(), $batch),
@@ -209,5 +210,160 @@ class UploadsTab extends AdminTab
             }
             return true;
         }));
+    }
+
+    /**
+     * @param UploadMeta[] $uploads uploads matching the current filter, to display.
+     * @param UploadMeta[] $allUploads every upload, used to compute the year filter's options.
+     */
+    public function renderUploadsLibraryMarkdown(array $uploads, array $allUploads, string $uploadAction, string $typeFilter, string $yearFilter, string $monthFilter): void
+    {
+        $years = array_values(array_unique(array_map(fn (UploadMeta $upload) => date('Y', $upload->uploadedAt()), $allUploads)));
+        rsort($years);
+
+        $months = vcms_months();
+        ?>
+        <h1 class="vcms-page-title">Uploads</h1>
+
+        <form method="get" class="vcms-upload-filters">
+            <label class="vcms-field__label">
+                Type
+                <span class="vcms-field__select-wrap">
+                <select class="vcms-field__input" name="type" onchange="this.form.submit()">
+                    <option value="">All types</option>
+                    <?php foreach (UploadTypeRegistry::types() as $type): ?>
+                        <option value="<?= htmlspecialchars($type) ?>" <?= $type === $typeFilter ? 'selected' : '' ?>><?= htmlspecialchars(ucfirst($type)) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </span>
+            </label>
+            <label class="vcms-field__label">
+                Year
+                <span class="vcms-field__select-wrap">
+                <select class="vcms-field__input" name="year" onchange="this.form.submit()">
+                    <option value="">All years</option>
+                    <?php foreach ($years as $year): ?>
+                        <option value="<?= htmlspecialchars($year) ?>" <?= $year === $yearFilter ? 'selected' : '' ?>><?= htmlspecialchars($year) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </span>
+            </label>
+            <label class="vcms-field__label">
+                Month
+                <span class="vcms-field__select-wrap">
+                <select class="vcms-field__input" name="month" onchange="this.form.submit()">
+                    <option value="">All months</option>
+                    <?php foreach ($months as $value => $label): ?>
+                        <option value="<?= $value ?>" <?= $value === $monthFilter ? 'selected' : '' ?>><?= $label ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </span>
+            </label>
+            <noscript><button type="submit" class="vcms-btn">Filter</button></noscript>
+        </form>
+
+        <form method="post" action="<?= htmlspecialchars($uploadAction) ?>" enctype="multipart/form-data" class="vcms-dropzone" data-vcms-dropzone>
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
+            <p class="vcms-dropzone__hint">Drag and drop files here, or</p>
+            <input class="vcms-dropzone__input" type="file" name="files[]" multiple data-vcms-dropzone-input>
+            <button type="submit" class="vcms-btn vcms-btn--primary">Upload</button>
+        </form>
+
+        <?php if (empty($uploads)): ?>
+            <p class="vcms-empty-state">No uploads yet.</p>
+        <?php else: ?>
+            <div class="vcms-upload-grid">
+                <?php foreach ($uploads as $upload): ?>
+                    <a class="vcms-upload-grid__item" href="<?= htmlspecialchars(self::getUploadEditUrl($upload->id())) ?>">
+                        <?php if ($upload->type() === 'image'): ?>
+                            <img class="vcms-upload-grid__thumb" src="<?= htmlspecialchars($upload->url()) ?>" alt="">
+                        <?php else: ?>
+                            <span class="vcms-upload-grid__ext"><?= htmlspecialchars(strtoupper($upload->extension())) ?></span>
+                        <?php endif; ?>
+                        <span class="vcms-upload-grid__name"><?= htmlspecialchars($upload->name() ?: $upload->originalName()) ?></span>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+        <?php
+    }
+
+    /** @param string[] $batch ids of the uploads to move prev/next between; empty outside of a batch. */
+    function renderUploadEditorMarkdown(UploadMeta $upload, string $backUrl, string $saveAction, string $deleteAction, array $batch): void
+    {
+        $prevUrl = null;
+        $nextUrl = null;
+        $index = array_search($upload->id(), $batch, true);
+
+        if ($index !== false) {
+            if ($index > 0) {
+                $prevUrl = self::getUploadEditUrl($batch[$index - 1], $batch);
+            }
+            if ($index < count($batch) - 1) {
+                $nextUrl = self::getUploadEditUrl($batch[$index + 1], $batch);
+            }
+        }
+        ?>
+        <div class="vcms-page-header">
+            <a class="vcms-icon-btn vcms-page-header__back" href="<?= htmlspecialchars($backUrl) ?>" title="Back" aria-label="Back">
+                <?php vcms_icon('back') ?>
+            </a>
+            <h1 class="vcms-page-title">Edit <?= htmlspecialchars($upload->originalName()) ?></h1>
+            <?php if ($prevUrl || $nextUrl): ?>
+                <div class="vcms-upload-editor__nav">
+                    <?php if ($prevUrl): ?>
+                        <a class="vcms-btn vcms-btn--action" href="<?= htmlspecialchars($prevUrl) ?>">&larr; Prev</a>
+                    <?php else: ?>
+                        <span class="vcms-btn vcms-btn--disabled">&larr; Prev</span>
+                    <?php endif; ?>
+                    <?php if ($nextUrl): ?>
+                        <a class="vcms-btn vcms-btn--action" href="<?= htmlspecialchars($nextUrl) ?>">Next &rarr;</a>
+                    <?php else: ?>
+                        <span class="vcms-btn vcms-btn--disabled">Next &rarr;</span>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+
+        <div class="vcms-upload-editor__preview">
+            <?php if ($upload->type() === 'image'): ?>
+                <img src="<?= htmlspecialchars($upload->url()) ?>" alt="<?= htmlspecialchars($upload->originalName()) ?>">
+            <?php else: ?>
+                <span class="vcms-upload-grid__ext"><?= htmlspecialchars(strtoupper($upload->extension())) ?></span>
+            <?php endif; ?>
+        </div>
+
+        <ul class="vcms-upload-editor__info">
+            <li>Original filename: <?= htmlspecialchars($upload->originalName()) ?></li>
+            <li>Size: <?= htmlspecialchars(number_format($upload->size() / 1024, 1)) ?> KB</li>
+            <li>Uploaded: <?= htmlspecialchars(date('Y-m-d H:i', $upload->uploadedAt())) ?></li>
+            <li>
+                <label>
+                    Url:
+                    <input class="vcms-field__input" type="text" readonly value="<?= htmlspecialchars($upload->url()) ?>" onclick="this.select()">
+                </label>
+            </li>
+        </ul>
+
+        <form method="post" action="<?= htmlspecialchars($saveAction) ?>" class="vcms-form">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
+            <div class="vcms-field vcms-field--text">
+                <label class="vcms-field__label">
+                    Name
+                    <input class="vcms-field__input" type="text" name="name" value="<?= htmlspecialchars($upload->name()) ?>" required>
+                </label>
+            </div>
+            <?php foreach ($upload->getFields() as $fieldName => $field) {
+                $field->render("fields[{$fieldName}]");
+            } ?>
+            <div class="vcms-form__actions">
+                <button type="submit" class="vcms-btn vcms-btn--primary">Save</button>
+            </div>
+        </form>
+        <form method="post" action="<?= htmlspecialchars($deleteAction) ?>" class="vcms-delete-form" data-confirm="Delete this upload? This cannot be undone.">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
+            <button type="submit" class="vcms-btn vcms-btn--danger">Delete</button>
+        </form>
+        <?php
     }
 }

@@ -6,6 +6,7 @@ use VanillaCms\Admin\AdminController;
 use VanillaCms\Admin\AdminPageAction;
 use VanillaCms\Admin\AdminTab;
 use VanillaCms\Core\Router\Router;
+use VanillaCms\Pages\Page;
 use VanillaCms\Pages\PageTypeRegistry;
 use VanillaCms\Storage\Storage;
 
@@ -29,7 +30,7 @@ class PagesTab extends AdminTab
     public function dispatch(array $segments): void
     {
         if (count($segments) === 0) {
-            render_pages_instances(PageTypeRegistry::simpleTypes());
+            $this->renderPagesInstances(PageTypeRegistry::simpleTypes());
             return;
         }
 
@@ -66,5 +67,33 @@ class PagesTab extends AdminTab
         }
 
         Router::notFound();
+    }
+
+    /** @param Page[] $pages */
+    protected function renderPagesInstances(array $pages): void
+    {
+        ?>
+        <h1 class="vcms-page-title">Pages</h1>
+        <?php if (empty($pages)): ?>
+            <p class="vcms-empty-state">No pages yet.</p>
+        <?php else: ?>
+            <table class="vcms-table">
+                <thead>
+                <?php render_instance_row_header() ?>
+                </thead>
+                <tbody>
+                <?php foreach ($pages as $page): ?>
+                    <?php $instance = Storage::findFirstPageInstance($page->slug()); ?>
+                    <?php render_instance_row(
+                        $page,
+                        $instance,
+                        self::getPageEditUrl($page->slug(), AdminPageAction::EDIT),
+                        self::getPageEditUrl($page->slug(), AdminPageAction::DELETE),
+                    ); ?>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+        <?php
     }
 }

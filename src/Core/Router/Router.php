@@ -96,6 +96,26 @@ final class Router
 
         return is_string($target) && self::isSafeReturnTarget($target) ? $target : $fallback;
     }
+    
+    /**
+     * Consumes a literal slug prefix from a set of segments.
+     * @param string $slug: A literal path prefix like '/users/settings', matched segment by segment.
+     * @param string[] $segments: The segments to match against.
+     * @return string[]|null: The remaining segments after the slug, or null if the slug doesn't match.
+     */
+    public static function consumeSegments(string $slug, array $segments): ?array
+    {
+        $slug = trim($slug, '/');
+        $slugSegments = $slug === '' ? [] : explode('/', $slug);
+
+        foreach ($slugSegments as $i => $token) {
+            if (!array_key_exists($i, $segments) || $segments[$i] !== $token) {
+                return null;
+            }
+        }
+
+        return array_slice($segments, count($slugSegments));
+    }
 
     /**
      * Parses the url into an array of segments.

@@ -24,17 +24,16 @@ function vcms_nav_link(string $url, string $label): void
 
 function vcms_render_tabs_links()
 {
-    ?>
-    <?php vcms_nav_link(AdminController::getHomeUrl(), 'Home'); ?>
-    <hr class="vcms-nav__separator">
-    <?php vcms_nav_link(AdminController::getPagesUrl(), 'Pages'); ?>
-    <?php foreach (PageTypeRegistry::archetypeTypes() as $archetype): ?>
-        <?php vcms_nav_link(AdminController::getArchetypeUrl($archetype->slug()), $archetype->label()); ?>
-    <?php endforeach; ?>
-    <hr class="vcms-nav__separator">
-    <?php vcms_nav_link(AdminController::getUploadsUrl(), 'Uploads'); ?>
-    <?php vcms_nav_link(AdminController::getSharedFieldsUrl(), 'Shared Fields'); ?>
-    <?php
+    foreach (AdminController::tabGroups() as $index => $tabGroup) {
+        if ($index > 0) {
+            echo '<hr class="vcms-nav__separator">';
+        }
+        
+        echo '<li class="vcms-nav__group-label">' . htmlspecialchars($tabGroup->label()) . '</li>';
+        foreach ($tabGroup->tabs() as $tab) {
+            vcms_nav_link('/admin/' . $tab->fullSlug(), $tab->label());
+        }
+    }
 }
 
 /**

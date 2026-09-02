@@ -13,16 +13,20 @@ abstract class AdminTab
         $this->label = $label;
     }
     
-    public function slug(): string {
+    public function fullSlug(): string {
+        return $this->slug();
+    }
+    
+    public final function slug(): string {
         return $this->slug;
     }
     
-    public function label(): string {
+    public final function label(): string {
         return $this->label;
     }
     
     public function handleApiRequest(array $segments): bool {
-        
+        return false;
     }
 
     public abstract function dispatch(array $segments): void;
