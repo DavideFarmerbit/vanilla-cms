@@ -253,6 +253,13 @@ button {
     border-top: 1px solid var(--vcms-border);
 }
 
+.vcms-fields-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    max-width: 900px;
+}
+
 .vcms-field {
     &__label {
         display: flex;
@@ -646,6 +653,11 @@ template[data-vcms-repeater-template] {
             margin-top: 0.3rem;
             width: 100%;
             max-width: 420px;
+        }
+
+        .vcms-field__label {
+            display: inline;
+            font-weight: 400;
         }
     }
 }

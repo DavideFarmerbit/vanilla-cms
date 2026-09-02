@@ -338,7 +338,7 @@ class UploadsTab extends AdminTab
             <li>Size: <?= htmlspecialchars(number_format($upload->size() / 1024, 1)) ?> KB</li>
             <li>Uploaded: <?= htmlspecialchars(date('Y-m-d H:i', $upload->uploadedAt())) ?></li>
             <li>
-                <label>
+                <label class="vcms-field__label">
                     Url:
                     <input class="vcms-field__input" type="text" readonly value="<?= htmlspecialchars($upload->url()) ?>" onclick="this.select()">
                 </label>
