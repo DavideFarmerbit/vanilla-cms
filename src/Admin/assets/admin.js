@@ -14,6 +14,32 @@ document.querySelectorAll('a[data-confirm]').forEach((link) => {
     });
 });
 
+document.querySelectorAll('form[data-vcms-swap-for]').forEach((form) => {
+    const target = document.getElementById(form.dataset.vcmsSwapFor);
+    if (!target) {
+        return;
+    }
+
+    target.hidden = true;
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        fetch(form.action, {
+            method: form.method || 'POST',
+            body: new FormData(form),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    return;
+                }
+                form.hidden = true;
+                target.hidden = false;
+            })
+            .catch(() => {});
+    });
+});
+
 document.querySelectorAll('[data-vcms-dropzone]').forEach((dropzone) => {
     const input = dropzone.querySelector('[data-vcms-dropzone-input]');
 

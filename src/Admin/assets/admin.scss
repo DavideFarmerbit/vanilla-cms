@@ -239,6 +239,10 @@ button {
     gap: 0.9rem;
     max-width: 900px;
 
+    &[hidden] {
+        display: none;
+    }
+
     &__actions {
         display: flex;
         align-items: center;
