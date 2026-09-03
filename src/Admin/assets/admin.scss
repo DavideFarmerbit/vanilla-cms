@@ -173,6 +173,13 @@ button {
     color: var(--vcms-text);
 }
 
+.vcms-page-section-name {
+    margin: 1.25rem 0;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--vcms-text);
+}
+
 .vcms-page-header {
     display: flex;
     align-items: center;
