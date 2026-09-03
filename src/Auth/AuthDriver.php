@@ -43,4 +43,7 @@ interface AuthDriver
 
     /** @throws AuthException if 2FA could not be disabled. */
     public function disable2FA(): void;
+
+    /** @throws AuthException if the account could not be created (e.g. address already in use). */
+    public function createUser(string $email, string $password): void;
 }

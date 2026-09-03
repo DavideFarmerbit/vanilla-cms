@@ -141,6 +141,16 @@ final class Auth
     }
 
     /**
+     * Creates a new user account, already verified.
+     * @throws AuthException if the account could not be created (e.g. address already in use).
+     * @throws Exception if the auth driver is not set.
+     */
+    public static function createUser(string $email, string $password): void
+    {
+        self::driver()->createUser($email, $password);
+    }
+
+    /**
      * Get the url to redirect to if the user is not authorized.
      * @return string
      */
