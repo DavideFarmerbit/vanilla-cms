@@ -25,6 +25,10 @@ abstract class AdminTab
         return $this->label;
     }
     
+    public final function url(): string {
+        return "/admin/{$this->fullSlug()}";
+    }
+    
     public function handleApiRequest(array $segments): bool {
         return false;
     }
