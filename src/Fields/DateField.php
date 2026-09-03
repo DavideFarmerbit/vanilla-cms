@@ -16,7 +16,7 @@ class DateField extends Field
 
     public function fromArray(array $data): void
     {
-        $this->value = DateTimeImmutable::createFromFormat('Y-m-d', $data['value'] ?? '') ?? null;
+        $this->value = DateTimeImmutable::createFromFormat('Y-m-d', $data['value'] ?? '') ?: null;
     }
     
     public function date(): ?DateTimeImmutable
