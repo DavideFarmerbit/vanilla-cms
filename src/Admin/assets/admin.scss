@@ -249,6 +249,19 @@ button {
         gap: 0.5rem;
         margin-top: 0.5rem;
     }
+
+    &__message {
+        margin: 0;
+        font-size: 0.9rem;
+
+        &--error {
+            color: var(--vcms-danger);
+        }
+
+        &--success {
+            color: var(--vcms-confirm);
+        }
+    }
 }
 
 .vcms-delete-form {

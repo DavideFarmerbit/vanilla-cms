@@ -14,29 +14,67 @@ document.querySelectorAll('a[data-confirm]').forEach((link) => {
     });
 });
 
-document.querySelectorAll('form[data-vcms-swap-for]').forEach((form) => {
-    const target = document.getElementById(form.dataset.vcmsSwapFor);
-    if (!target) {
-        return;
+/**
+ * Submits a form via fetch instead of navigating, expecting a JSON `{success, message?}` body back.
+ * Composable via data attributes, so plain forms can opt into just the parts they need:
+ *   - data-vcms-ajax: submit in the background and show the response message inline (base behavior).
+ *   - data-vcms-swap-for="id": on success, hide this form and reveal the element with that id.
+ *   - data-vcms-reload-on-success: on success, reload the page (for forms whose result changes
+ *     other server-rendered content on the page, e.g. toggling a conditional block).
+ */
+document.querySelectorAll('form[data-vcms-ajax], form[data-vcms-swap-for], form[data-vcms-reload-on-success]').forEach((form) => {
+    const swapTarget = form.dataset.vcmsSwapFor ? document.getElementById(form.dataset.vcmsSwapFor) : null;
+    if (swapTarget) {
+        swapTarget.hidden = true;
     }
 
-    target.hidden = true;
+    function showMessage(text, isError) {
+        let message = form.querySelector('[data-vcms-form-message]');
+        if (!text) {
+            message?.remove();
+            return;
+        }
+        if (!message) {
+            message = document.createElement('p');
+            message.dataset.vcmsFormMessage = '';
+            form.prepend(message);
+        }
+        message.textContent = text;
+        message.className = isError ? 'vcms-form__message vcms-form__message--error' : 'vcms-form__message vcms-form__message--success';
+    }
 
     form.addEventListener('submit', (event) => {
+        // Respect other submit handlers on this form (e.g. data-confirm) cancelling the submit.
+        if (event.defaultPrevented) {
+            return;
+        }
         event.preventDefault();
 
         fetch(form.action, {
             method: form.method || 'POST',
             body: new FormData(form),
         })
-            .then((response) => {
-                if (!response.ok) {
+            .then((response) => response.json())
+            .then((data) => {
+                if (!data.success) {
+                    showMessage(data.message || 'Something went wrong.', true);
                     return;
                 }
-                form.hidden = true;
-                target.hidden = false;
+
+                if ('vcmsReloadOnSuccess' in form.dataset) {
+                    window.location.reload();
+                    return;
+                }
+
+                showMessage(data.message, false);
+                if (swapTarget) {
+                    form.hidden = true;
+                    swapTarget.hidden = false;
+                }
             })
-            .catch(() => {});
+            .catch(() => {
+                showMessage('Something went wrong.', true);
+            });
     });
 });
 

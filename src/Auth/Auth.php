@@ -40,8 +40,107 @@ final class Auth
     {
         return self::driver()->has2FA();
     }
-    
-    /**  
+
+    /**
+     * Logs the current user out.
+     * @throws Exception if the auth driver is not set.
+     */
+    public static function logout(): void
+    {
+        self::driver()->logout();
+    }
+
+    /**
+     * Attempts to log in with the given credentials.
+     * @throws SecondFactorRequiredException if credentials were correct but a 2FA challenge was started.
+     * @throws AuthException if the credentials were invalid.
+     * @throws Exception if the auth driver is not set.
+     */
+    public static function login(string $email, string $password): void
+    {
+        self::driver()->login($email, $password);
+    }
+
+    /**
+     * Confirms a pending login 2FA challenge.
+     * @throws AuthException if the confirmation code is invalid.
+     * @throws Exception if the auth driver is not set.
+     */
+    public static function confirmLoginSecondFactor(string $otp): void
+    {
+        self::driver()->confirmLoginSecondFactor($otp);
+    }
+
+    /**
+     * Aborts a pending login 2FA challenge, so the visitor can restart at the credentials step.
+     * @throws Exception if the auth driver is not set.
+     */
+    public static function cancelLoginSecondFactor(): void
+    {
+        self::driver()->cancelLoginSecondFactor();
+    }
+
+    /**
+     * Whether a login is currently waiting on a 2FA challenge to be completed.
+     * @throws Exception if the auth driver is not set.
+     */
+    public static function isAwaitingSecondFactor(): bool
+    {
+        return self::driver()->isAwaitingSecondFactor();
+    }
+
+    /**
+     * Changes the current user's password.
+     * @throws AuthException if the password could not be changed (e.g. wrong old password).
+     * @throws Exception if the auth driver is not set.
+     */
+    public static function changePassword(string $oldPassword, string $newPassword): void
+    {
+        self::driver()->changePassword($oldPassword, $newPassword);
+    }
+
+    /**
+     * Starts an email change for the current user. A confirmation link is sent to the new address;
+     * the change only takes effect once it is followed.
+     * @throws AuthException if the email could not be changed (e.g. wrong password, address already in use).
+     * @throws Exception if the auth driver is not set.
+     */
+    public static function changeEmail(string $newEmail, string $password): void
+    {
+        self::driver()->changeEmail($newEmail, $password);
+    }
+
+    /**
+     * Starts enabling 2FA for the current user, sending a confirmation code.
+     * @throws AuthException if 2FA setup could not be started (e.g. wrong password).
+     * @throws Exception if the auth driver is not set.
+     */
+    public static function enable2FA(string $password): void
+    {
+        self::driver()->enable2FA($password);
+    }
+
+    /**
+     * Confirms a previously requested 2FA setup, activating it.
+     * @throws AuthException if the confirmation code is invalid.
+     * @throws Exception if the auth driver is not set.
+     */
+    public static function confirm2FA(string $otp): void
+    {
+        self::driver()->confirm2FA($otp);
+    }
+
+    /**
+     * Disables 2FA for the current user.
+     * @throws AuthException if 2FA could not be disabled.
+     * @throws Exception if the auth driver is not set.
+     */
+    public static function disable2FA(): void
+    {
+        self::driver()->disable2FA();
+    }
+
+    /**
      * Get the url to redirect to if the user is not authorized.
      * @return string
      */
