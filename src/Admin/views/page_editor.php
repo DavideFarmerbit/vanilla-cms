@@ -52,10 +52,16 @@ function render_page_editor(Page $instance, string $backUrl, string $saveAction,
                 <input class="vcms-field__input" type="text" name="slug" value="<?= htmlspecialchars($instance->meta()->slug()) ?>" required>
             </label>
         </div>
-        <?php foreach ($instance->getFields() as $fieldName => $field) {
+        <?php
+        // Sort top level fields by priority
+        $topLevelFields = $instance->getFields();
+        uasort($topLevelFields, function($a, $b) {
+            return $b->priority() <=> $a->priority();
+        });
+        // Render sorted top level fields
+        foreach ($topLevelFields as $fieldName => $field) {
             $field->render("fields[{$fieldName}]", []);
         }
-
         ?>
         <div class="vcms-form__actions">
             <button type="submit" class="vcms-btn vcms-btn--primary">Save</button>

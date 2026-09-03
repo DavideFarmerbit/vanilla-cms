@@ -24,7 +24,13 @@ abstract class CompositeField extends Field
                 <?= htmlspecialchars($this->config['label'] ?? 'value') ?>
                 <div class="vcms-field__group">
                 <?php
-                foreach ($this->getFields() as $fieldName => $field) {
+                // Sort owned fields by priority
+                $sortedFields = $this->getFields();
+                uasort($sortedFields, function($a, $b) {
+                    return $b->priority() <=> $a->priority();
+                });
+                // Rended sorted fields
+                foreach ($sortedFields as $fieldName => $field) {
                     $field->render("{$name}[{$fieldName}]");
                 }
                 ?>

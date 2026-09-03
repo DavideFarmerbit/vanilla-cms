@@ -11,6 +11,11 @@ abstract class Field
         $this->config = $config;
     }
     
+    public function priority(): int
+    {
+        return $this->config['vcms-priority'] ?? 0;
+    }
+    
     /** @return array<string, mixed> */
     public abstract function toArray(): array;
     
