@@ -263,9 +263,10 @@ function loadMoreFilePickerItems() {
         });
 }
 
-document.querySelectorAll('[data-vcms-file-field-open]').forEach((button) => {
-    button.addEventListener('click', () => {
-        const field = button.closest('[data-vcms-file-field]');
+document.addEventListener('click', (event) => {
+    const openButton = event.target.closest('[data-vcms-file-field-open]');
+    if (openButton) {
+        const field = openButton.closest('[data-vcms-file-field]');
 
         if (!filePickerDialog) {
             buildFilePickerDialog();
@@ -283,16 +284,16 @@ document.querySelectorAll('[data-vcms-file-field-open]').forEach((button) => {
         filePickerDialog.showModal();
         filePickerDialog.focus();
         resetAndLoadFilePicker();
-    });
-});
+        return;
+    }
 
-document.querySelectorAll('[data-vcms-file-field-clear]').forEach((button) => {
-    button.addEventListener('click', () => {
-        const field = button.closest('[data-vcms-file-field]');
+    const clearButton = event.target.closest('[data-vcms-file-field-clear]');
+    if (clearButton) {
+        const field = clearButton.closest('[data-vcms-file-field]');
         field.querySelector('[data-vcms-file-field-input]').value = '';
         buildFilePreview(field.querySelector('[data-vcms-file-field-preview]'), {});
-        setFileFieldClearEnabled(button, false);
-    });
+        setFileFieldClearEnabled(clearButton, false);
+    }
 });
 
 document.querySelectorAll('[data-vcms-repeater]').forEach((repeater) => {
