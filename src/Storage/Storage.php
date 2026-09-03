@@ -173,13 +173,15 @@ final class Storage
 
     /**
      * Moves an uploaded file into the uploads root, under a year/month subfolder based on the current server time.
+     * The stored filename is derived from $name (sanitized into a filesystem/url-safe slug), disambiguated with
+     * a numeric suffix if a file with the same name already exists in that subfolder.
      * @param string $tmpPath path of the uploaded file (e.g. $_FILES[...]['tmp_name']).
-     * @param string $id unique identifier of the upload, used as the stored filename to avoid trusting client input.
+     * @param string $name desired file name (e.g. the upload's display name), used to derive the stored filename.
      * @param string $extension file extension, without the leading dot.
      * @return string path of the stored file, relative to the uploads root.
      * @throws Exception if the uploads root is not set, or the file could not be moved.
      */
-    public static function storeUploadedFile(string $tmpPath, string $id, string $extension): string
+    public static function storeUploadedFile(string $tmpPath, string $name, string $extension): string
     {
         self::assertUploadsRootSet();
 
@@ -190,13 +192,47 @@ final class Storage
             mkdir($dir, 0775, true);
         }
 
-        $relativePath = $subDir . '/' . $id . '.' . $extension;
+        $relativePath = $subDir . '/' . self::uniqueFileName($dir, $name, $extension);
 
         if (!move_uploaded_file($tmpPath, self::$uploadsRoot . '/' . $relativePath)) {
             throw new Exception('VanillaCms >> Failed to store uploaded file');
         }
 
         return $relativePath;
+    }
+
+    /**
+     * Renames an already-stored uploaded file to match a new name, keeping it in its current year/month
+     * subfolder. Safe to call even when no rename is actually needed (e.g. the name didn't change).
+     * @param string $oldRelativePath current path of the file, relative to the uploads root.
+     * @param string $newName desired new file name (e.g. the upload's updated display name).
+     * @return string new path of the file, relative to the uploads root.
+     * @throws Exception if the uploads root is not set, the file doesn't exist, or it could not be renamed.
+     */
+    public static function renameUploadedFile(string $oldRelativePath, string $newName): string
+    {
+        self::assertUploadsRootSet();
+
+        $oldFullPath = self::$uploadsRoot . '/' . $oldRelativePath;
+        if (!is_file($oldFullPath)) {
+            throw new Exception('VanillaCms >> Cannot rename uploaded file: source file not found');
+        }
+
+        $subDir = dirname($oldRelativePath);
+        $dir = self::$uploadsRoot . '/' . $subDir;
+        $extension = pathinfo($oldRelativePath, PATHINFO_EXTENSION);
+
+        $newRelativePath = $subDir . '/' . self::uniqueFileName($dir, $newName, $extension, $oldFullPath);
+
+        if ($newRelativePath === $oldRelativePath) {
+            return $oldRelativePath;
+        }
+
+        if (!rename($oldFullPath, self::$uploadsRoot . '/' . $newRelativePath)) {
+            throw new Exception('VanillaCms >> Failed to rename uploaded file');
+        }
+
+        return $newRelativePath;
     }
 
     /**
@@ -213,6 +249,54 @@ final class Storage
         if (is_file($fullPath)) {
             unlink($fullPath);
         }
+    }
+
+    /**
+     * Builds a filesystem/url-safe file name for $dir from $name and $extension, unique within that directory
+     * (disambiguated with a numeric suffix, e.g. "-2", if needed). Falls back to a generated id if $name
+     * sanitizes down to an empty string.
+     * @param string $dir absolute directory the file will live in.
+     * @param string $name desired file name, before sanitization.
+     * @param string $extension file extension, without the leading dot.
+     * @param string|null $ignoreFullPath an existing full path to exclude from the collision check (e.g. the
+     * file currently being renamed, so renaming to its own resulting name is a no-op rather than a "-2").
+     * @return string
+     */
+    private static function uniqueFileName(string $dir, string $name, string $extension, ?string $ignoreFullPath = null): string
+    {
+        $base = self::slugify($name);
+        if ($base === '') {
+            $base = self::driver()->newId();
+        }
+
+        $suffix = '';
+        $attempt = 1;
+        while (true) {
+            $candidate = $base . $suffix . ($extension !== '' ? '.' . $extension : '');
+            $candidateFullPath = $dir . '/' . $candidate;
+            if ($candidateFullPath === $ignoreFullPath || !is_file($candidateFullPath)) {
+                return $candidate;
+            }
+            $attempt++;
+            $suffix = '-' . $attempt;
+        }
+    }
+
+    /**
+     * Sanitizes a string into a filesystem/url-safe slug: lowercase, transliterated to ASCII where possible
+     * (if the intl extension is available), with anything else collapsed into dashes.
+     */
+    private static function slugify(string $name): string
+    {
+        $slug = strtolower($name);
+
+        if (function_exists('transliterator_transliterate')) {
+            $slug = transliterator_transliterate('Any-Latin; Latin-ASCII', $slug);
+        }
+
+        $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+
+        return trim($slug, '-');
     }
 
     /**

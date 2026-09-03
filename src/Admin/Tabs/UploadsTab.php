@@ -151,11 +151,12 @@ class UploadsTab extends AdminTab
             }
 
             $id = Storage::newId();
-            $path = Storage::storeUploadedFile($files['tmp_name'][$i], $id, $extension);
+            $name = pathinfo($originalName, PATHINFO_FILENAME);
+            $path = Storage::storeUploadedFile($files['tmp_name'][$i], $name, $extension);
 
             $data = UploadData::empty();
             $data->type = UploadTypeRegistry::typeForExtension($extension);
-            $data->name = pathinfo($originalName, PATHINFO_FILENAME);
+            $data->name = $name;
             $data->path = $path;
             $data->originalName = $originalName;
             $data->mimeType = $mimeType;
@@ -178,7 +179,11 @@ class UploadsTab extends AdminTab
         $batch = isset($_GET['batch']) ? array_values(array_filter(explode(',', $_GET['batch']))) : [];
 
         if (AdminController::isVerifiedPost()) {
-            $uploadData->name = trim($_POST['name'] ?? '');
+            $name = trim($_POST['name'] ?? '');
+            if ($name !== '') {
+                $uploadData->path = Storage::renameUploadedFile($uploadData->path, $name);
+                $uploadData->name = $name;
+            }
             $uploadData->fields = $_POST['fields'] ?? [];
 
             Storage::saveUpload($uploadData->id, $uploadData);
