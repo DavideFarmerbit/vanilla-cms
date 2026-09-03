@@ -251,6 +251,8 @@ button {
     }
 
     &__message {
+        display: block;
+        width: 100%;
         margin: 0;
         font-size: 0.9rem;
 
