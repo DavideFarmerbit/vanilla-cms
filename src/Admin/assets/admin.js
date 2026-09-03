@@ -66,6 +66,7 @@ document.querySelectorAll('form[data-vcms-ajax], form[data-vcms-swap-for], form[
                     return;
                 }
 
+                form.reset();
                 showMessage(data.message, false);
                 if (swapTarget) {
                     form.hidden = true;
