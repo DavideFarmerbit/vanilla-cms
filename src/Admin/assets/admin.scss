@@ -500,6 +500,31 @@ template[data-vcms-repeater-template] {
             background: transparent;
         }
     }
+
+    &--loading {
+        opacity: 0.65;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    &__spinner {
+        display: none;
+        margin-right: 0.4rem;
+    }
+
+    &--loading &__spinner {
+        display: inline-flex;
+    }
+}
+
+@keyframes vcms-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.vcms-icon--spin {
+    animation: vcms-spin 0.6s linear infinite;
 }
 
 .vcms-table {

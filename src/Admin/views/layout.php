@@ -48,6 +48,7 @@ function vcms_icon(string $name): void
         'trash' => '<path d="M3 4.5h10"/><path d="M6 4.5V3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1.5"/><path d="M4.5 4.5 5 13a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1l.5-8.5"/><path d="M6.5 7v4M9.5 7v4"/>',
         'back' => '<path d="M9.5 3.5 5 8l4.5 4.5"/>',
         'close' => '<path d="M4 4l8 8M12 4l-8 8"/>',
+        'spinner' => '<path d="M14 8A6 6 0 1 1 8 2"/>',
     ];
     ?>
     <svg class="vcms-icon" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><?= $paths[$name] ?? '' ?></svg>

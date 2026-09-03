@@ -28,6 +28,14 @@ document.querySelectorAll('form[data-vcms-ajax], form[data-vcms-swap-for], form[
         swapTarget.hidden = true;
     }
 
+    function setLoading(isLoading) {
+        const submitButton = form.querySelector('button[type="submit"]');
+        submitButton?.classList.toggle('vcms-btn--loading', isLoading);
+        if (submitButton) {
+            submitButton.disabled = isLoading;
+        }
+    }
+
     function showMessage(text, isError) {
         let message = form.querySelector('[data-vcms-form-message]');
         if (!text) {
@@ -49,6 +57,7 @@ document.querySelectorAll('form[data-vcms-ajax], form[data-vcms-swap-for], form[
             return;
         }
         event.preventDefault();
+        setLoading(true);
 
         fetch(form.action, {
             method: form.method || 'POST',
@@ -57,15 +66,18 @@ document.querySelectorAll('form[data-vcms-ajax], form[data-vcms-swap-for], form[
             .then((response) => response.json())
             .then((data) => {
                 if (!data.success) {
+                    setLoading(false);
                     showMessage(data.message || 'Something went wrong.', true);
                     return;
                 }
 
                 if ('vcmsReloadOnSuccess' in form.dataset) {
+                    // Leave the button in its loading state: the reload itself is the confirmation.
                     window.location.reload();
                     return;
                 }
 
+                setLoading(false);
                 form.reset();
                 showMessage(data.message, false);
                 if (swapTarget) {
@@ -74,6 +86,7 @@ document.querySelectorAll('form[data-vcms-ajax], form[data-vcms-swap-for], form[
                 }
             })
             .catch(() => {
+                setLoading(false);
                 showMessage('Something went wrong.', true);
             });
     });
