@@ -30,6 +30,16 @@ final class Auth
     {
         return self::driver()->isAdmin();
     }
+
+    /**
+     * Whether the current visitor has 2FA enabled.
+     * @return bool
+     * @throws Exception if the auth driver is not set.
+     */
+    public static function has2FA(): bool
+    {
+        return self::driver()->has2FA();
+    }
     
     /**  
      * Get the url to redirect to if the user is not authorized.
