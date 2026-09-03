@@ -6,6 +6,9 @@ interface AuthDriver
 {
     /** Whether the current visitor is allowed to access the admin panel. */
     public function isAdmin(): bool;
+    
+    /** Get the current visitor's usernanme. */
+    public function getUsername(): string;
 
     /** Whether the current visitor has 2FA enabled. */
     public function has2FA(): bool;

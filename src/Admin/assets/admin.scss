@@ -636,6 +636,7 @@ template[data-vcms-repeater-template] {
 .vcms-upload-editor {
     &__nav {
         display: flex;
+        align-items: center;
         gap: 0.5rem;
         margin-left: auto;
     }

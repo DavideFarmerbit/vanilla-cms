@@ -30,6 +30,16 @@ final class Auth
     {
         return self::driver()->isAdmin();
     }
+    
+    /**
+     * Get the current visitor's usernanme.
+     * @return string
+     * @throws Exception if the auth driver is not set.
+     */
+    public static function getUsername(): string 
+    {
+        return self::driver()->getUsername();
+    }
 
     /**
      * Whether the current visitor has 2FA enabled.
