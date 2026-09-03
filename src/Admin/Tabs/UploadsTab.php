@@ -313,7 +313,7 @@ class UploadsTab extends AdminTab
             <a class="vcms-icon-btn vcms-page-header__back" href="<?= htmlspecialchars($backUrl) ?>" title="Back" aria-label="Back">
                 <?php vcms_icon('back') ?>
             </a>
-            <h1 class="vcms-page-title">Edit <?= htmlspecialchars($upload->originalName()) ?></h1>
+            <h1 class="vcms-page-title">Edit <?= htmlspecialchars($upload->basename()) ?></h1>
             <?php if ($prevUrl || $nextUrl): ?>
                 <div class="vcms-upload-editor__nav">
                     <?php if ($prevUrl): ?>

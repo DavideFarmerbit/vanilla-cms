@@ -93,6 +93,16 @@ abstract class UploadMeta
     {
         return $this->path;
     }
+    
+    public function basename(): string
+    {
+        return pathinfo($this->path, PATHINFO_BASENAME);
+    }   
+    
+    public function filename(): string
+    {
+        return pathinfo($this->path, PATHINFO_FILENAME);
+    }
 
     public function extension(): string
     {
