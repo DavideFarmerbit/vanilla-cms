@@ -181,7 +181,12 @@ class UploadsTab extends AdminTab
         if (AdminController::isVerifiedPost()) {
             $name = trim($_POST['name'] ?? '');
             if ($name !== '') {
-                $uploadData->path = Storage::renameUploadedFile($uploadData->path, $name);
+                $oldPath = $uploadData->path;
+                $uploadData->path = Storage::renameUploadedFile($oldPath, $name);
+                if ($uploadData->path !== $oldPath) {
+                    // TODO: consider moving upload rename + variant deletion to a single Storage method
+                    Storage::deleteGeneratedVariants($oldPath);
+                }
                 $uploadData->name = $name;
             }
             $uploadData->fields = $_POST['fields'] ?? [];

@@ -7,6 +7,7 @@ use Exception;
 final class Storage
 {
     private static ?StorageDriver $driver = null;
+    private static ?ImageSrcsetGenerator $imageSrcsetGenerator = null;
 
     private static string $uploadsRoot = '';
     private static string $uploadsUrlBase = '';
@@ -33,6 +34,17 @@ final class Storage
     {
         self::$uploadsRoot = rtrim($root, '/');
         self::$uploadsUrlBase = rtrim($urlBase, '/');
+    }
+
+    /**
+     * Set the generator used to produce resized image variants for srcset(). 
+     * Optional: if never called, ensureImageVariant() (and ImageUploadMeta::srcset()) just returns null for every width.
+     * @param ImageSrcsetGenerator $generator
+     * @return void
+     */
+    public static function setImageSrcsetGenerator(ImageSrcsetGenerator $generator): void
+    {
+        self::$imageSrcsetGenerator = $generator;
     }
 
 
@@ -167,6 +179,7 @@ final class Storage
         $upload = self::driver()->findUpload($id);
         if ($upload !== null) {
             self::deleteUploadedFile($upload->path);
+            self::deleteGeneratedVariants($upload->path);
         }
         self::driver()->deleteUpload($id);
     }
@@ -249,6 +262,85 @@ final class Storage
         if (is_file($fullPath)) {
             unlink($fullPath);
         }
+    }
+
+    /**
+     * Returns the url of a resized copy of an uploaded image at the given width, generating and caching it
+     * to disk the first time it's requested (subsequent calls just find it already on disk). The variant is
+     * stored under a "generated/" subtree mirroring the original's year/month subfolder.
+     * @param string $relativePath path of the original image, relative to the uploads root (UploadData::path).
+     * @param int $width target width in pixels.
+     * @return string|null null if no generator is configured, the source file is missing, or generation failed
+     * (e.g. an unsupported format like svg).
+     * @throws Exception if the uploads root is not set.
+     */
+    public static function ensureImageVariant(string $relativePath, int $width): ?string
+    {
+        if (self::$imageSrcsetGenerator === null) {
+            return null;
+        }
+
+        self::assertUploadsRootSet();
+
+        $generatedRelativePath = self::generatedVariantPath($relativePath, $width);
+        $generatedFullPath = self::$uploadsRoot . '/' . $generatedRelativePath;
+
+        if (is_file($generatedFullPath)) {
+            return self::uploadUrl($generatedRelativePath);
+        }
+
+        $sourceFullPath = self::$uploadsRoot . '/' . $relativePath;
+        if (!is_file($sourceFullPath)) {
+            return null;
+        }
+
+        $generatedDir = dirname($generatedFullPath);
+        if (!is_dir($generatedDir)) {
+            mkdir($generatedDir, 0775, true);
+        }
+
+        // Generate into a temp file and rename into place, so a concurrent request for the same variant
+        // never finds a partially-written file.
+        $tmpPath = $generatedFullPath . '.' . uniqid('tmp', true);
+        $generated = self::$imageSrcsetGenerator->resize($sourceFullPath, $tmpPath, $width) && rename($tmpPath, $generatedFullPath);
+        if (!$generated) {
+            @unlink($tmpPath);
+            return null;
+        }
+
+        return self::uploadUrl($generatedRelativePath);
+    }
+
+    /**
+     * Deletes any previously-generated srcset variants of an uploaded image, e.g. before it's renamed or
+     * removed. Safe to call for uploads that never had variants generated (no-op).
+     * @param string $relativePath path of the original image, relative to the uploads root.
+     * @return void
+     * @throws Exception if the uploads root is not set.
+     */
+    public static function deleteGeneratedVariants(string $relativePath): void
+    {
+        self::assertUploadsRootSet();
+
+        $dir = self::$uploadsRoot . '/generated/' . dirname($relativePath);
+        $base = pathinfo($relativePath, PATHINFO_FILENAME);
+        $extension = pathinfo($relativePath, PATHINFO_EXTENSION);
+
+        foreach (glob("{$dir}/{$base}-*w.{$extension}") ?: [] as $file) {
+            unlink($file);
+        }
+    }
+
+    /**
+     * Builds the relative path (under the uploads root) a given width's variant of an image should live at.
+     */
+    private static function generatedVariantPath(string $relativePath, int $width): string
+    {
+        $subDir = dirname($relativePath);
+        $base = pathinfo($relativePath, PATHINFO_FILENAME);
+        $extension = pathinfo($relativePath, PATHINFO_EXTENSION);
+
+        return "generated/{$subDir}/{$base}-{$width}w.{$extension}";
     }
 
     /**
