@@ -402,11 +402,19 @@ button {
     }
 }
 
-.vcms-field--rich-text .vcms-field__input {
-    display: block;
-    width: 100%;
-    min-height: 8rem;
-    resize: vertical;
+.vcms-field--rich-text {
+    .vcms-field__input {
+        display: block;
+        width: 100%;
+        min-height: 8rem;
+        resize: vertical;
+    }
+    
+    &--short {
+        .vcms-field__input {
+            min-height: 4rem;
+        }
+    }
 }
 
 input[type="date"].vcms-field__input::-webkit-calendar-picker-indicator {
