@@ -867,3 +867,99 @@ template[data-vcms-repeater-template] {
 .vcms-table tbody tr:hover {
     background: var(--vcms-surface-hover);
 }
+
+.vcms-table__row--clickable {
+    cursor: pointer;
+
+    &:focus-visible {
+        outline: 2px solid var(--vcms-accent);
+        outline-offset: -2px;
+    }
+}
+
+.vcms-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    background: var(--vcms-surface);
+    color: var(--vcms-text-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+
+    &--success {
+        background: rgba(50, 133, 85, 0.16);
+        color: var(--vcms-confirm);
+    }
+
+    &--danger {
+        background: rgba(224, 85, 90, 0.16);
+        color: var(--vcms-danger);
+    }
+}
+
+.vcms-meta-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0 0 1rem;
+
+    &__item {
+        display: flex;
+        gap: 0.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--vcms-border);
+    }
+
+    &__label {
+        flex: 0 0 100px;
+        color: var(--vcms-text-faint);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-weight: 600;
+    }
+
+    &__value {
+        flex: 1;
+        margin: 0;
+        color: var(--vcms-text);
+        word-break: break-word;
+    }
+}
+
+.vcms-content-block {
+    padding: 0.85rem;
+    border: 1px solid var(--vcms-border);
+    border-radius: var(--vcms-radius);
+    background: var(--vcms-surface);
+    color: var(--vcms-text);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.vcms-popup-dialog {
+    width: min(560px, 90vw);
+    padding: 1.25rem;
+    border: 1px solid var(--vcms-border);
+    border-radius: var(--vcms-radius);
+    background: var(--vcms-island);
+    color: var(--vcms-text);
+    box-shadow: var(--vcms-shadow);
+
+    &:focus {
+        outline: none;
+    }
+
+    &::backdrop {
+        background: rgba(0, 0, 0, 0.6);
+    }
+
+    &__close {
+        float: right;
+    }
+
+    &__body {
+        clear: both;
+    }
+}

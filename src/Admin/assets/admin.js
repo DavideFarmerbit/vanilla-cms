@@ -296,6 +296,53 @@ document.addEventListener('click', (event) => {
     }
 });
 
+/**
+ * Generic "open a <template>'s content in a popup dialog" behavior. Any element can opt in with
+ * data-vcms-popup="templateId", pointing at a <template id="templateId"> elsewhere on the page.
+ * The page must render one shared dialog via data-vcms-popup-dialog (see render_admin_popup_dialog()).
+ */
+document.querySelectorAll('[data-vcms-popup-dialog]').forEach((dialog) => {
+    dialog.querySelector('[data-vcms-popup-close]')?.addEventListener('click', () => dialog.close());
+
+    dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) {
+            dialog.close();
+        }
+    });
+});
+
+function openPopup(trigger) {
+    const template = document.getElementById(trigger.dataset.vcmsPopup);
+    const dialog = document.querySelector('[data-vcms-popup-dialog]');
+    if (!template || !dialog) {
+        return;
+    }
+
+    const body = dialog.querySelector('[data-vcms-popup-body]');
+    body.innerHTML = '';
+    body.appendChild(template.content.cloneNode(true));
+
+    dialog.showModal();
+}
+
+document.addEventListener('click', (event) => {
+    const trigger = event.target.closest('[data-vcms-popup]');
+    if (trigger) {
+        openPopup(trigger);
+    }
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter' && event.key !== ' ') {
+        return;
+    }
+    const trigger = event.target.closest('[data-vcms-popup]');
+    if (trigger) {
+        event.preventDefault();
+        openPopup(trigger);
+    }
+});
+
 document.querySelectorAll('[data-vcms-repeater]').forEach((repeater) => {
     const items = repeater.querySelector(':scope > [data-vcms-repeater-items]');
     const template = repeater.querySelector(':scope > template[data-vcms-repeater-template]');

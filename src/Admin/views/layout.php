@@ -49,6 +49,7 @@ function vcms_icon(string $name): void
         'back' => '<path d="M9.5 3.5 5 8l4.5 4.5"/>',
         'close' => '<path d="M4 4l8 8M12 4l-8 8"/>',
         'spinner' => '<path d="M14 8A6 6 0 1 1 8 2"/>',
+        'view' => '<path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5Z"/><circle cx="8" cy="8" r="2"/>',
     ];
     ?>
     <svg class="vcms-icon" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><?= $paths[$name] ?? '' ?></svg>
@@ -108,6 +109,23 @@ function render_admin_file_picker_templates(): void
             <span class="vcms-upload-grid__name" data-vcms-file-picker-item-name></span>
         </button>
     </template>
+    <?php
+}
+
+/**
+ * Renders the single shared dialog data-vcms-popup triggers open (see admin.js). A page renders this
+ * once, then any element can point at a <template id="..."> via data-vcms-popup="id" to have that
+ * template's content shown inside it.
+ */
+function render_admin_popup_dialog(): void
+{
+    ?>
+    <dialog class="vcms-popup-dialog" data-vcms-popup-dialog tabindex="-1">
+        <button type="button" class="vcms-icon-btn vcms-popup-dialog__close" data-vcms-popup-close title="Close" aria-label="Close">
+            <?php vcms_icon('close') ?>
+        </button>
+        <div class="vcms-popup-dialog__body" data-vcms-popup-body></div>
+    </dialog>
     <?php
 }
 
