@@ -667,10 +667,13 @@ template[data-vcms-repeater-template] {
     &__name {
         font-size: 0.8rem;
         color: var(--vcms-text-muted);
-        white-space: nowrap;
+        max-width: 100%;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 100%;
+        word-break: break-word;
     }
 }
 
