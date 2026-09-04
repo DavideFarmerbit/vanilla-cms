@@ -29,9 +29,9 @@ function vcms_render_tabs_links()
             echo '<hr class="vcms-nav__separator">';
         }
         
-        echo '<li class="vcms-nav__group-label">' . htmlspecialchars($tabGroup->label()) . '</li>';
+        echo '<li class="vcms-nav__group-label">' . htmlspecialchars(!empty($tabGroup->label()) ? $tabGroup->label() : $tabGroup->slug()) . '</li>';
         foreach ($tabGroup->tabs() as $tab) {
-            vcms_nav_link('/admin/' . $tab->fullSlug(), $tab->label());
+            vcms_nav_link('/admin/' . $tab->fullSlug(), !empty($tab->label()) ? $tab->label() : $tab->slug());
         }
     }
 }
