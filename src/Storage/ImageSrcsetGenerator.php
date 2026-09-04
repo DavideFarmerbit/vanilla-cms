@@ -10,6 +10,12 @@ namespace VanillaCms\Storage;
 interface ImageSrcsetGenerator
 {
     /**
+     * The file extension (without the leading dot, e.g. "webp") this generator writes variants as. Storage
+     * uses this to name generated files, regardless of the original upload's extension.
+     */
+    public function outputExtension(): string;
+
+    /**
      * Creates a resized copy of the image at $sourcePath and writes it to $destPath.
      * @param string $sourcePath absolute path of the original image.
      * @param string $destPath absolute path the resized copy should be written to; its parent directory

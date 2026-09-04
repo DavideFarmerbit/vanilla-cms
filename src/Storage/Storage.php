@@ -324,21 +324,23 @@ final class Storage
 
         $dir = self::$uploadsRoot . '/generated/' . dirname($relativePath);
         $base = pathinfo($relativePath, PATHINFO_FILENAME);
-        $extension = pathinfo($relativePath, PATHINFO_EXTENSION);
 
-        foreach (glob("{$dir}/{$base}-*w.{$extension}") ?: [] as $file) {
+        // Matched by base name only, regardless of extension: the generator's output format (e.g. webp)
+        // doesn't have to match the original's, and may even change if the registered generator changes.
+        foreach (glob("{$dir}/{$base}-*w.*") ?: [] as $file) {
             unlink($file);
         }
     }
 
     /**
-     * Builds the relative path (under the uploads root) a given width's variant of an image should live at.
+     * Builds the relative path (under the uploads root) a given width's variant of an image should live at,
+     * named using the registered generator's output extension rather than the original's.
      */
     private static function generatedVariantPath(string $relativePath, int $width): string
     {
         $subDir = dirname($relativePath);
         $base = pathinfo($relativePath, PATHINFO_FILENAME);
-        $extension = pathinfo($relativePath, PATHINFO_EXTENSION);
+        $extension = self::$imageSrcsetGenerator->outputExtension();
 
         return "generated/{$subDir}/{$base}-{$width}w.{$extension}";
     }
