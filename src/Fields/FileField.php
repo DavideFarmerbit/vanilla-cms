@@ -69,7 +69,7 @@ abstract class FileField extends Field
         ?>
         <div class="vcms-field vcms-file-field" data-vcms-file-field data-allowed-type="<?= htmlspecialchars($this->allowedType()) ?>">
             <div class="vcms-field__label"><?= htmlspecialchars($this->config['label'] ?? 'value') ?></div>
-            <input type="hidden" name="<?= "{$name}[uploadId]" ?>" value="<?= htmlspecialchars($this->uploadId ?? '') ?>" data-vcms-file-field-input>
+                <input type="hidden" name="<?= "{$name}[uploadId]" ?>" value="<?= htmlspecialchars($hasUpload && $this->id() ? $this->id() : '') ?>" data-vcms-file-field-input>
             <div class="vcms-file-field__preview" data-vcms-file-field-preview>
                 <?php $this->renderPreview($upload); ?>
             </div>
