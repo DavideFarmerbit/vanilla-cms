@@ -323,6 +323,7 @@ function openPopup(trigger) {
     body.appendChild(template.content.cloneNode(true));
 
     dialog.showModal();
+    dialog.focus();
 }
 
 document.addEventListener('click', (event) => {
