@@ -11,6 +11,7 @@ function render_instance_row_header()
         <th class="vcms-table__cell">Name</th>
         <th class="vcms-table__cell">Type</th>
         <th class="vcms-table__cell">ID</th>
+        <th class="vcms-table__cell">Visibility</th>
         <th class="vcms-table__cell"></th>
     </tr>
     <?php
@@ -27,6 +28,7 @@ function render_instance_row(Page $type, ?PageData $instance, string $editUrl, s
         <td class="vcms-table__cell"><?= htmlspecialchars($name) ?></td>
         <td class="vcms-table__cell"><?= htmlspecialchars($typeLabel) ?></td>
         <td class="vcms-table__cell"><?= htmlspecialchars($id) ?></td>
+        <td class="vcms-table__cell"><?= htmlspecialchars($instance->visibility->label()) ?></td>
         <td class="vcms-table__cell vcms-table__cell--actions">
             <div class="vcms-table__actions">
                 <a class="vcms-icon-btn vcms-icon-btn--confirm" href="<?= htmlspecialchars($editUrl) ?>" title="<?= $editLabel ?>" aria-label="<?= $editLabel ?>">
