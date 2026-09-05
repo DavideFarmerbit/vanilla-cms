@@ -33,6 +33,11 @@ class EnumField extends Field
     {
         return $this->value;
     }
+    
+    public function displayValue(): string
+    {
+        return $this->caseLabel($this->value);
+    }
 
     /*----------------------------------------------------------------------------------------------------------------*/
 
@@ -71,11 +76,15 @@ class EnumField extends Field
     /** @param T $case */
     private function caseLabel(BackedEnum $case): string
     {
-        $labels = $this->config['labels'] ?? [];
+        if (isset($this->config['vcms-label-provider'])) {
+            return ($this->config['vcms-label-provider'])($case);
+        }
+        
+        $labels = $this->config['vcms-labels'] ?? [];
         if (isset($labels[$case->name])) {
             return $labels[$case->name];
         }
 
-        return ucfirst(str_replace('_', ' ', strtolower((string) $case->value)));
+        return ucfirst(str_replace(['_', '-'], ' ', strtolower((string) $case->value)));
     }
 }
