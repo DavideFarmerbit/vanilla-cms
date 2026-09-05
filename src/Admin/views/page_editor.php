@@ -34,7 +34,7 @@ function render_page_editor(Page $instance, string $backUrl, string $saveAction,
                 <span class="vcms-field__select-wrap vcms-field__select-wrap--block">
                     <select class="vcms-field__input" name="visibility">
                         <?php foreach (PageVisibility::cases() as $visibilityOption): ?> ?>
-                            <option value="<?= htmlspecialchars($visibilityOption->value) ?>" <?= $visibilityOption === $instance->visibility() ? 'selected' : '' ?>><?= htmlspecialchars(ucfirst($visibilityOption->value)) ?></option>
+                            <option value="<?= htmlspecialchars($visibilityOption->value) ?>" <?= $visibilityOption === $instance->visibility() ? 'selected' : '' ?>><?= htmlspecialchars($visibilityOption->label()) ?></option>
                         <?php endforeach; ?>
                     </select>
                 </span>
