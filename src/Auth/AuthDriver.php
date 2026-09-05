@@ -38,6 +38,9 @@ interface AuthDriver
     /** @throws AuthException if the email could not be changed. */
     public function changeEmail(string $newEmail, string $password): void;
 
+    /** @throws AuthException if the confirmation link is invalid, expired, or the address is already in use. */
+    public function confirmEmailChange(string $selector, string $token): void;
+
     /** @throws AuthException if 2FA setup could not be started. */
     public function enable2FA(string $password): void;
 

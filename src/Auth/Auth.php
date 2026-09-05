@@ -110,14 +110,24 @@ final class Auth
     }
 
     /**
-     * Starts an email change for the current user. A confirmation link is sent to the new address;
-     * the change only takes effect once it is followed.
+     * Starts an email change for the current user. A confirmation link should be sent to the new address;
+     * the change only takes effect once confirmEmailChange is called (supposedly from the confirmation link).
      * @throws AuthException if the email could not be changed (e.g. wrong password, address already in use).
      * @throws Exception if the auth driver is not set.
      */
     public static function changeEmail(string $newEmail, string $password): void
     {
         self::driver()->changeEmail($newEmail, $password);
+    }
+
+    /**
+     * Confirms a pending email change via the selector/token pair from the confirmation link.
+     * @throws AuthException if the confirmation link is invalid, expired, or the address is already in use.
+     * @throws Exception if the auth driver is not set.
+     */
+    public static function confirmEmailChange(string $selector, string $token): void
+    {
+        self::driver()->confirmEmailChange($selector, $token);
     }
 
     /**
