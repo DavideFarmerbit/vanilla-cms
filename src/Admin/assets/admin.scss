@@ -697,8 +697,19 @@ template[data-vcms-repeater-template] {
         max-width: 320px;
         margin-bottom: 1rem;
 
+        &:has(iframe) {
+            max-width: 640px;
+        }
+
         img {
             max-width: 100%;
+            border-radius: var(--vcms-radius);
+            border: 1px solid var(--vcms-border);
+        }
+
+        iframe {
+            width: 100%;
+            aspect-ratio: 5/3;
             border-radius: var(--vcms-radius);
             border: 1px solid var(--vcms-border);
         }

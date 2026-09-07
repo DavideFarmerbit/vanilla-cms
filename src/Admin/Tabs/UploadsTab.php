@@ -338,6 +338,8 @@ class UploadsTab extends AdminTab
         <div class="vcms-upload-editor__preview">
             <?php if ($upload->type() === 'image'): ?>
                 <img src="<?= htmlspecialchars($upload->url()) ?>" alt="<?= htmlspecialchars($upload->originalName()) ?>">
+            <?php elseif ($upload->type() === 'pdf'): ?>
+                <iframe src="<?= htmlspecialchars($upload->url()) ?>" title="<?= htmlspecialchars($upload->originalName()) ?>"></iframe>
             <?php else: ?>
                 <span class="vcms-upload-grid__ext"><?= htmlspecialchars(strtoupper($upload->extension())) ?></span>
             <?php endif; ?>
