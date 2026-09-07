@@ -18,22 +18,30 @@ abstract class CompositeField extends Field
     
     public function render(string $name): void
     {
+        $renderFields = function(string $name)
+        {
+            // Sort owned fields by priority
+            $sortedFields = $this->getFields();
+            uasort($sortedFields, function($a, $b) {
+                return $b->priority() <=> $a->priority();
+            });
+            // Rended sorted fields
+            foreach ($sortedFields as $fieldName => $field) {
+                $field->render("{$name}[{$fieldName}]");
+            }
+        };
+        
+        if (!empty($this->config['vcms-unwrap'])) {
+            $renderFields($name);
+            return;
+        }
+        
         ?>
         <div class="vcms-field vcms-field--composite">
             <div class="vcms-field__label">
                 <?= htmlspecialchars($this->config['label'] ?? 'value') ?>
                 <div class="vcms-field__group">
-                <?php
-                // Sort owned fields by priority
-                $sortedFields = $this->getFields();
-                uasort($sortedFields, function($a, $b) {
-                    return $b->priority() <=> $a->priority();
-                });
-                // Rended sorted fields
-                foreach ($sortedFields as $fieldName => $field) {
-                    $field->render("{$name}[{$fieldName}]");
-                }
-                ?>
+                    <?php $renderFields($name) ?>
                 </div>
             </div>
         </div>
