@@ -381,6 +381,17 @@ button {
     }
 }
 
+.vcms-field__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+
+    > .vcms-field {
+        flex: 1 1;
+    }
+}
+
 .vcms-field--bool .vcms-field__input {
     appearance: none;
     width: 34px;
