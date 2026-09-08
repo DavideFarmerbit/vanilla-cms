@@ -379,6 +379,15 @@ button {
         border-radius: 0;
         background: none;
     }
+
+    &--columns {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(max(200px, (100% - 0.75rem) / 2), 1fr));
+
+        > .vcms-field {
+            min-width: 0;
+        }
+    }
 }
 
 .vcms-field__row {
