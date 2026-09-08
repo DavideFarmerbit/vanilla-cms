@@ -100,8 +100,8 @@ final class Router
     
     /**
      * Consumes a literal slug prefix from a set of segments.
-     * @param string $slug: A literal path prefix like '/users/settings', matched segment by segment.
-     * @param string[] $segments: The segments to match against.
+     * @param string $slug A literal path prefix like '/users/settings', matched segment by segment.
+     * @param string[] $segments The segments to match against.
      * @return string[]|null: The remaining segments after the slug, or null if the slug doesn't match.
      */
     public static function consumeSegments(string $slug, array $segments): ?array
@@ -142,9 +142,9 @@ final class Router
 
     /** 
      * Matches a pattern against a set of segments.
-     * @param string $pattern: A pattern like '/users/{id}/posts/{postId}/*' where '*' matches any number of segments, 
+     * @param string $pattern A pattern like '/users/{id}/posts/{postId}/*' where '*' matches any number of segments, 
      *                         and {} defines a parameter (used by RouterDispatcher::handle()).
-     * @param string[] $segments: The segments to match against.
+     * @param string[] $segments The segments to match against.
      * @return array<string|string[]>|null: The url parameters or null if no match.
      */
     private static function match(string $pattern, array $segments): ?array
