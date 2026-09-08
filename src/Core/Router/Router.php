@@ -17,11 +17,12 @@ final class Router
     
     /**
      * Uses Dispatchers to handle the current url request.
+     * @param string|null $ignorePrefix Prefix to trim from the beginning of the url.
      * @param RouterDispatcher[] $routes
      */
-    public static function dispatch(array $routes): void
+    public static function dispatch(array $routes, ?string $ignorePrefix = null): void
     {
-        $segments = self::segments();
+        $segments = self::segments($ignorePrefix);
 
         foreach ($routes as $route) {
             // Match the route pattern against the url segments, and extract eventual parameters.
@@ -119,12 +120,22 @@ final class Router
 
     /**
      * Parses the url into an array of segments.
+     * @param string|null $ignorePrefix Prefix to trim from the beginning of the url.
      * @return string[]
      */
-    private static function segments(): array
+    private static function segments(?string $ignorePrefix = null): array
     {
         $path = parse_url(self::currentUrl(), PHP_URL_PATH) ?? '/';
         $path = trim($path, '/');
+
+        // Trim the prefix from the path
+        if ($ignorePrefix !== null) {
+            $ignorePrefix = trim($ignorePrefix, '/');
+            if ($ignorePrefix !== '' && ($path === $ignorePrefix || str_starts_with($path, $ignorePrefix . '/'))) {
+                $path = substr($path, strlen($ignorePrefix));
+                $path = ltrim($path, '/');
+            }
+        }
 
         return $path === '' ? [] : explode('/', $path);
     }
