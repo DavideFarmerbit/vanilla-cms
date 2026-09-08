@@ -68,11 +68,12 @@ class RepeaterField extends Field
 
     public function render(string $name): void
     {
+        $unwrap = !empty($this->config['vcms-unwrap']);
         ?>
         <div class="vcms-field vcms-field--repeater">
             <div class="vcms-field__label">
-                <?= htmlspecialchars($this->config['label'] ?? 'value') ?>
-                <div class="vcms-repeater" data-vcms-repeater>
+                <span class="vcms-field__label-text"><?= htmlspecialchars($this->config['label'] ?? 'value') ?></span>
+                <div class="vcms-repeater<?= $unwrap ? ' vcms-repeater--unwrap' : ''?>" data-vcms-repeater>
                     <div class="vcms-repeater__items" data-vcms-repeater-items>
                         <?php foreach ($this->items as $index => $item): ?>
                             <?php $this->renderItem($item, $name, (string) $index); ?>

@@ -24,7 +24,7 @@ class RichTextField extends Field
         ?>
         <div class="vcms-field vcms-field--rich-text<?= $shortClass ?>">
             <label class="vcms-field__label">
-                <?= htmlspecialchars($this->config['label'] ?? 'value') ?>
+                <span class="vcms-field__label-text"><?= htmlspecialchars($this->config['label'] ?? 'value') ?></span>
                 <textarea class="vcms-field__input" name="<?= "{$name}[value]" ?>"><?= htmlspecialchars($this->value) ?></textarea>
             </label>
         </div>

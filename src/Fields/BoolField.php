@@ -25,7 +25,7 @@ class BoolField extends Field
         ?>
         <div class="vcms-field vcms-field--bool">
             <label class="vcms-field__label">
-                <?= htmlspecialchars($this->config['label'] ?? 'value') ?>
+                <span class="vcms-field__label-text"><?= htmlspecialchars($this->config['label'] ?? 'value') ?></span>
                 <input class="vcms-field__input" type="checkbox" role="switch" name="<?= "{$name}[value]" ?>" value="1" <?= $this->value ? 'checked' : '' ?>>
             </label>
         </div>

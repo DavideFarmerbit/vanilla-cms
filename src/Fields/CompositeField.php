@@ -31,16 +31,12 @@ abstract class CompositeField extends Field
             }
         };
         
-        if (!empty($this->config['vcms-unwrap'])) {
-            $renderFields($name);
-            return;
-        }
-        
+        $unwrap = !empty($this->config['vcms-unwrap']);
         ?>
         <div class="vcms-field vcms-field--composite">
             <div class="vcms-field__label">
-                <?= htmlspecialchars($this->config['label'] ?? 'value') ?>
-                <div class="vcms-field__group">
+                <span class="vcms-field__label-text<?= $unwrap ? ' vcms-field__label-text--hidden' : '' ?>"><?= htmlspecialchars($this->config['label'] ?? 'value') ?></span>
+                <div class="vcms-field__group<?= $unwrap ? ' vcms-field__group--unwrap' : ''?>">
                     <?php $renderFields($name) ?>
                 </div>
             </div>

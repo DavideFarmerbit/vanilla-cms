@@ -295,6 +295,12 @@ button {
         font-size: 0.85rem;
         font-weight: 500;
     }
+    
+    &__label-text {
+        &--hidden {
+            display: none;
+        }
+    }
 
     &__input {
         background: var(--vcms-surface);
@@ -355,6 +361,7 @@ button {
 
 .vcms-field__group {
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
     gap: 0.75rem;
     padding: 0.85rem;
@@ -363,7 +370,26 @@ button {
     background: var(--vcms-surface);
 
     > .vcms-field {
-        flex: 1 1 300px;
+        flex: 1 1;
+    }
+    
+    &--unwrap {
+        padding: 0;
+        border: none;
+        border-radius: 0;
+        background: none;
+    }
+}
+
+.vcms-field__row {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+    min-width: 0;
+
+    > .vcms-field {
+        min-width: 0;
     }
 }
 
@@ -457,6 +483,34 @@ input[type="date"].vcms-field__input::-webkit-calendar-picker-indicator {
         display: flex;
         flex-shrink: 0;
         gap: 0.4rem;
+    }
+}
+
+.vcms-repeater--unwrap {
+    .vcms-repeater {
+        &__item {
+            padding: 0;
+            border: none;
+            border-radius: 0;
+            background: none;
+            
+            align-items: center;
+            
+            &-fields {
+                > .vcms-field {
+                    .vcms-field__label-text {
+                        display: none;
+                    }
+                }
+            }
+        }
+
+        &__item-actions {
+            padding: 0.2rem;
+            border: 1px solid var(--vcms-border);
+            border-radius: var(--vcms-radius);
+            background: var(--vcms-surface);
+        }
     }
 }
 

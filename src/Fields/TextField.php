@@ -21,7 +21,7 @@ class TextField extends Field
         ?>
         <div class="vcms-field vcms-field--text">
             <label class="vcms-field__label">
-                <?= htmlspecialchars($this->config['label'] ?? 'value') ?>
+                <span class="vcms-field__label-text"><?= htmlspecialchars($this->config['label'] ?? 'value') ?></span>
                 <input class="vcms-field__input" type="text" name="<?= "{$name}[value]" ?>" value="<?= htmlspecialchars($this->value) ?>">
             </label>
         </div>

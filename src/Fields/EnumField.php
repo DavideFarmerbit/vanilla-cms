@@ -58,7 +58,7 @@ class EnumField extends Field
         ?>
         <div class="vcms-field vcms-field--select">
             <label class="vcms-field__label">
-                <?= htmlspecialchars($this->config['label'] ?? 'value') ?>
+                <span class="vcms-field__label-text"><?= htmlspecialchars($this->config['label'] ?? 'value') ?></span>
                 <span class="vcms-field__select-wrap vcms-field__select-wrap--block">
                     <select class="vcms-field__input" name="<?= "{$name}[value]" ?>">
                         <?php foreach ($enumClass::cases() as $case): ?>
