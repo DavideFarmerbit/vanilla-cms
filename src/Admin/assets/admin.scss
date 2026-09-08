@@ -112,6 +112,7 @@ button {
         border-radius: var(--vcms-radius);
         box-shadow: var(--vcms-shadow);
         overflow: auto;
+        contain: paint;
     }
     
     &__main-inner {
@@ -362,7 +363,6 @@ button {
 .vcms-field__group {
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
     gap: 0.75rem;
     padding: 0.85rem;
     border: 1px solid var(--vcms-border);
@@ -378,18 +378,6 @@ button {
         border: none;
         border-radius: 0;
         background: none;
-    }
-}
-
-.vcms-field__row {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(0, 1fr);
-    gap: 0.75rem;
-    min-width: 0;
-
-    > .vcms-field {
-        min-width: 0;
     }
 }
 
