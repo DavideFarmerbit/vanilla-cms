@@ -191,4 +191,6 @@ final class Auth
         }
         return self::$driver;
     }
+    
+    // TODO: add password recovery, support for remember-me param
 }
