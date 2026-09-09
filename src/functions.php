@@ -58,6 +58,8 @@ function router_dispatcher(string $pattern, callable $handler): RouterDispatcher
  */
 function default_router_dispatchers(): array {
     return [
+        // Admin pannel
+        AdminController::routerDispatcher(),
         // Homepage
         router_dispatcher('', fn () => PageRenderer::page('home')),
         // Pages
@@ -76,8 +78,6 @@ function default_router_dispatchers(): array {
             ),
             PageTypeRegistry::archetypeTypes()
         ),
-        // Admin pannel
-        AdminController::routerDispatcher(),
     ];
 }
 

@@ -31,7 +31,7 @@ function vcms_render_tabs_links()
         
         echo '<li class="vcms-nav__group-label">' . htmlspecialchars(!empty($tabGroup->label()) ? $tabGroup->label() : $tabGroup->slug()) . '</li>';
         foreach ($tabGroup->tabs() as $tab) {
-            vcms_nav_link('/admin/' . $tab->fullSlug(), !empty($tab->label()) ? $tab->label() : $tab->slug());
+            vcms_nav_link($tab->url(), !empty($tab->label()) ? $tab->label() : $tab->slug());
         }
     }
 }

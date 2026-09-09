@@ -46,6 +46,11 @@ final class AdminController
         if ($requestHandled) {
             return;
         }
+        
+        // If there is no segments, redirect to first tab if any is registered, otherwise fallthrough
+        if (empty($segments) && ($firstTab = self::firstTab())) {
+            Router::redirect($firstTab->url());
+        }
 
         // If it wasn't an API request, render the admin shell.
         render_admin_shell_open();
@@ -87,6 +92,16 @@ final class AdminController
             $tabs = array_merge($tabs, $group->tabs());
         }
         return $tabs;
+    }
+    
+    public static function firstTab(): ?AdminTab {
+        foreach (self::$tabsRegistry as $group) {
+            $tab = $group->tabs()[0] ?? null;
+            if ($tab) {
+                return $tab;
+            }
+        }
+        return null;
     }
     
     /** @return AdminTagGroup[] */
