@@ -111,18 +111,23 @@ final class AdminController
     }
 
     /**
-     * @param Closure(string $id): string $editUrlBuilder Builds the editor url to land on after a successful save,
-     *                                                     given the (possibly newly generated) instance id.
+     * Saves the page data to storage and redirects to the editor for the saved page.
+     * @param Closure(string $id): string $editUrlBuilder Builds the editor url to land on after a successful save, given the (possibly newly generated) instance id.
+     * @return bool false if this wasn't a verified POST.
      */
-    public static function handleEditor(Page $type, ?PageData $pageData, string $backUrl, string $saveAction, ?string $deleteAction, Closure $editUrlBuilder): void
+    public static function handleEditorSave(Page $type, ?PageData $pageData, Closure $editUrlBuilder): bool
     {
-        if (self::isVerifiedPost()) {
-            $data = collect_page_editor_response($type);
-
-            $id = Storage::savePageInstance($type->slug(), $pageData?->id, $data);
-            Router::redirect($editUrlBuilder($id));
+        if (!self::isVerifiedPost()) {
+            return false;
         }
 
+        $data = collect_page_editor_response($type);
+        $id = Storage::savePageInstance($type->slug(), $pageData?->id, $data);
+        Router::redirect($editUrlBuilder($id));
+    }
+
+    public static function renderEditor(Page $type, ?PageData $pageData, string $backUrl, string $saveAction, ?string $deleteAction): void
+    {
         // Instantiate from existing data or default instance.
         $instance = $type->instantiate($pageData ?? $type->toPageData());
         render_page_editor($instance, $backUrl, $saveAction, $deleteAction, $pageData === null);

@@ -40,6 +40,51 @@ class ArchetypeTab extends AdminTab
         return 'archetypes/'. $this->slug();
     }
 
+    public function handleApiRequest(array $segments): bool
+    {
+        if (count($segments) === 0) {
+            return false;
+        }
+
+        $archetype = PageTypeRegistry::getPageType($this->slug());
+        if (!$archetype || !$archetype->isArchetype()) {
+            return false;
+        }
+
+        $action = $segments[0];
+
+        if ($action === 'new' && AdminController::isVerifiedPost()) {
+            return AdminController::handleEditorSave(
+                $archetype,
+                null,
+                fn (string $id) => self::getArchetypeEditUrl($this->slug(), $id, AdminPageAction::EDIT)
+            );
+        }
+
+        $id = $action;
+        $subAction = $segments[1] ?? null;
+        $pageData = Storage::findPageInstance($archetype->slug(), $id);
+
+        if (!$pageData) {
+            return false;
+        }
+
+        if ($subAction === 'edit' && AdminController::isVerifiedPost()) {
+            return AdminController::handleEditorSave(
+                $archetype,
+                $pageData,
+                fn (string $newId) => self::getArchetypeEditUrl($this->slug(), $newId, AdminPageAction::EDIT)
+            );
+        }
+
+        if ($subAction === 'delete' && AdminController::isVerifiedPost()) {
+            Storage::deletePageInstance($archetype->slug(), $id);
+            Router::redirect(self::getArchetypeUrl($this->slug()));
+        }
+
+        return false;
+    }
+
     public function dispatch(array $segments): void
     {
         $archetype = PageTypeRegistry::getPageType($this->slug());
@@ -59,14 +104,7 @@ class ArchetypeTab extends AdminTab
         $action = $segments[0];
 
         if ($action === 'new') {
-            AdminController::handleEditor(
-                $archetype,
-                null,
-                $backUrl,
-                self::getArchetypeNewUrl($this->slug()),
-                null,
-                fn (string $id) => self::getArchetypeEditUrl($this->slug(), $id, AdminPageAction::EDIT)
-            );
+            AdminController::renderEditor($archetype, null, $backUrl, self::getArchetypeNewUrl($this->slug()), null);
             return;
         }
 
@@ -80,20 +118,14 @@ class ArchetypeTab extends AdminTab
         }
 
         if ($subAction === 'edit') {
-            AdminController::handleEditor(
+            AdminController::renderEditor(
                 $archetype,
                 $pageData,
                 $backUrl,
                 self::getArchetypeEditUrl($this->slug(), $id, AdminPageAction::EDIT),
-                self::getArchetypeEditUrl($this->slug(), $id, AdminPageAction::DELETE),
-                fn (string $newId) => self::getArchetypeEditUrl($this->slug(), $newId, AdminPageAction::EDIT)
+                self::getArchetypeEditUrl($this->slug(), $id, AdminPageAction::DELETE)
             );
             return;
-        }
-
-        if ($subAction === 'delete' && AdminController::isVerifiedPost()) {
-            Storage::deletePageInstance($archetype->slug(), $id);
-            Router::redirect($backUrl);
         }
 
         Router::notFound();

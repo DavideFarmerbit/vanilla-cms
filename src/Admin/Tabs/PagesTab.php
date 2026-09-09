@@ -26,6 +26,40 @@ class PagesTab extends AdminTab
         $actionString = strtolower($action->name);
         return "/admin/pages/{$slug}/{$actionString}";
     }
+    
+    public function handleApiRequest(array $segments): bool
+    {
+        if (count($segments) === 0) {
+            return false;
+        }
+
+        $slug = $segments[0];
+        $action = $segments[1] ?? null;
+        $page = PageTypeRegistry::getPageType($slug);
+
+        if (!$page || $page->isArchetype()) {
+            return false;
+        }
+
+        if ($action === 'edit' && AdminController::isVerifiedPost()) {
+            $pageData = Storage::findFirstPageInstance($page->slug());
+            return AdminController::handleEditorSave(
+                $page,
+                $pageData,
+                fn (string $id) => self::getPageEditUrl($slug, AdminPageAction::EDIT)
+            );
+        }
+
+        if ($action === 'delete' && AdminController::isVerifiedPost()) {
+            $pageData = Storage::findFirstPageInstance($page->slug());
+            if ($pageData) {
+                Storage::deletePageInstance($page->slug(), $pageData->id);
+            }
+            Router::redirect(self::getPagesUrl());
+        }
+
+        return false;
+    }
 
     public function dispatch(array $segments): void
     {
@@ -47,23 +81,14 @@ class PagesTab extends AdminTab
 
         if ($action === 'edit') {
             $pageData = Storage::findFirstPageInstance($page->slug());
-            AdminController::handleEditor(
+            AdminController::renderEditor(
                 $page,
                 $pageData,
                 $backUrl,
                 self::getPageEditUrl($slug, AdminPageAction::EDIT),
-                $pageData ? self::getPageEditUrl($slug, AdminPageAction::DELETE) : null,
-                fn (string $id) => self::getPageEditUrl($slug, AdminPageAction::EDIT)
+                $pageData ? self::getPageEditUrl($slug, AdminPageAction::DELETE) : null
             );
             return;
-        }
-
-        if ($action === 'delete' && AdminController::isVerifiedPost()) {
-            $pageData = Storage::findFirstPageInstance($page->slug());
-            if ($pageData) {
-                Storage::deletePageInstance($page->slug(), $pageData->id);
-            }
-            Router::redirect($backUrl);
         }
 
         Router::notFound();

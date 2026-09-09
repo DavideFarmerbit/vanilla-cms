@@ -43,16 +43,39 @@ class UploadsTab extends AdminTab
             $this->uploadsApiResponse();
             return true;
         }
+
+        if (count($segments) === 0) {
+            if (AdminController::isVerifiedPost()) {
+                // Redirects to editor for the uploaded batch of files.
+                $this->handleUpload();
+            }
+            return false;
+        }
+
+        $id = $segments[0];
+        $subAction = $segments[1] ?? null;
+        $uploadData = Storage::findUpload($id);
+
+        if (!$uploadData) {
+            return false;
+        }
+
+        if ($subAction === 'edit' && AdminController::isVerifiedPost()) {
+            // Redirects to editor for the saved file
+            $this->saveUploadEditor($uploadData);
+        }
+
+        if ($subAction === 'delete' && AdminController::isVerifiedPost()) {
+            Storage::deleteUpload($id);
+            Router::redirect(self::getUploadsUrl());
+        }
+
         return false;
     }
 
     public function dispatch(array $segments): void
     {
         if (count($segments) === 0) {
-            if (AdminController::isVerifiedPost()) {
-                $this->handleUpload();
-                return;
-            }
             $this->renderUploadsLibrary();
             return;
         }
@@ -67,13 +90,8 @@ class UploadsTab extends AdminTab
         }
 
         if ($subAction === 'edit') {
-            $this->handleUploadEditor($uploadData);
+            $this->renderUploadEditor($uploadData);
             return;
-        }
-
-        if ($subAction === 'delete' && AdminController::isVerifiedPost()) {
-            Storage::deleteUpload($id);
-            Router::redirect(self::getUploadsUrl());
         }
 
         Router::notFound();
@@ -126,7 +144,7 @@ class UploadsTab extends AdminTab
         ]);
     }
 
-    protected function handleUpload(): void
+    protected function handleUpload(): never
     {
         $ids = [];
         $files = $_FILES['files'] ?? null;
@@ -174,27 +192,29 @@ class UploadsTab extends AdminTab
         Router::redirect(self::getUploadEditUrl($ids[0], $ids));
     }
 
-    protected function handleUploadEditor(UploadData $uploadData): void
+    protected function saveUploadEditor(UploadData $uploadData): never
     {
-        $batch = isset($_GET['batch']) ? array_values(array_filter(explode(',', $_GET['batch']))) : [];
+        $batch = $this->batchFromQuery();
 
-        if (AdminController::isVerifiedPost()) {
-            $name = trim($_POST['name'] ?? '');
-            if ($name !== '') {
-                $oldPath = $uploadData->path;
-                $uploadData->path = Storage::renameUploadedFile($oldPath, $name);
-                if ($uploadData->path !== $oldPath) {
-                    // TODO: consider moving upload rename + variant deletion to a single Storage method
-                    Storage::deleteGeneratedVariants($oldPath);
-                }
-                $uploadData->name = $name;
+        $name = trim($_POST['name'] ?? '');
+        if ($name !== '') {
+            $oldPath = $uploadData->path;
+            $uploadData->path = Storage::renameUploadedFile($oldPath, $name);
+            if ($uploadData->path !== $oldPath) {
+                // TODO: consider moving upload rename + variant deletion to a single Storage method
+                Storage::deleteGeneratedVariants($oldPath);
             }
-            $uploadData->fields = $_POST['fields'] ?? [];
-
-            Storage::saveUpload($uploadData->id, $uploadData);
-            Router::redirect(self::getUploadEditUrl($uploadData->id, $batch));
+            $uploadData->name = $name;
         }
+        $uploadData->fields = $_POST['fields'] ?? [];
 
+        Storage::saveUpload($uploadData->id, $uploadData);
+        Router::redirect(self::getUploadEditUrl($uploadData->id, $batch));
+    }
+
+    protected function renderUploadEditor(UploadData $uploadData): void
+    {
+        $batch = $this->batchFromQuery();
         $meta = UploadMeta::instantiate($uploadData);
         $this->renderUploadEditorMarkdown(
             $meta,
@@ -203,6 +223,12 @@ class UploadsTab extends AdminTab
             self::getUploadDeleteUrl($meta->id()),
             $batch
         );
+    }
+
+    /** @return string[] ids of the uploads in the current edit batch, from the `batch` query param. */
+    private function batchFromQuery(): array
+    {
+        return isset($_GET['batch']) ? array_values(array_filter(explode(',', $_GET['batch']))) : [];
     }
 
     /** @param UploadMeta[] $uploads @return UploadMeta[] */
