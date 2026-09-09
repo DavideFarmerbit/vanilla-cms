@@ -28,7 +28,7 @@ class ImageUploadMeta extends UploadMeta
     {
         $parts = [];
         foreach (array_unique($widths) as $width) {
-            $url = Storage::ensureImageVariant($this->path(), (int) $width * $scale);
+            $url = Storage::ensureImageVariant($this->path(), (int) ($width * $scale));
             if ($url !== null) {
                 $parts[] = "{$url} {$width}w";
             }
