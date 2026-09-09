@@ -4,7 +4,7 @@ use VanillaCms\Auth\Csrf;
 use VanillaCms\Pages\Page;
 use VanillaCms\Storage\PageData;
 
-function render_instance_row_header()
+function vcms_render_instance_row_header()
 {
     ?>
     <tr>
@@ -17,7 +17,7 @@ function render_instance_row_header()
     <?php
 }
 
-function render_instance_row(Page $type, ?PageData $instance, string $editUrl, string $deleteUrl): void
+function vcms_render_instance_row(Page $type, ?PageData $instance, string $editUrl, string $deleteUrl): void
 {
     $name = ($instance?->name ?: $instance?->slug) ?: '-';
     $typeLabel = $type->label() ?: $type->slug();

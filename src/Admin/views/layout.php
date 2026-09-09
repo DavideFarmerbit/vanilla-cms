@@ -74,7 +74,7 @@ function vcms_months(): array
  * Renders the <template>s the file field picker (admin.js) clones: the picker dialog itself, and
  * a single upload grid item. Rendered once per admin page, cloned on demand.
  */
-function render_admin_file_picker_templates(): void
+function vcms_render_admin_file_picker_templates(): void
 {
     $currentYear = (int) date('Y');
     ?>
@@ -117,7 +117,7 @@ function render_admin_file_picker_templates(): void
  * once, then any element can point at a <template id="..."> via data-vcms-popup="id" to have that
  * template's content shown inside it.
  */
-function render_admin_popup_dialog(): void
+function vcms_render_admin_popup_dialog(): void
 {
     ?>
     <dialog class="vcms-popup-dialog" data-vcms-popup-dialog tabindex="-1">
@@ -129,7 +129,7 @@ function render_admin_popup_dialog(): void
     <?php
 }
 
-function render_tab_not_found(): void
+function vcms_render_tab_not_found(): void
 {
     ?>
     <h1 class="vcms-page-title">Not Found</h1>
@@ -137,7 +137,7 @@ function render_tab_not_found(): void
     <?php
 }
 
-function render_admin_shell_open(): void
+function vcms_render_admin_shell_open(): void
 {
     ?>
     <!DOCTYPE html>
@@ -163,7 +163,7 @@ function render_admin_shell_open(): void
     <?php
 }
 
-function render_admin_shell_close(): void
+function vcms_render_admin_shell_close(): void
 {
     ?>
         </div>

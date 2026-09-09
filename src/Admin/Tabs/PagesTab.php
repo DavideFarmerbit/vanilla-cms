@@ -104,12 +104,12 @@ class PagesTab extends AdminTab
         <?php else: ?>
             <table class="vcms-table">
                 <thead>
-                <?php render_instance_row_header() ?>
+                <?php vcms_render_instance_row_header() ?>
                 </thead>
                 <tbody>
                 <?php foreach ($pages as $page): ?>
                     <?php $instance = Storage::findFirstPageInstance($page->slug()); ?>
-                    <?php render_instance_row(
+                    <?php vcms_render_instance_row(
                         $page,
                         $instance,
                         self::getPageEditUrl($page->slug(), AdminPageAction::EDIT),

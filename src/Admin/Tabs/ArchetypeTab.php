@@ -149,11 +149,11 @@ class ArchetypeTab extends AdminTab
         <?php else: ?>
             <table class="vcms-table">
                 <thead>
-                <?php render_instance_row_header() ?>
+                <?php vcms_render_instance_row_header() ?>
                 </thead>
                 <tbody>
                 <?php foreach ($instances as $instance): ?>
-                    <?php render_instance_row(
+                    <?php vcms_render_instance_row(
                         $archetype,
                         $instance,
                         self::getArchetypeEditUrl($archetype->slug(), $instance->id, AdminPageAction::EDIT),

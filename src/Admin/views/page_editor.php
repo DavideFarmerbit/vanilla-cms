@@ -7,7 +7,7 @@ use VanillaCms\Pages\PageTypeRegistry;
 use VanillaCms\Pages\PageVisibility;
 use VanillaCms\Storage\PageData;
 
-function render_page_editor(Page $instance, string $backUrl, string $saveAction, ?string $deleteAction, bool $isNew): void
+function vcms_render_page_editor(Page $instance, string $backUrl, string $saveAction, ?string $deleteAction, bool $isNew): void
 {
     $pageUrl = htmlspecialchars($instance->url());
     $previewUrl = htmlspecialchars($instance->url() . '?' . PageRenderer::PREVIEW_PARAM . '=1');
@@ -75,10 +75,10 @@ function render_page_editor(Page $instance, string $backUrl, string $saveAction,
         </form>
     <?php endif; ?>
     <?php
-    render_admin_file_picker_templates();
+    vcms_render_admin_file_picker_templates();
 }
 
-function collect_page_editor_response(Page $type): PageData 
+function vcms_collect_page_editor_response(Page $type): PageData 
 {
     $data = PageData::empty();
     $data->setPage($type);

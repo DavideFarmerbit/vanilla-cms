@@ -26,7 +26,7 @@ final class AdminController
     private static array $tabsRegistry = [];
     
     public static function routerDispatcher(): RouterDispatcher {
-        return router_dispatcher('admin/*', fn (array $segments) => AdminController::dispatch($segments));
+        return vcms_router_dispatcher('admin/*', fn (array $segments) => AdminController::dispatch($segments));
     }
 
     public static function dispatch(array $segments): void
@@ -53,7 +53,7 @@ final class AdminController
         }
 
         // If it wasn't an API request, render the admin shell.
-        render_admin_shell_open();
+        vcms_render_admin_shell_open();
 
         $tabDispatched = self::foreachTab(function (string $categorySlug, AdminTab $tab) use ($segments) {
             $tabSegments = Router::consumeSegments($tab->fullSlug(), $segments);
@@ -67,7 +67,7 @@ final class AdminController
             self::notFound();
         }
 
-        render_admin_shell_close();
+        vcms_render_admin_shell_close();
     }
     
     public static function registerGroup(AdminTagGroup $group): void {
@@ -136,7 +136,7 @@ final class AdminController
             return false;
         }
 
-        $data = collect_page_editor_response($type);
+        $data = vcms_collect_page_editor_response($type);
         $id = Storage::savePageInstance($type->slug(), $pageData?->id, $data);
         Router::redirect($editUrlBuilder($id));
     }
@@ -145,13 +145,13 @@ final class AdminController
     {
         // Instantiate from existing data or default instance.
         $instance = $type->instantiate($pageData ?? $type->toPageData());
-        render_page_editor($instance, $backUrl, $saveAction, $deleteAction, $pageData === null);
+        vcms_render_page_editor($instance, $backUrl, $saveAction, $deleteAction, $pageData === null);
     }
 
     /** Renders a "not found" tab in the admin shell. */
     public static function notFound(): void
     {
-        render_tab_not_found();
+        vcms_render_tab_not_found();
     }
 
     public static function isPost(): bool

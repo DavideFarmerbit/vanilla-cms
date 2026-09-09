@@ -20,7 +20,7 @@ use VanillaCms\Uploads\UploadTypeRegistry;
  * Registers a new page type.
  * @param class-string<Page> $pageClass
  */
-function register_page(string $pageClass): void
+function vcms_register_page(string $pageClass): void
 {
     PageTypeRegistry::registerType($pageClass);
 }
@@ -29,7 +29,7 @@ function register_page(string $pageClass): void
  * Registers an array of page type.
  * @param array<class-string<Page>> $pageClasses
  */
-function register_pages(array $pageClasses): void
+function vcms_register_pages(array $pageClasses): void
 {
     array_map(fn ($pageClass) => PageTypeRegistry::registerType($pageClass), $pageClasses);
 }
@@ -40,7 +40,7 @@ function register_pages(array $pageClasses): void
  * @param class-string<UploadMeta> $uploadMetaClass
  * @param string[] $extensions file extensions (without the leading dot) handled by this type; also allow-listed.
  */
-function register_upload_type(string $key, string $uploadMetaClass, array $extensions): void
+function vcms_register_upload_type(string $key, string $uploadMetaClass, array $extensions): void
 {
     UploadTypeRegistry::registerType($key, $uploadMetaClass, $extensions);
 }
@@ -48,7 +48,7 @@ function register_upload_type(string $key, string $uploadMetaClass, array $exten
 /** 
  * Shortend for creating a new router dispatcher.
  */
-function router_dispatcher(string $pattern, callable $handler): RouterDispatcher
+function vcms_router_dispatcher(string $pattern, callable $handler): RouterDispatcher
 {
     return new RouterDispatcher($pattern, $handler);
 }
@@ -57,15 +57,15 @@ function router_dispatcher(string $pattern, callable $handler): RouterDispatcher
  * Returns a set of default router dispatchers.
  * @return RouterDispatcher[]
  */
-function default_router_dispatchers(): array {
+function vcms_default_router_dispatchers(): array {
     return [
         // Admin pannel
         AdminController::routerDispatcher(),
         // Homepage
-        router_dispatcher('', fn () => PageRenderer::page('home')),
+        vcms_router_dispatcher('', fn () => PageRenderer::page('home')),
         // Pages
         ...array_map(
-            fn ($page) => router_dispatcher(
+            fn ($page) => vcms_router_dispatcher(
                 $page->slug(),
                 fn () => PageRenderer::page($page->slug())
             ),
@@ -73,7 +73,7 @@ function default_router_dispatchers(): array {
         ),
         // Archetypes
         ...array_map(
-            fn ($archetype) => router_dispatcher(
+            fn ($archetype) => vcms_router_dispatcher(
                 $archetype->slug() . '/{instance}',
                 fn (string $instance) => PageRenderer::page($archetype->slug(), $instance)
             ),
@@ -102,7 +102,7 @@ function vcms_register_default_admin_tabs(): void
  * Returns the first instance of a given page type.
  * @return Page|null
  */
-function get_first_page_instance_by_type(string $slug): ?Page {
+function vcms_get_first_page_instance_by_type(string $slug): ?Page {
     $type = PageTypeRegistry::getPageType($slug);
     $pageDataArray = Storage::findFirstPageInstance($type->slug());
     return $pageDataArray !== null ? $type->instantiate($pageDataArray) : null;
@@ -112,7 +112,7 @@ function get_first_page_instance_by_type(string $slug): ?Page {
  * Returns all page instances of a given type.
  * @return Page[]
  */
-function get_page_instances_by_type(string $slug): array {
+function vcms_get_page_instances_by_type(string $slug): array {
     $type = PageTypeRegistry::getPageType($slug);
     $pageDataArray = Storage::allPageInstances($type->slug());
     return array_map(fn($pageData) => $type->instantiate($pageData), $pageDataArray);
