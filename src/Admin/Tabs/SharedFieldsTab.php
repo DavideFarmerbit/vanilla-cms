@@ -2,8 +2,8 @@
 
 namespace VanillaCms\Admin\Tabs;
 
+use VanillaCms\Admin\AdminController;
 use VanillaCms\Admin\AdminTab;
-use VanillaCms\Core\Router\Router;
 
 class SharedFieldsTab extends AdminTab
 {
@@ -18,9 +18,9 @@ class SharedFieldsTab extends AdminTab
     public static function getSharedFieldUrl(string $slug): string {
         return "/admin/shared-fields/{$slug}";
     }
-    
+
     public function dispatch(array $segments): void
     {
-        Router::notFound();
+        AdminController::notFound();
     }
 }

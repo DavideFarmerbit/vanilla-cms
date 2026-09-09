@@ -73,7 +73,7 @@ class PagesTab extends AdminTab
         $page = PageTypeRegistry::getPageType($slug);
 
         if (!$page || $page->isArchetype()) {
-            Router::notFound();
+            AdminController::notFound();
             return;
         }
 
@@ -91,7 +91,7 @@ class PagesTab extends AdminTab
             return;
         }
 
-        Router::notFound();
+        AdminController::notFound();
     }
 
     /** @param Page[] $pages */

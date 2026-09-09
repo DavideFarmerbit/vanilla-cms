@@ -59,7 +59,7 @@ final class AdminController
             return true;
         });
         if (!$tabDispatched) {
-            Router::notFound();
+            self::notFound();
         }
 
         render_admin_shell_close();
@@ -131,6 +131,12 @@ final class AdminController
         // Instantiate from existing data or default instance.
         $instance = $type->instantiate($pageData ?? $type->toPageData());
         render_page_editor($instance, $backUrl, $saveAction, $deleteAction, $pageData === null);
+    }
+
+    /** Renders a "not found" tab in the admin shell. */
+    public static function notFound(): void
+    {
+        render_tab_not_found();
     }
 
     public static function isPost(): bool

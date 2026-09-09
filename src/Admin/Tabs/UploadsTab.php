@@ -85,7 +85,7 @@ class UploadsTab extends AdminTab
         $uploadData = Storage::findUpload($id);
 
         if (!$uploadData) {
-            Router::notFound();
+            AdminController::notFound();
             return;
         }
 
@@ -94,7 +94,7 @@ class UploadsTab extends AdminTab
             return;
         }
 
-        Router::notFound();
+        AdminController::notFound();
     }
 
     protected function renderUploadsLibrary(): void

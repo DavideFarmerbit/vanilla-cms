@@ -90,7 +90,7 @@ class ArchetypeTab extends AdminTab
         $archetype = PageTypeRegistry::getPageType($this->slug());
 
         if (!$archetype || !$archetype->isArchetype()) {
-            Router::notFound();
+            AdminController::notFound();
             return;
         }
 
@@ -113,7 +113,7 @@ class ArchetypeTab extends AdminTab
         $pageData = Storage::findPageInstance($archetype->slug(), $id);
 
         if (!$pageData) {
-            Router::notFound();
+            AdminController::notFound();
             return;
         }
 
@@ -128,7 +128,7 @@ class ArchetypeTab extends AdminTab
             return;
         }
 
-        Router::notFound();
+        AdminController::notFound();
     }
 
     /**

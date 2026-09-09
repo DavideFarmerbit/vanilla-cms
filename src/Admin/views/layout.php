@@ -129,6 +129,14 @@ function render_admin_popup_dialog(): void
     <?php
 }
 
+function render_tab_not_found(): void
+{
+    ?>
+    <h1 class="vcms-page-title">Not Found</h1>
+    <p class="vcms-empty-state">This page doesn't exist.</p>
+    <?php
+}
+
 function render_admin_shell_open(): void
 {
     ?>
