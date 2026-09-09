@@ -2,6 +2,7 @@
 
 use VanillaCms\Admin\AdminController;
 use VanillaCms\Admin\AdminTagGroup;
+use VanillaCms\Admin\Tabs\AccountTab;
 use VanillaCms\Admin\Tabs\ArchetypeTab;
 use VanillaCms\Admin\Tabs\HomeTab;
 use VanillaCms\Admin\Tabs\PagesTab;
@@ -86,6 +87,7 @@ function vcms_register_default_admin_tabs(): void
     AdminController::registerGroup(new AdminTagGroup('vanilla-cms', 'Vanilla CMS'));
     AdminController::registerGroup(new AdminTagGroup('pages', 'Pages'));
     AdminController::registerGroup(new AdminTagGroup('content', 'Content'));
+    AdminController::registerGroup(new AdminTagGroup('user', 'User'));
     AdminController::registerTab('vanilla-cms', new HomeTab());
     AdminController::registerTab('pages', new PagesTab());
     foreach (PageTypeRegistry::archetypeTypes() as $type) {
@@ -93,6 +95,7 @@ function vcms_register_default_admin_tabs(): void
     }
     AdminController::registerTab('content', new UploadsTab());
     AdminController::registerTab('content', new SharedFieldsTab());
+    AdminController::registerTab('user', new AccountTab());
 }
 
 /**
