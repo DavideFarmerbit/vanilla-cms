@@ -29,6 +29,14 @@ a default theme you can use).
 
 ### Minimal example
 
+.htaccess
+```
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [L]
+```
+
+index.php
 ```injectablephp
 // Register the page types
 register_pages([
@@ -48,11 +56,16 @@ Auth::set(new class implements AuthDriver {
 
 // Set storage driver
 Storage::set(new JsonStorage(__DIR__ . '/../storage'));
+Storage::setUploadsRoot(__DIR__ . '/../public/uploads', '/uploads');
+if (extension_loaded('gd')) {
+    Storage::setImageSrcsetGenerator(new GdImageSrcsetGenerator());
+}
 
 // Set admin assets
 AdminAssets::set('/path/to/admin.css', '/path/to/admin.css');
+vcms_register_default_admin_tabs();
 
-Router::dispatch(default_router_dispatchers());
+Router::dispatch(vcms_default_router_dispatchers());
 ```
 
 ```injectablephp
@@ -125,7 +138,7 @@ class LoginPage extends Page {
 
 ### Requirements
 
-- PHP >= 8.1
+- PHP >= 8.4
 
 ### Installation
 
