@@ -21,6 +21,8 @@ document.querySelectorAll('a[data-confirm]').forEach((link) => {
  *   - data-vcms-swap-for="id": on success, hide this form and reveal the element with that id.
  *   - data-vcms-reload-on-success: on success, reload the page (for forms whose result changes
  *     other server-rendered content on the page, e.g. toggling a conditional block).
+ *   - data-vcms-keep-values: on success, don't reset the form back to its loaded values (for forms
+ *     that persist settings and should keep showing what was just submitted, e.g. a settings toggle).
  */
 document.querySelectorAll('form[data-vcms-ajax], form[data-vcms-swap-for], form[data-vcms-reload-on-success]').forEach((form) => {
     const swapTarget = form.dataset.vcmsSwapFor ? document.getElementById(form.dataset.vcmsSwapFor) : null;
@@ -78,7 +80,9 @@ document.querySelectorAll('form[data-vcms-ajax], form[data-vcms-swap-for], form[
                 }
 
                 setLoading(false);
-                form.reset();
+                if (!('vcmsKeepValues' in form.dataset)) {
+                    form.reset();
+                }
                 showMessage(data.message, false);
                 if (swapTarget) {
                     form.hidden = true;
