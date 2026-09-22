@@ -92,6 +92,25 @@ document.querySelectorAll('form[data-vcms-ajax], form[data-vcms-swap-for], form[
     });
 });
 
+/**
+ * Generic "checkbox shows/hides another element" behavior. Any checkbox can opt in with
+ * data-vcms-toggle="id", pointing at an element elsewhere on the page: that element is shown
+ * while the checkbox is checked, hidden otherwise (applied immediately on load too).
+ */
+document.querySelectorAll('[data-vcms-toggle]').forEach((checkbox) => {
+    const target = document.getElementById(checkbox.dataset.vcmsToggle);
+    if (!target) {
+        return;
+    }
+
+    const sync = () => {
+        target.hidden = !checkbox.checked;
+    };
+
+    checkbox.addEventListener('change', sync);
+    sync();
+});
+
 document.querySelectorAll('[data-vcms-dropzone]').forEach((dropzone) => {
     const input = dropzone.querySelector('[data-vcms-dropzone-input]');
 
